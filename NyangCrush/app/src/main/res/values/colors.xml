@@ -10,5 +10,6 @@
     <color name="richWhite">#CCFFFFFF</color>
     <color name="brown">#6F5C5C</color>
     <color name="creamYellow">#FBE6BF</color>
+    <color name='yellow'>#FFC376</color>
 
 </resources>
