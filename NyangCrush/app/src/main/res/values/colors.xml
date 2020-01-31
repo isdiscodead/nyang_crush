@@ -3,4 +3,12 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+
+    <!-- 프로젝트 메인 컬러 등록 -->
+    <color name="blue">#89BCE0</color>
+    <color name="pink">#FFADAD</color>
+    <color name="richWhite">#CCFFFFFF</color>
+    <color name="brown">#6F5C5C</color>
+    <color name="creamYellow">#FBE6BF</color>
+
 </resources>
