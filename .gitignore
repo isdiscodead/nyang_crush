@@ -41,15 +41,15 @@ captures/
 
 # IntelliJ
 *.iml
-.idea/workspace.xml
-.idea/tasks.xml
-.idea/gradle.xml
-.idea/assetWizardSettings.xml
-.idea/dictionaries
-.idea/libraries
+NyangCrush/.idea/workspace.xml
+NyangCrush/.idea/tasks.xml
+NyangCrush/.idea/gradle.xml
+NyangCrush/.idea/assetWizardSettings.xml
+NyangCrush/.idea/dictionaries
+NyangCrush/.idea/libraries
 # Android Studio 3 in .gitignore file.
-.idea/caches
-.idea/modules.xml
+NyangCrush/.idea/caches
+NyangCrush/.idea/modules.xml
 # Comment next line if keeping position of elements in Navigation Editor is relevant for you
 .idea/navEditor.xml
 
@@ -139,22 +139,22 @@ obj/
 /out/
 
 # User-specific configurations
-.idea/caches/
-.idea/libraries/
-.idea/shelf/
-.idea/.name
-.idea/compiler.xml
-.idea/copyright/profiles_settings.xml
-.idea/encodings.xml
-.idea/misc.xml
-.idea/scopes/scope_settings.xml
-.idea/vcs.xml
-.idea/jsLibraryMappings.xml
-.idea/datasources.xml
-.idea/dataSources.ids
-.idea/sqlDataSources.xml
-.idea/dynamic.xml
-.idea/uiDesigner.xml
+NyangCrush/.idea/caches/
+NyangCrush/.idea/libraries/
+NyangCrush/.idea/shelf/
+NyangCrush/.idea/.name
+NyangCrush/.idea/compiler.xml
+NyangCrush/.idea/copyright/profiles_settings.xml
+NyangCrush/.idea/encodings.xml
+NyangCrush/.idea/misc.xml
+NyangCrush/.idea/scopes/scope_settings.xml
+NyangCrush/.idea/vcs.xml
+NyangCrush/.idea/jsLibraryMappings.xml
+NyangCrush/.idea/datasources.xml
+NyangCrush/.idea/dataSources.ids
+NyangCrush/.idea/sqlDataSources.xml
+NyangCrush/.idea/dynamic.xml
+NyangCrush/.idea/uiDesigner.xml
 
 # OS-specific files
 .DS_Store
@@ -201,5 +201,3 @@ fabric.properties
 ### AndroidStudio Patch ###
 
 !/gradle/wrapper/gradle-wrapper.jar
-
-# End of https://www.gitignore.io/api/android,androidstudio
