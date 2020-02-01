@@ -29,5 +29,12 @@
             android:background="@drawable/diag_close"/>
     </LinearLayout>
 
+    <!-- 순위 -->
+    <ListView
+        android:id="@+id/ranking"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="20dp"
+        android:paddingLeft="20dp"/>
 
 </LinearLayout>
