@@ -9,15 +9,28 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
-
+import android.view.GestureDetector;
+import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
+import android.view.WindowManager;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.pro.nyangcrush.databinding.ActivityGameBinding;
+import com.pro.nyangcrush.databinding.ActivityMainBinding;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class GameActivity extends Activity {
@@ -46,6 +59,15 @@ public class GameActivity extends Activity {
     private int e2X;
     private int e2Y;
 
+    //먼지 채우기 감지 콜백
+    private FillCompletedListener fillCompletedListener;
+
+    //제스처 감지
+    private GestureDetector detector;
+
+    //먼지 스왑 완료 감지 콜백
+    private SwapCompletedListener swapCompletedListener;
+
     //view의 변화감지 리스너
     private ViewTreeObserver.OnGlobalLayoutListener mGlobalLayoutListener;
 
@@ -67,7 +89,6 @@ public class GameActivity extends Activity {
                 dialog.setCancelable( false );
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                dialog.getWindow().getAttributes().windowAnimations = R.style.CustomDialogAnimation;
 
                 dialog.setContentView( R.layout.diag_pause );
 
@@ -96,7 +117,7 @@ public class GameActivity extends Activity {
             public void onGlobalLayout() {
                 //plate에 아이템을 9x9로 배치하기 위해 정확히 9로 나눠지는 수치를 계산
                 plateSize = ( binding.gamePlate.getWidth() / 9) * 9;
-                Log.i("my",""+plateSize);
+                Log.i("dd", ""+binding.gamePlate.getWidth() );
 
                 //plate 넓이, 높이 설정
                 //ViewGroup : View의 부모 , view는 textview, editview, button, imageview등
@@ -131,7 +152,153 @@ public class GameActivity extends Activity {
 
         //plate 넓이 구하기 위한 리스너 등록
         binding.gamePlate.getViewTreeObserver().addOnGlobalLayoutListener(mGlobalLayoutListener);
+
+        //터치 및 스와이프 인식 리스너
+        detector = new GestureDetector(this, new GestureDetector.OnGestureListener() {
+            @Override
+            public boolean onDown(MotionEvent motionEvent) {
+                return false;
+            }
+            @Override
+            public void onShowPress(MotionEvent motionEvent) {
+            }
+            @Override
+            public boolean onSingleTapUp(MotionEvent motionEvent) {
+                return false;
+            }
+            @Override
+            public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+                return false;
+            }
+            @Override
+            public void onLongPress(MotionEvent motionEvent) {
+            }
+
+            @Override
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float v1, float v2) {
+                //먼지를 이동시키기 위해 스와이프를 한 경우 onFling이벤트가 발생
+                //터치가 불가능한 상태일 경우 return false
+                if(!touchStatus) {
+                    Log.i("touchStatus false", "");
+                    return false;
+                } else {
+                    Log.i("touchStatus true", "");
+                    touchStatus = false;
+                    int[] plateLocation = new int[2];
+                    binding.gamePlate.getLocationOnScreen(plateLocation); //plate의 절대 좌표 가져오기
+
+                    int plateX = plateLocation[0];
+                    int plateY = plateLocation[1];
+
+                    if(e1 == null || e2 == null) return false; //nullpointer exception 방지
+
+                    //e1 및 e2 이벤트 위치가 plate 바깥쪽일 경우 return false
+                    if(e1.getX() >= plateX
+                            && e1.getX() <= plateX + plateSize
+                            && e1.getY() >= plateY
+                            && e1.getY() <= plateY + plateSize
+                            && e2.getX() >= plateX
+                            && e2.getX() <= plateX + plateSize
+                            && e2.getY() >= plateY
+                            && e2.getY() <= plateY + plateSize) {
+
+                        //처음 터치한 먼지의 좌표
+                        e1X = ((int)e1.getX() - plateX) / division9;
+                        e1Y = ((int)e1.getY() - plateY) / division9;
+
+                        Log.i("de","e1X = "+(int)(e1.getX() - plateX)/ division9);
+                        Log.i("de","e1Y = "+(int)(e1.getY() - plateY)/ division9);
+
+                        //터치를 뗀 위치의 좌표
+                        e2X = ((int)e2.getX() - plateX) / division9;
+                        e2Y = ((int)e2.getY() - plateY) / division9;
+
+                        //스왑할 먼지의 좌표 조정
+                        //두칸 이상의 범위를 드래그한 경우 좌표값을 한칸으로 조정해줌
+                        e2X = Math.abs(e1X - e2X) >= 2 ?
+                                e1X > e2X ?
+                                        e1X - 1 :
+                                        e1X + 1
+                                : e2X;
+
+                        e2Y = Math.abs(e1Y - e2Y) >= 2 ?
+                                e1Y > e2Y ?
+                                        e1Y - 1 :
+                                        e1Y + 1
+                                : e2Y;
+
+
+                        if((e1X != e2X && e1Y != e2Y) || (e1X == e2X && e1Y == e2Y)) {
+                            Log.i("잘못된 드래그 ->", e1Y+" -> "+e2Y+" || "+e1X+" -> "+e2X);
+                            //잘못된 드래그 방지
+                            //1. 대각선 드래그
+                            //2. 제자리 드래그
+                            touchStatus = true;
+                            return false;
+                        }
+
+                        /*
+                        //스왑 효과음 재생
+                        if(effectSound)
+                            soundPool.play(swapSound, effectSoundVolume, effectSoundVolume,  1,  0,  1);
+                        */
+
+                        //스왑 완료시 호출할 콜백 등록
+                        swapCompletedListener = new SwapCompletedListener();
+                        SwapCompletedListener.SwapCallback swapCallback = new SwapCompletedListener.SwapCallback() {
+                            @Override
+                            public void onSwapComplete(boolean restore) {
+                                if(restore) {
+                                    //되돌리기의 경우
+                                    touchStatus = true;
+                                    return;
+                                }
+
+                                if(!checkNyangArray()) {
+                                    //터트릴 먼지가 하나도 없을 경우 다시 스왑함으로써 원상태로 되돌림
+                                    swapNyang(e1X, e2X, e1Y, e2Y, true);
+                                } else {
+                                    fillCompletedListener = new FillCompletedListener();
+                                    FillCompletedListener.FillCallback fillCallback = new FillCompletedListener.FillCallback() {
+                                        @Override
+                                        public void onFillComplete() {
+                                            if(gameStatus != GAME_PLAYING) return;
+
+                                            if(!checkNyangArray()) {
+                                                touchStatus = true;
+                                            } else {
+                                                fillBlank();
+                                            }
+                                        }
+                                    };
+                                    fillCompletedListener.setFillCallback(fillCallback); //콜백 등록
+                                    fillBlank();
+                                }
+                            }
+                        };
+                        swapCompletedListener.setSwapCallback(swapCallback);
+
+                        //두 먼지 스왑
+                        swapNyang(e1X, e2X, e1Y, e2Y, false);
+                        return true;
+                    } else {
+                        touchStatus = true;
+                        return false;
+                    }
+                }
+            }
+        });//터치 및 스와이프 인식 리스너
     }//onCreate
+
+    /**
+     * 터치 이벤트 등록
+     * @param event
+     * @return
+     */
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return detector.onTouchEvent(event);
+    }
 
     /**
      * plate에 먼지를 채워넣음
@@ -168,21 +335,387 @@ public class GameActivity extends Activity {
         observer.removeOnGlobalLayoutListener(listener);
     }//removeOnGlobalLayoutListener
 
+    /**
+     * 먼지 삭제 후 공백 채우는 메소드
+     */
 
-    // 다이어그램 온클릭 리스너
-    View.OnClickListener dialClick = new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    switch ( view.getId() ){
-                        case R.id.btn_replay :
-                            break;
-                        case R.id.btn_stop :
-                            break;
-                        default:
-                            dialog.dismiss();
-                            break;
+    private void fillBlank() {
+        int totalNullCount = 0;
+
+/*        for(int q = 0 ; q < dustArray.length ; q++) {
+            String row = "";
+            for(int w = 0 ; w < dustArray[q].length ; w++) {
+                row += dustArray[q][w] == null ? "x" : "o";
+                row += " ";
+            }
+            Log.i("dustArray "+q, row);
+        }*/
+
+        for(int q = 0 ; q < nyangArray.length ; q++) {
+            final ArrayList<NyangImageView> newNyangList = new ArrayList<>();
+            final ArrayList<NyangImageView> nyangList = new ArrayList<>();
+            for(int w = 0 ; w < nyangArray.length ; w++) {
+                nyangList.add(nyangArray[w][q]);
+            }
+            int nullCount = 0;
+
+            for(int w = nyangArray.length - 1 ; w >= 0 ; w--) {
+                if(nyangArray[w][q] == null) {
+                    nullCount++;
+                    totalNullCount++;
+                    NyangImageView nyangImageView = new NyangImageView(GameActivity.this
+                            , (int)binding.gameHideDustBar.getX() + (division9 * q)
+                            , (int)binding.gameHideDustBar.getY()
+                            , division9
+                            , division9
+                            , (int)(Math.random() * 5) + 1);
+                    binding.layout.addView(nyangImageView);
+                    binding.gameHideDustBar.bringToFront();
+                    newNyangList.add(nyangImageView);
+
+                    if(w == 0) {
+                        //첫번 째 칸이 0일 경우 plate를 채움
+                        fillPlate(newNyangList, q);
+                    }
+
+                } else {
+                    if(nullCount >= 1) {
+                        final int x = q;
+                        final int y = w;
+                        final int newY = w + nullCount;
+
+                        nyangArray[newY][x] = nyangList.get(y);
+                        TranslateAnimation tranAnimation = new TranslateAnimation(
+                                Animation.RELATIVE_TO_SELF , 0
+                                ,Animation.RELATIVE_TO_SELF , 0
+                                ,Animation.RELATIVE_TO_SELF , 0
+                                ,Animation.RELATIVE_TO_SELF , nullCount);
+                        tranAnimation.setInterpolator(new AccelerateInterpolator());
+                        tranAnimation.setDuration(200 + (nullCount * 100));
+                        tranAnimation.setFillEnabled(true);
+                        tranAnimation.setAnimationListener(new Animation.AnimationListener() {
+                            @Override
+                            public void onAnimationEnd(Animation animation) {
+                                //실행 순서가 보장 되지 않음
+                                nyangArray[newY][x].setX(nyangPositions[newY][x].getX());
+                                nyangArray[newY][x].setY(nyangPositions[newY][x].getY());
+
+                                if(y == 0) {
+                                    //먼지들을 아래로 옮기고 난 후 공백을 채워넣음
+                                    fillPlate(newNyangList, x);
+                                }
+                            }
+
+                            @Override
+                            public void onAnimationStart(Animation animation) {
+
+                            }
+                            @Override
+                            public void onAnimationRepeat(Animation animation) {
+
+                            }
+                        });
+                        nyangArray[y][x].startAnimation(tranAnimation);
 
                     }
                 }
-            };
+
+            }
+        }
+
+        fillCompletedListener.setTotalNullCount(totalNullCount);
+    }//fillblank
+
+    /**
+     * newDustList에 있는 먼지를 plate에 채워 넣음
+     * @param newNyangList
+     * @param x
+     */
+    private void fillPlate(final ArrayList<NyangImageView> newNyangList, final int x) {
+        for(int q = 0 ; q < newNyangList.size() ; q++) {
+            final int index = q;
+
+            //생성되있는 먼지들을 아래로 이동시키며 채워넣음
+            nyangArray[newNyangList.size() - index - 1][x] = newNyangList.get(index);
+
+            TranslateAnimation tranAnimation = new TranslateAnimation(
+                    Animation.RELATIVE_TO_SELF , 0
+                    ,Animation.RELATIVE_TO_SELF , 0
+                    ,Animation.RELATIVE_TO_SELF , 0
+                    ,Animation.RELATIVE_TO_SELF , newNyangList.size() - q);
+            tranAnimation.setDuration(200 + ((newNyangList.size() - q) * 100));
+            tranAnimation.setFillEnabled(true);
+            tranAnimation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    nyangArray[newNyangList.size() - index - 1][x].setX(nyangPositions[newNyangList.size() - index - 1][x].getX());
+                    nyangArray[newNyangList.size() - index - 1][x].setY(nyangPositions[newNyangList.size() - index - 1][x].getY());
+
+                    fillCompletedListener.fillComplete();
+                }
+
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            newNyangList.get(q).startAnimation(tranAnimation);
+        }
+    }//fliiplate
+
+    /**
+     * 현재 plate에 동일한 모양의 먼지가 일렬로 3개 이상 나열된 곳이 있는지 체크 후
+     * 있다면, 나열된 먼지 삭제 후 점수 획득 및 true 리턴
+     * 없다면, false 리턴
+     * @return
+     */
+    private boolean checkNyangArray() {
+        final ArrayList<String> removeList = new ArrayList<>();
+        boolean flag = false; //리턴할 변수
+
+        for(int q = 0 ; q < nyangArray.length ; q++) {
+            for(int w = 0 ; w < nyangArray[q].length ; w++) {
+                int verticalMin = q - 2 < 0 ? 0 : q - 2;
+                int verticalMax = q + 2 >= nyangArray.length ? nyangArray.length - 1 : q + 2;
+                int horizontalMin = w - 2 < 0 ? 0 : w - 2;
+                int horizontalMax = w + 2 >= nyangArray.length ? nyangArray.length - 1 : w + 2;
+
+                /*Log.i("현재 좌표", q+", "+w);
+                Log.i("verticalMin", ""+verticalMin);
+                Log.i("verticalMax", ""+verticalMax);
+                Log.i("horizontalMin", ""+horizontalMin);
+                Log.i("horizontalMax", ""+horizontalMax);*/
+
+                int count = 0;
+                for(int e = verticalMin + 1 ; e <= verticalMax ; e++) {
+                    //세로 탐색
+                    if(nyangArray[e - 1][w].getNyangType() == nyangArray[e][w].getNyangType()) {
+                        count++;
+                    } else {
+                        count = 0;
+                    }
+
+                    if(count >= 2) {
+                        /**
+                         * 카운팅이 2 이상 된 경우 연속된 3개의 먼지가 있다는 의미 이므로
+                         * 현재 검사한 먼지의 좌표(q, w)를 기준으로 인접한 같은 모양의 먼지를 모두 삭제함
+                         * 범위는 기준점(q, w)에서 부터 최대 2칸
+                         */
+                        flag = true;
+
+                        removeList.add(q+","+w);
+                        for(int r = q + 1 ; r <= verticalMax ; r++) {
+                            if(nyangArray[q][w].getNyangType() == nyangArray[r][w].getNyangType()) {
+                                if(binding.layout.getViewWidget(nyangArray[r][w]) != null) {
+                                    //리무브 애니메이션
+                                    Animation anim = AnimationUtils.loadAnimation(this, R.anim.remove_nyang);
+                                    nyangArray[r][w].startAnimation(anim);
+                                }
+
+                                binding.layout.removeView(nyangArray[r][w]);
+                                removeList.add(r+","+w);
+
+                            } else {
+                                break;
+                            }
+                        }
+
+                        for(int r = q - 1 ; r >= verticalMin ; r--) {
+                            if(nyangArray[q][w].getNyangType() == nyangArray[r][w].getNyangType()) {
+                                if(binding.layout.getViewWidget(nyangArray[r][w]) != null) {
+                                    //리무브 애니메이션
+                                    Animation anim = AnimationUtils.loadAnimation(this, R.anim.remove_nyang);
+                                    nyangArray[r][w].startAnimation(anim);
+                                }
+
+                                binding.layout.removeView(nyangArray[r][w]);
+                                removeList.add(r+","+w);
+                            } else {
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+
+                count = 0;
+                for(int e = horizontalMin + 1 ; e <= horizontalMax ; e++) {
+                    //가로 탐색
+                    if(nyangArray[q][e - 1].getNyangType() == nyangArray[q][e].getNyangType()) {
+                        count++;
+                    } else {
+                        count = 0;
+                    }
+
+                    if(count >= 2) {
+                        flag = true;
+
+                        removeList.add(q+","+w);
+                        for(int r = w + 1 ; r <= horizontalMax ; r++) {
+                            if(nyangArray[q][w].getNyangType() == nyangArray[q][r].getNyangType()) {
+                                if(binding.layout.getViewWidget(nyangArray[q][r]) != null) {
+                                    //리무브 애니메이션
+                                    Animation anim = AnimationUtils.loadAnimation(this, R.anim.remove_nyang);
+                                    nyangArray[q][r].startAnimation(anim);
+                                }
+
+                                binding.layout.removeView(nyangArray[q][r]);
+                                removeList.add(q+","+r);
+                            } else {
+                                break;
+                            }
+                        }
+
+                        for(int r = w - 1 ; r >= horizontalMin ; r--) {
+                            if(nyangArray[q][w].getNyangType() == nyangArray[q][r].getNyangType()) {
+                                if(binding.layout.getViewWidget(nyangArray[q][r]) != null) {
+                                    //리무브 애니메이션
+                                    Animation anim = AnimationUtils.loadAnimation(this, R.anim.remove_nyang);
+                                    nyangArray[q][r].startAnimation(anim);
+                                }
+
+                                binding.layout.removeView(nyangArray[q][r]);
+                                removeList.add(q+","+r);
+                            } else {
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
+        for(int q = 0 ; q < removeList.size() ; q++) {
+            //실제 dustArray에서 먼지 삭제
+            int i = Integer.parseInt(removeList.get(q).split(",")[0]);
+            int j = Integer.parseInt(removeList.get(q).split(",")[1]);
+            nyangArray[i][j] = null;
+        }
+/*
+        if(flag && gameStatus == GAME_PLAYING) {
+            //시간초 추가
+            stackedNumber -= (float)removeList.size() / 2;
+
+            //점수 갱신
+            userScore += removeList.size() * 10;
+            highScore = highScore < userScore ? userScore : highScore;
+
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    userScoreView.setText(""+String.format("%,d", userScore));
+                    highScoreView.setText(""+String.format("%,d", highScore));
+                }
+            });
+            */
+/*
+            //먼지 터지는 효과음
+            if(effectSound)
+                soundPool.play(dustRemoveSound, effectSoundVolume, effectSoundVolume,  1,  0,  1);
+            */
+//        }
+
+        return flag;
+    }//checklist
+
+    //먼지 스왑 애니메이션
+    private void swapNyang(final int x1, final int x2, final int y1, final int y2, final boolean restore) {
+        //restore가 true면 되돌리기 작업임
+        //먼지1 : 사용자가 처음 터치한 먼지
+        //먼지2 : 사용자가 교환하려고 드래그한 자리에 있는 먼지
+
+        //먼지1 좌표 얻어오기
+        final int nyang1X = (int)nyangPositions[y1][x1].getX();
+        final int nyang1Y = (int)nyangPositions[y1][x1].getY();
+        Log.i("m","x : "+nyang1X);
+
+        //먼지2 좌표 얻어오기
+        final int nyang2X = (int)nyangPositions[y2][x2].getX();
+        final int nyang2Y = (int)nyangPositions[y2][x2].getY();
+
+        //먼지1을 먼지2 쪽으로 이동
+        TranslateAnimation translateAnimation1 = new TranslateAnimation(
+                Animation.RELATIVE_TO_SELF , 0
+                ,Animation.RELATIVE_TO_SELF , x2 - x1
+                ,Animation.RELATIVE_TO_SELF , 0
+                ,Animation.RELATIVE_TO_SELF , y2 - y1);
+        translateAnimation1.setDuration(300);
+        translateAnimation1.setFillEnabled(true);
+        translateAnimation1.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                nyangArray[y2][x2].setX(nyang2X);
+                nyangArray[y2][x2].setY(nyang2Y);
+
+                //애니메이션이 끝난것을 리스너에게 알려주기위한 메소드
+                swapCompletedListener.swapAnimationEnd(restore);
+            }
+
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        nyangArray[y1][x1].startAnimation(translateAnimation1);
+
+        //먼지2를 먼지1 쪽으로 이동
+        TranslateAnimation translateAnimation2 = new TranslateAnimation(
+                Animation.RELATIVE_TO_SELF , 0
+                ,Animation.RELATIVE_TO_SELF , x1 - x2
+                ,Animation.RELATIVE_TO_SELF , 0
+                ,Animation.RELATIVE_TO_SELF , y1 - y2);
+        translateAnimation2.setDuration(300);
+        translateAnimation2.setFillEnabled(true);
+        translateAnimation2.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                nyangArray[y1][x1].setX(nyang1X);
+                nyangArray[y1][x1].setY(nyang1Y);
+
+                //애니메이션이 끝난것을 리스너에게 알려주기위한 메소드
+                swapCompletedListener.swapAnimationEnd(restore);
+            }
+
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        nyangArray[y2][x2].startAnimation(translateAnimation2);
+
+        //먼지 스왑
+        NyangImageView tmpNyang = nyangArray[y2][x2];
+        nyangArray[y2][x2] = nyangArray[y1][x1];
+        nyangArray[y1][x1] = tmpNyang;
+    }//swapAni
+
+    // 다이어그램 온클릭 리스너
+    View.OnClickListener dialClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            switch ( view.getId() ){
+                case R.id.btn_replay :
+                    break;
+                case R.id.btn_stop :
+                    break;
+                default:
+                    dialog.dismiss();
+                    break;
+
+            }
+        }
+    };
 }
