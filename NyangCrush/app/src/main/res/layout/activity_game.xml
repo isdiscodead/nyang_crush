@@ -24,11 +24,13 @@
             android:layout_marginTop="15dp"
             android:layout_marginRight="15dp"
             android:layout_gravity="right"/>
+
         <!-- 점수 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginBottom="-10dp">
             
             <TextView
                 android:layout_height="wrap_content"
@@ -45,19 +47,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="100000"
-                android:textSize="30dp"
+                android:textSize="25dp"
                 android:fontFamily="@font/black_han_sans"
                 android:textColor="@color/brown"
-                android:layout_marginLeft="20dp"
+                android:layout_marginLeft="15dp"
                 android:id="@+id/highScore"/>
-
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp">
 
             <TextView android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
@@ -71,7 +73,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0"
-                android:textSize="30dp"
+                android:textSize="25dp"
                 android:fontFamily="@font/black_han_sans"
                 android:textColor="@color/brown"
                 android:layout_marginLeft="20dp"
@@ -105,7 +107,8 @@
         <LinearLayout android:orientation="horizontal"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:layout_gravity="center">
+        android:layout_gravity="center"
+        android:layout_marginBottom="20dp">
 
             <TextView
                 android:layout_width="90dp"

@@ -13,81 +13,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".LoginActivity"
-<<<<<<< HEAD
         android:orientation="vertical"
         android:background="@drawable/background">
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="160dp"
+            android:layout_width="350dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center_horizontal"
             android:background="@drawable/logo"
             android:gravity="center"
             android:layout_marginTop="80dp"/>
 
-        <Button
-            android:layout_width="220dp"
-            android:layout_height="70dp"
-            android:gravity="center"
-            android:text="로그인 하기"
-            android:layout_gravity="center"
-            android:background="@drawable/btn_pink_bef"
-            android:id="@+id/btn_logIn"
-            android:layout_marginTop="10dp"
-            android:textColor="@color/richWhite"
-            android:fontFamily="@font/black_han_sans"
-            android:textSize="30dp"/>
-
-        <Button
-            android:layout_width="220dp"
-            android:layout_height="70dp"
-            android:gravity="center"
-            android:layout_gravity="center"
-            android:text="회원가입"
-            android:background="@drawable/btn_pink_bef"
-            android:id="@+id/btn_join"
-            android:layout_marginTop="15dp"
-            android:textColor="@color/richWhite"
-            android:fontFamily="@font/black_han_sans"
-            android:textSize="30dp"/>
-=======
-        android:background="@drawable/background"
-        android:orientation="vertical">
-
-
-        <ImageView
-            android:layout_width="350dp"
-            android:layout_height="wrap_content"
-            android:src="@drawable/logo"
-            android:layout_marginTop="30dp"
-            android:layout_gravity="center"
-            />
-
-
-
-        <Button
-            android:layout_width="200dp"
-            android:layout_height="70dp"
-            android:background="@drawable/btn_pink_bef"
-            android:layout_gravity="center"
-            android:text="로그인 하기"
-            android:textSize="30dp"
-            android:fontFamily="@font/black_han_sans"
-            android:textColor="#fff"
-        />
-
-
-        <Button
-            android:layout_width="200dp"
-            android:layout_height="70dp"
-            android:background="@drawable/btn_pink_bef"
-            android:layout_gravity="center"
-            android:text="회원가입"
-            android:textSize="30dp"
-            android:fontFamily="@font/black_han_sans"
-            android:textColor="#fff"
-            android:layout_marginTop="10dp"
-            />
->>>>>>> c96b937d883755e837e867f4fdecfe2d292f9a3c
+    <!-- 여기에 구글로 로그인 버튼 들어와야 함 -->
 
     </LinearLayout>
 </layout>

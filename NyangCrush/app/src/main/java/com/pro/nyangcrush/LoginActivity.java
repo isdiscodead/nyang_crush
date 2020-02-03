@@ -16,7 +16,7 @@ public class LoginActivity extends Activity {
 
     ActivityLoginBinding binding;
 
-    Button btn_logIn, btn_join;
+    Button btn_logIn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,29 +24,11 @@ public class LoginActivity extends Activity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login);
         binding.setActivity(this);
 
-        btn_logIn = binding.btnLogIn;
-        btn_join = binding.btnJoin;
-
-        btn_logIn.setOnClickListener( click );
-
     } // onCreate()
 
     View.OnClickListener click = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-
-            switch (view.getId()){
-
-                case R.id.btn_logIn:
-                    /* 임시로 */
-                    Intent i = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(i);
-                    break;
-
-                case R.id.btn_join:
-                    break;
-
-            } // switch
 
         }
     };
