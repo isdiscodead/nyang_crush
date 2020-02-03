@@ -46,7 +46,7 @@
             android:layout_marginLeft="80dp"
             android:textSize="20dp"
             android:textColor="#4B4949"
-            android:fontFamily="@font/Black_han_sans"
+            android:fontFamily="@font/black_han_sans"
             android:text="High Score"/>
 
         <TextView android:background="@drawable/btn_pink"
@@ -55,7 +55,7 @@
             android:layout_gravity="center"
             android:textSize="25dp"
             android:textColor="#fff"
-            android:fontFamily="@font/Black_han_sans"
+            android:fontFamily="@font/black_han_sans"
             android:text="점수 확인"
             android:gravity="center"/>
 
@@ -67,7 +67,7 @@
             android:layout_marginTop="10dp"
             android:textSize="25dp"
             android:textColor="#fff"
-            android:fontFamily="@font/Black_han_sans"
+            android:fontFamily="@font/black_han_sans"
             android:text="랭크 확인"
             android:gravity="center"/>
 
@@ -79,7 +79,7 @@
             android:layout_marginTop="285dp"
             android:textSize="25dp"
             android:textColor="#fff"
-            android:fontFamily="@font/Black_han_sans"
+            android:fontFamily="@font/black_han_sans"
             android:text="GAME\nSTART"
             android:gravity="center"
             android:layout_marginBottom="70dp"/>

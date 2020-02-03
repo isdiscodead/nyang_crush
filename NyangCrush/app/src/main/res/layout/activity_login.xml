@@ -12,7 +12,42 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".LoginActivity">
+        tools:context=".LoginActivity"
+        android:orientation="vertical"
+        android:background="@drawable/background">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            android:background="@drawable/logo"
+            android:gravity="center"
+            android:layout_marginTop="80dp"/>
+
+        <Button
+            android:layout_width="220dp"
+            android:layout_height="70dp"
+            android:gravity="center"
+            android:text="로그인 하기"
+            android:layout_gravity="center"
+            android:background="@drawable/btn_pink_bef"
+            android:id="@+id/btn_logIn"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/richWhite"
+            android:fontFamily="@font/black_han_sans"
+            android:textSize="30dp"/>
+
+        <Button
+            android:layout_width="220dp"
+            android:layout_height="70dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:text="회원가입"
+            android:background="@drawable/btn_pink_bef"
+            android:id="@+id/btn_join"
+            android:layout_marginTop="15dp"
+            android:textColor="@color/richWhite"
+            android:fontFamily="@font/black_han_sans"
+            android:textSize="30dp"/>
 
     </LinearLayout>
 </layout>
