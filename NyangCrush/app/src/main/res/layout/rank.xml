@@ -1,49 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingHorizontal="10dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal"
-        android:background="@drawable/rank_box">
+<layout>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="match_parent" android:paddingHorizontal="10dp">
 
-        <!-- 맨 위에 본인 순위 올라오고 순위 안에 없다면 '-'로 표시 -->
-        <!-- 본인 순위는 백그라운드 색상 다르게 ! ( 연노랑 ? ) -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="1"
-            android:gravity="right||center_vertical"
-            android:fontFamily="@font/black_han_sans"
-            android:textSize="30dp"
-            android:textColor="@color/brown"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:background="@drawable/rank_box">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:layout_marginLeft="10dp"
-            android:fontFamily="@font/black_han_sans"
-            android:gravity="center"
-            android:text="USER NAME"
-            android:textColor="@color/pink"
-            android:textSize="20dp" />
+            <!-- 맨 위에 본인 순위 올라오고 순위 안에 없다면 '-'로 표시 -->
+            <!-- 본인 순위는 백그라운드 색상 다르게 ! ( 연노랑 ? ) -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="1"
+                android:gravity="right||center_vertical"
+                android:fontFamily="@font/black_han_sans"
+                android:textSize="30dp"
+                android:textColor="@color/brown"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:layout_marginLeft="10dp"
-            android:text="000000000000"
-            android:gravity="left||center_vertical"
-            android:fontFamily="@font/black_han_sans"
-            android:textSize="20dp"
-            android:textColor="@color/brown"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:layout_marginLeft="10dp"
+                android:fontFamily="@font/black_han_sans"
+                android:gravity="center"
+                android:text="USER NAME"
+                android:textColor="@color/pink"
+                android:textSize="20dp" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:layout_marginLeft="10dp"
+                android:text="000000000000"
+                android:gravity="left||center_vertical"
+                android:fontFamily="@font/black_han_sans"
+                android:textSize="20dp"
+                android:textColor="@color/brown"/>
+
+
+        </LinearLayout>
 
     </LinearLayout>
-
-</LinearLayout>
+</layout>

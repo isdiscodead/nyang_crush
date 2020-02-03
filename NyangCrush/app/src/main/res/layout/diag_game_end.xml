@@ -1,137 +1,140 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="350dp"
-    android:layout_height="400dp"
-    android:gravity="center_horizontal"
-    android:background="@drawable/diag_concept">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="게임 종료 !"
-        android:padding="20dp"
-        android:layout_marginTop="10dp"
-        android:textColor="@color/blue"
-        android:textSize="40sp"
-        android:fontFamily="@font/black_han_sans"/>
-
-
-    <!-- 시간 기록 -->
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="left">
+<layout>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_width="350dp"
+        android:layout_height="400dp"
+        android:gravity="center_horizontal"
+        android:background="@drawable/diag_concept">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Time"
-            android:textColor="@color/brown"
-            android:layout_gravity="left"
-            android:padding="10dp"
-            android:layout_marginLeft="30dp"
-            android:textSize="30sp"
-            android:fontFamily="@font/black_han_sans"/>
-
-        <!-- 신기록 갱신 시 노출 -->
-        <TextView
-            android:id="@+id/best_time"
-            android:visibility="gone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="~ NEW RECORD ~"
-            android:textSize="15sp"
-            android:layout_marginLeft="50dp"
-            android:paddingTop="20dp"
+            android:text="게임 종료 !"
+            android:padding="20dp"
+            android:layout_marginTop="10dp"
             android:textColor="@color/blue"
-            android:fontFamily="@font/black_han_sans"/>
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="1분 23초 "
-        android:textColor="@color/pink"
-        android:layout_marginLeft="40dp"
-        android:layout_gravity="left"
-        android:layout_marginBottom="20dp"
-        android:textSize="25sp"
-        android:fontFamily="@font/black_han_sans"/>
-
-
-    <!-- 점수 기록 -->
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="left">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Score"
-            android:textColor="@color/brown"
-            android:layout_gravity="left"
-            android:padding="10dp"
-            android:layout_marginLeft="30dp"
-            android:textSize="30sp"
+            android:textSize="40sp"
             android:fontFamily="@font/black_han_sans"/>
 
-        <!-- 신기록 갱신 시 노출 -->
-        <TextView
-            android:id="@+id/best_score"
-            android:visibility="gone"
+
+        <!-- 시간 기록 -->
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="20dp"
-            android:text="~ NEW RECORD ~"
-            android:textSize="15sp"
+            android:orientation="horizontal"
+            android:layout_gravity="left">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Time"
+                android:textColor="@color/brown"
+                android:layout_gravity="left"
+                android:padding="10dp"
+                android:layout_marginLeft="30dp"
+                android:textSize="30sp"
+                android:fontFamily="@font/black_han_sans"/>
+
+            <!-- 신기록 갱신 시 노출 -->
+            <TextView
+                android:id="@+id/best_time"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="~ NEW RECORD ~"
+                android:textSize="15sp"
+                android:layout_marginLeft="50dp"
+                android:paddingTop="20dp"
+                android:textColor="@color/blue"
+                android:fontFamily="@font/black_han_sans"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1분 23초 "
+            android:textColor="@color/pink"
             android:layout_marginLeft="40dp"
-            android:textColor="@color/blue"
-            android:fontFamily="@font/black_han_sans"/>
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/score"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="000000점 "
-        android:layout_gravity="left"
-        android:textColor="@color/pink"
-        android:layout_marginLeft="40dp"
-        android:layout_marginBottom="20dp"
-        android:textSize="25sp"
-        android:fontFamily="@font/black_han_sans"/>
-
-    <!-- 버튼 -->
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal">
-
-        <Button
-            android:layout_marginRight="10dp"
-            android:layout_width="120dp"
-            android:layout_height="50dp"
-            android:background="@drawable/btn_blue"
-            android:text="다시하기"
-            android:textColor="#fff"
+            android:layout_gravity="left"
+            android:layout_marginBottom="20dp"
             android:textSize="25sp"
             android:fontFamily="@font/black_han_sans"/>
 
-        <Button
-            android:layout_marginLeft="10dp"
-            android:layout_width="120dp"
-            android:layout_height="50dp"
-            android:background="@drawable/btn_pink"
-            android:text="그만하기"
-            android:textColor="#fff"
+
+        <!-- 점수 기록 -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="left">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Score"
+                android:textColor="@color/brown"
+                android:layout_gravity="left"
+                android:padding="10dp"
+                android:layout_marginLeft="30dp"
+                android:textSize="30sp"
+                android:fontFamily="@font/black_han_sans"/>
+
+            <!-- 신기록 갱신 시 노출 -->
+            <TextView
+                android:id="@+id/best_score"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="20dp"
+                android:text="~ NEW RECORD ~"
+                android:textSize="15sp"
+                android:layout_marginLeft="40dp"
+                android:textColor="@color/blue"
+                android:fontFamily="@font/black_han_sans"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="000000점 "
+            android:layout_gravity="left"
+            android:textColor="@color/pink"
+            android:layout_marginLeft="40dp"
+            android:layout_marginBottom="20dp"
             android:textSize="25sp"
             android:fontFamily="@font/black_han_sans"/>
 
-    </LinearLayout>
+        <!-- 버튼 -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
 
-</LinearLayout>
+            <Button
+                android:layout_marginRight="10dp"
+                android:layout_width="120dp"
+                android:layout_height="50dp"
+                android:background="@drawable/btn_blue"
+                android:text="다시하기"
+                android:textColor="#fff"
+                android:textSize="25sp"
+                android:fontFamily="@font/black_han_sans"/>
+
+            <Button
+                android:layout_marginLeft="10dp"
+                android:layout_width="120dp"
+                android:layout_height="50dp"
+                android:background="@drawable/btn_pink"
+                android:text="그만하기"
+                android:textColor="#fff"
+                android:textSize="25sp"
+                android:fontFamily="@font/black_han_sans"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</layout>

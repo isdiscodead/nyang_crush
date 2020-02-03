@@ -1,32 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="350dp"
-    android:layout_height="450dp"
-    android:background="@drawable/diag_concept">
-
-    <LinearLayout
-        android:layout_width="350dp"
+<layout>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_width="350dp"
         android:layout_height="450dp"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal">
+        android:background="@drawable/diag_concept">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="HOW TO PLAY"
-            android:padding="30dp"
-            android:textColor="@color/blue"
-            android:textSize="30sp"
-            android:fontFamily="@font/black_han_sans"/>
+        <LinearLayout
+            android:layout_width="350dp"
+            android:layout_height="450dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
 
-        <Button
-            android:layout_marginTop="-10dp"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@drawable/diag_close"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="HOW TO PLAY"
+                android:padding="30dp"
+                android:textColor="@color/blue"
+                android:textSize="30sp"
+                android:fontFamily="@font/black_han_sans"/>
+
+            <Button
+                android:layout_marginTop="-10dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@drawable/diag_close"/>
+
+        </LinearLayout>
+
+        <!-- 나중에 이미지 추가해야 함 !! ( 게임 이미지 완성되면 추가 ) -->
 
     </LinearLayout>
-
-    <!-- 나중에 이미지 추가해야 함 !! ( 게임 이미지 완성되면 추가 ) -->
-
-</LinearLayout>
+</layout>
