@@ -18,7 +18,7 @@
                 android:padding="30dp"
                 android:textColor="@color/blue"
                 android:textSize="30sp"
-                android:fontFamily="@font/black_han_sans"/>
+                android:fontFamily="@font/Black_han_sans"/>
 
             <Button
                 android:id="@+id/btn_close"

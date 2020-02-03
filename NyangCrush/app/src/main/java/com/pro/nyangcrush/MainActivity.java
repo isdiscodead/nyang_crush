@@ -5,6 +5,7 @@ import androidx.databinding.DataBindingUtil;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -87,6 +88,14 @@ public class MainActivity extends Activity {
                 btn_close.setOnClickListener( dialClick );
 
                 dialog.show();
+            }
+        });
+
+        binding.btnGameStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(MainActivity.this, GameActivity.class);
+                startActivity(i);
             }
         });
     }

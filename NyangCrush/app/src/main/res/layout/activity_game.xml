@@ -35,6 +35,7 @@
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_marginTop="20dp"
+                android:layout_marginLeft="10dp"
                 android:layout_gravity="left"
                 android:textColor="#fff"
                 android:textSize="25dp"
@@ -62,6 +63,7 @@
             <TextView android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:layout_gravity="left"
+                    android:layout_marginLeft="12dp"
                     android:textColor="#fff"
                     android:textSize="25dp"
                     android:text="Now Sco |"
@@ -130,7 +132,8 @@
         <!-- 게임 판 -->
         <FrameLayout android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:id="@+id/layout">
+            android:id="@+id/layout"
+            android:layout_marginTop="10dp">
 
             <TextView
                 android:id="@+id/game_hide_dust_bar"
