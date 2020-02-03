@@ -1,9 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="@drawable/background"
+    android:orientation="vertical"
+    >
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right">
+
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/btn_help"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="10dp"
+        />
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/btn_setting"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="10dp"
+        />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="High Score"
+        android:fontFamily="@font/black_han_sans"
+        android:textColor="#4B4949"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="50dp"
+        android:textSize="20dp"
+        />
+
+    <Button
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_pink"
+        android:layout_gravity="center"
+        android:text="점"
+        android:fontFamily="@font/black_han_sans"
+        android:gravity="center"
+        android:textSize="25dp"
+        android:textColor="#fff"
+
+        />
+
+    <Button
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_blue"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:text="랭크 확인"
+        android:fontFamily="@font/black_han_sans"
+        android:gravity="center"
+        android:textSize="25dp"
+        android:textColor="#fff"
+        />
+
+
+    <Button
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_yellow_bef"
+        android:layout_gravity="center"
+        android:layout_marginTop="270dp"
+        android:layout_marginBottom="70dp"
+        android:text="GAME\nSTART"
+        android:fontFamily="@font/black_han_sans"
+        android:gravity="center"
+        android:textSize="25dp"
+        android:textColor="#fff"
+    />
+
+
+
+</LinearLayout>
