@@ -24,7 +24,6 @@
             android:layout_marginTop="20dp"
             android:layout_marginRight="15dp"
             android:layout_gravity="right"/>
-<<<<<<< HEAD
 
         <!-- 점수 -->
         <TextView android:layout_height="wrap_content"
@@ -42,67 +41,12 @@
             android:textColor="#fff"
             android:textSize="25dp"
             android:text="Now Sco |"
+            android:id="@+id/userScore"
             android:fontFamily="@font/black_han_sans"/>
 
         <TextView android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:fontFamily="@font/black_han_sans"/>
-=======
-
-        <!-- 점수 -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="-10dp">
-            
-            <TextView
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_marginLeft="10dp"
-                android:layout_gravity="left"
-                android:textColor="#fff"
-                android:textSize="25dp"
-                android:text="High Sco | "
-                android:fontFamily="@font/black_han_sans"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="100000"
-                android:textSize="25dp"
-                android:fontFamily="@font/black_han_sans"
-                android:textColor="@color/brown"
-                android:layout_marginLeft="15dp"
-                android:id="@+id/highScore"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="10dp">
-
-            <TextView android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:layout_gravity="left"
-                    android:layout_marginLeft="12dp"
-                    android:textColor="#fff"
-                    android:textSize="25dp"
-                    android:text="Now Sco |"
-                    android:fontFamily="@font/black_han_sans"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0"
-                android:textSize="25dp"
-                android:fontFamily="@font/black_han_sans"
-                android:textColor="@color/brown"
-                android:layout_marginLeft="20dp"
-                android:id="@+id/nowScore"/>
->>>>>>> 02d67277bc429dfad46318402a0ac5ce677b5047
 
 
         <!-- 시간, 카운트 표시 -->
@@ -126,73 +70,35 @@
                 android:fontFamily="@font/black_han_sans"
                 android:layout_marginLeft="100dp"/>
 
-<<<<<<< HEAD
-=======
-        </LinearLayout>
-
-        <LinearLayout android:orientation="horizontal"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginBottom="20dp">
-
-            <TextView
-                android:layout_width="90dp"
-                android:layout_height="35dp"
-                android:background="@drawable/white_box"
-                android:fontFamily="@font/black_han_sans"
-                android:textColor="@color/pink"
-                android:textSize="30dp"
-                android:id="@+id/time"/>
-
-            <TextView
-                android:layout_height="35dp"
-                android:layout_width="90dp"
-                android:textColor="@color/pink"
-                android:textSize="30dp"
-                android:background="@drawable/white_box"
-                android:fontFamily="@font/black_han_sans"
-                android:layout_marginLeft="100dp"
-                android:id="@+id/count"/>
-
->>>>>>> 02d67277bc429dfad46318402a0ac5ce677b5047
         </LinearLayout>
 
         <!-- 게임 판 -->
+
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/layout">
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/game_hide_dust_bar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginTop="20dp"
-                android:background="#000000"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toTopOf="parent"/>
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintBottom_toTopOf="@+id/game_plate"
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <TextView
                 android:id="@+id/game_plate"
                 android:layout_width="match_parent"
-<<<<<<< HEAD
-                android:layout_height="20dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginBottom="50dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/game_hide_dust_bar"/>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-=======
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
-                android:background="@color/richWhite"/>
-        </FrameLayout>
->>>>>>> 02d67277bc429dfad46318402a0ac5ce677b5047
+                android:layout_marginEnd="8dp"
+                android:background="#fff"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/game_hide_dust_bar" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
 </layout>

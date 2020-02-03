@@ -24,7 +24,7 @@ public class FillCompletedListener {
     }
 
     public void setFillCallback(FillCallback callback) {
-        this.fillCallback = callback;
+            this.fillCallback = callback;
     }
 
     public void setTotalNullCount(int totalNullCount) {
