@@ -8,4 +8,10 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="CustomDialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/dialog_open</item> <!--시작 액션-->
+        <item name="android:windowExitAnimation">@anim/dialog_close</item> <!--끝내는 액션-->
+    </style>
+
+
 </resources>

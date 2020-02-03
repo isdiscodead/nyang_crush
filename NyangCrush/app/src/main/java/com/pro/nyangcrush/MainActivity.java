@@ -39,6 +39,7 @@ public class MainActivity extends Activity {
 
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.getWindow().getAttributes().windowAnimations = R.style.CustomDialogAnimation;
 
                 dialog.setContentView( R.layout.diag_howtp );
 
@@ -57,6 +58,7 @@ public class MainActivity extends Activity {
 
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.getWindow().getAttributes().windowAnimations = R.style.CustomDialogAnimation;
 
                 dialog.setContentView( R.layout.diag_setting );
 
@@ -77,6 +79,7 @@ public class MainActivity extends Activity {
 
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.getWindow().getAttributes().windowAnimations = R.style.CustomDialogAnimation;
 
                 dialog.setContentView( R.layout.diag_rank );
 

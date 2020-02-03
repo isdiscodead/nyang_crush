@@ -83,6 +83,7 @@ public class GameActivity extends Activity {
                 dialog.setCancelable( false );
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.getWindow().getAttributes().windowAnimations = R.style.CustomDialogAnimation;
 
                 dialog.setContentView( R.layout.diag_pause );
 
