@@ -100,29 +100,31 @@
                 android:fontFamily="@font/black_han_sans"
                 android:layout_marginLeft="100dp"/>
 
-        </LinearLayout> <LinearLayout android:orientation="horizontal"
+        </LinearLayout>
+
+        <LinearLayout android:orientation="horizontal"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_gravity="center">
 
-        <TextView
-            android:layout_width="90dp"
-            android:layout_height="35dp"
-            android:background="@drawable/rounded"
-            android:fontFamily="@font/black_han_sans"
-            android:textColor="#6E5C5C"
-            android:textSize="30dp"
-            android:id="@+id/time"/>
+            <TextView
+                android:layout_width="90dp"
+                android:layout_height="35dp"
+                android:background="@drawable/white_box"
+                android:fontFamily="@font/black_han_sans"
+                android:textColor="@color/pink"
+                android:textSize="30dp"
+                android:id="@+id/time"/>
 
-        <TextView
-            android:layout_height="35dp"
-            android:layout_width="90dp"
-            android:textColor="#6E5C5C"
-            android:textSize="30dp"
-            android:background="@drawable/rounded"
-            android:fontFamily="@font/black_han_sans"
-            android:layout_marginLeft="100dp"
-            android:id="@+id/count"/>
+            <TextView
+                android:layout_height="35dp"
+                android:layout_width="90dp"
+                android:textColor="@color/pink"
+                android:textSize="30dp"
+                android:background="@drawable/white_box"
+                android:fontFamily="@font/black_han_sans"
+                android:layout_marginLeft="100dp"
+                android:id="@+id/count"/>
 
         </LinearLayout>
 
@@ -148,7 +150,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
-                android:background="#fff"/>
+                android:background="@color/richWhite"/>
         </FrameLayout>
 
     </LinearLayout>
