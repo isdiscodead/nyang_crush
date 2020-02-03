@@ -11,7 +11,7 @@
     </data>
 
     <LinearLayout android:orientation="vertical"
-        android:background="#fbe6bd"
+        android:background="@color/creamYellow"
         tools:context=".GameActivity"
         android:layout_height="match_parent"
         android:layout_width="match_parent">
@@ -26,6 +26,7 @@
             android:layout_gravity="right"/>
 
         <!-- 점수 -->
+<<<<<<< HEAD
         <TextView android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:layout_marginTop="20dp"
@@ -47,7 +48,64 @@
         <TextView android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:fontFamily="@font/black_han_sans"/>
+=======
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="-10dp"
+            android:paddingLeft="10dp">
+            
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="10dp"
+                android:layout_gravity="left"
+                android:textColor="#fff"
+                android:textSize="25dp"
+                android:text="High Sco | "
+                android:fontFamily="@font/black_han_sans"/>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="100000"
+                android:textSize="25dp"
+                android:fontFamily="@font/black_han_sans"
+                android:textColor="@color/brown"
+                android:layout_marginLeft="15dp"
+                android:id="@+id/highScore"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp"
+            android:paddingLeft="10dp">
+
+            <TextView android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="12dp"
+                    android:textColor="#fff"
+                    android:textSize="25dp"
+                    android:text="Now Sco |"
+                    android:fontFamily="@font/black_han_sans"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textSize="25dp"
+                android:fontFamily="@font/black_han_sans"
+                android:textColor="@color/brown"
+                android:layout_marginLeft="20dp"
+                android:id="@+id/nowScore"/>
+>>>>>>> 147ea49fe5c92a5e924742960f29d869c9a9f545
+
+        </LinearLayout>
 
         <!-- 시간, 카운트 표시 -->
         <LinearLayout android:orientation="horizontal"
@@ -70,6 +128,35 @@
                 android:fontFamily="@font/black_han_sans"
                 android:layout_marginLeft="100dp"/>
 
+<<<<<<< HEAD
+=======
+        </LinearLayout>
+
+        <LinearLayout android:orientation="horizontal"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="20dp">
+
+            <TextView
+                android:layout_width="90dp"
+                android:layout_height="35dp"
+                android:background="@drawable/white_box"
+                android:fontFamily="@font/black_han_sans"
+                android:textColor="@color/pink"
+                android:textSize="30dp"
+                android:id="@+id/time"/>
+
+            <TextView
+                android:layout_height="35dp"
+                android:layout_width="90dp"
+                android:textColor="@color/pink"
+                android:textSize="30dp"
+                android:background="@drawable/white_box"
+                android:fontFamily="@font/black_han_sans"
+                android:layout_marginLeft="100dp"
+                android:id="@+id/count"/>
+>>>>>>> 147ea49fe5c92a5e924742960f29d869c9a9f545
         </LinearLayout>
 
         <!-- 게임 판 -->
@@ -91,6 +178,7 @@
             <TextView
                 android:id="@+id/game_plate"
                 android:layout_width="match_parent"
+<<<<<<< HEAD
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
@@ -98,6 +186,15 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/game_hide_dust_bar" />
 
+=======
+                android:layout_height="20dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="50dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/game_hide_dust_bar"
+                android:background="@color/richWhite"/>
+>>>>>>> 147ea49fe5c92a5e924742960f29d869c9a9f545
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
