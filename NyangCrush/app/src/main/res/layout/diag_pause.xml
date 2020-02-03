@@ -1,62 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="350dp"
-    android:layout_height="300dp"
-    android:background="@drawable/diag_concept"
-    android:gravity="center_horizontal">
+<layout>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_width="350dp"
+        android:layout_height="300dp"
+        android:background="@drawable/diag_concept"
+        android:gravity="center_horizontal">
 
-    <!-- 메뉴 제목 -->
-    <LinearLayout
-        android:layout_width="350dp"
-        android:layout_height="80dp"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal">
+        <!-- 메뉴 제목 -->
+        <LinearLayout
+            android:layout_width="300dp"
+            android:layout_height="80dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="PAUSE"
-            android:paddingTop="30dp"
-            android:layout_marginStart="80dp"
-            android:textColor="@color/blue"
-            android:textSize="30sp"
-            android:fontFamily="@font/black_han_sans"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PAUSE"
+                android:paddingTop="30dp"
+                android:layout_marginStart="80dp"
+                android:textColor="@color/blue"
+                android:textSize="30sp"
+                android:fontFamily="@font/Black_han_sans"/>
+
+            <Button
+                android:id="@+id/btn_close"
+                android:layout_marginStart="70dp"
+                android:layout_marginTop="-10dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@drawable/diag_close"/>
+        </LinearLayout>
 
         <Button
-            android:layout_marginStart="70dp"
-            android:layout_marginTop="-10dp"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@drawable/diag_close"/>
+            android:id="@+id/btn_replay"
+            android:layout_margin="5dp"
+            android:layout_width="120dp"
+            android:layout_height="50dp"
+            android:background="@drawable/btn_pink"
+            android:text="다시하기"
+            android:textColor="#fff"
+            android:textSize="25sp"
+            android:fontFamily="@font/Black_han_sans" />
+
+        <Button
+            android:id="@+id/btn_stop"
+            android:layout_margin="5dp"
+            android:layout_width="120dp"
+            android:layout_height="50dp"
+            android:background="@drawable/btn_blue"
+            android:text="그만하기"
+            android:textColor="#fff"
+            android:textSize="25sp"
+            android:fontFamily="@font/Black_han_sans"/>
+
+        <Button
+            android:id="@+id/btn_back"
+            android:layout_margin="5dp"
+            android:layout_width="120dp"
+            android:layout_height="50dp"
+            android:background="@drawable/btn_pink"
+            android:text="돌아가기"
+            android:textColor="#fff"
+            android:textSize="25sp"
+            android:fontFamily="@font/Black_han_sans"/>
     </LinearLayout>
-
-    <Button
-        android:layout_margin="5dp"
-        android:layout_width="120dp"
-        android:layout_height="50dp"
-        android:background="@drawable/btn_pink"
-        android:text="다시하기"
-        android:textColor="#fff"
-        android:textSize="25sp"
-        android:fontFamily="@font/black_han_sans" />
-
-    <Button
-        android:layout_margin="5dp"
-        android:layout_width="120dp"
-        android:layout_height="50dp"
-        android:background="@drawable/btn_blue"
-        android:text="그만하기"
-        android:textColor="#fff"
-        android:textSize="25sp"
-        android:fontFamily="@font/black_han_sans"/>
-
-    <Button
-        android:layout_margin="5dp"
-        android:layout_width="120dp"
-        android:layout_height="50dp"
-        android:background="@drawable/btn_pink"
-        android:text="돌아가기"
-        android:textColor="#fff"
-        android:textSize="25sp"
-        android:fontFamily="@font/black_han_sans"/>
-</LinearLayout>
+</layout>

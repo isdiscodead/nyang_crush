@@ -1,133 +1,138 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="350dp"
-    android:layout_height="300dp"
-    android:background="@drawable/diag_concept"
-    android:gravity="center_horizontal">
 
-    <!-- 메뉴 제목 -->
-    <LinearLayout
-        android:layout_width="350dp"
-        android:layout_height="80dp"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal">
+<layout>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_width="350dp"
+        android:layout_height="300dp"
+        android:background="@drawable/diag_concept"
+        android:gravity="center_horizontal">
 
-        <TextView
+        <!-- 메뉴 제목 -->
+        <LinearLayout
+            android:layout_width="350dp"
+            android:layout_height="80dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="환경 설정"
+                android:paddingTop="30dp"
+                android:layout_marginStart="90dp"
+                android:textColor="@color/blue"
+                android:textSize="30sp"
+                android:fontFamily="@font/Black_han_sans"/>
+
+            <Button
+                android:id="@+id/btn_close"
+                android:layout_marginStart="70dp"
+                android:layout_marginTop="-10dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@drawable/diag_close"/>
+        </LinearLayout>
+
+
+        <!-- 배경음 조절 -->
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="환경 설정"
-            android:paddingTop="30dp"
-            android:layout_marginStart="90dp"
-            android:textColor="@color/blue"
-            android:textSize="30sp"
-            android:fontFamily="@font/black_han_sans"/>
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="10dp"
+                android:text="배경음"
+                android:textColor="@color/pink"
+                android:textSize="20sp"
+                android:fontFamily="@font/Black_han_sans"/>
+
+            <Switch
+                android:layout_width="100dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="-4dp"
+                android:thumb="@drawable/switch_thumb"
+                android:track="@drawable/switch_track"
+                android:textOff=""
+                android:textOn=""/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ON"
+                android:layout_gravity="center"
+                android:fontFamily="@font/Black_han_sans"
+                android:textColor="@color/brown"
+                android:layout_marginStart="5dp"/>
+
+        </LinearLayout>
+
+        <SeekBar
+            android:layout_width="200dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:max="5"
+            android:thumb="@drawable/seek_thumb"
+            android:progressDrawable="@drawable/seekbar"/>
+
+
+
+        <!-- 효과음 조절 -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="10dp"
+                android:text="효과음"
+                android:textColor="@color/pink"
+                android:textSize="20sp"
+                android:fontFamily="@font/Black_han_sans"/>
+
+            <Switch
+                android:layout_width="100dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="-4dp"
+                android:thumb="@drawable/switch_thumb"
+                android:track="@drawable/switch_track"
+                android:textOff=""
+                android:textOn=""/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ON"
+                android:layout_gravity="center"
+                android:fontFamily="@font/Black_han_sans"
+                android:textColor="@color/brown"
+                android:layout_marginStart="5dp"/>
+
+        </LinearLayout>
+
+        <SeekBar
+            android:layout_width="200dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:thumb="@drawable/seek_thumb"
+            android:max="5"
+            android:progressDrawable="@drawable/seekbar"/>
 
         <Button
-            android:layout_marginStart="70dp"
-            android:layout_marginTop="-10dp"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@drawable/diag_close"/>
-    </LinearLayout>
-
-
-    <!-- 배경음 조절 -->
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="10dp"
-            android:text="배경음"
-            android:textColor="@color/pink"
+            android:id="@+id/btn_logout"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:text="로그아웃"
+            android:textColor="#fff"
             android:textSize="25sp"
-            android:fontFamily="@font/black_han_sans"/>
-
-        <Switch
-            android:layout_width="100dp"
-            android:layout_height="30dp"
-            android:layout_marginTop="-4dp"
-            android:thumb="@drawable/switch_thumb"
-            android:track="@drawable/switch_track"
-            android:textOff=""
-            android:textOn=""/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ON"
-            android:layout_gravity="center"
-            android:fontFamily="@font/black_han_sans"
-            android:textColor="@color/brown"
-            android:layout_marginStart="5dp"/>
+            android:fontFamily="@font/Black_han_sans"
+            android:background="@drawable/btn_blue"/>
 
     </LinearLayout>
-
-    <SeekBar
-        android:layout_width="200dp"
-        android:layout_height="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="10dp"
-        android:max="5"
-        android:thumb="@drawable/seek_thumb"
-        android:progressDrawable="@drawable/seekbar"/>
-
-
-
-    <!-- 효과음 조절 -->
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="10dp"
-            android:text="효과음"
-            android:textColor="@color/pink"
-            android:textSize="25sp"
-            android:fontFamily="@font/black_han_sans"/>
-
-        <Switch
-            android:layout_width="100dp"
-            android:layout_height="30dp"
-            android:layout_marginTop="-4dp"
-            android:thumb="@drawable/switch_thumb"
-            android:track="@drawable/switch_track"
-            android:textOff=""
-            android:textOn=""/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ON"
-            android:layout_gravity="center"
-            android:fontFamily="@font/black_han_sans"
-            android:textColor="@color/brown"
-            android:layout_marginStart="5dp"/>
-
-    </LinearLayout>
-
-    <SeekBar
-        android:layout_width="200dp"
-        android:layout_height="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="10dp"
-        android:thumb="@drawable/seek_thumb"
-        android:max="5"
-        android:progressDrawable="@drawable/seekbar"/>
-
-    <Button
-        android:layout_width="150dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="20dp"
-        android:text="로그아웃"
-        android:textColor="#fff"
-        android:textSize="25sp"
-        android:fontFamily="@font/black_han_sans"
-        android:background="@drawable/btn_blue"/>
-
-</LinearLayout>
+</layout>
