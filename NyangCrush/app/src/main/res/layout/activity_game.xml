@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <layout>
+    <!-- 데이터 바인딩 -->
+    <data>
+        <variable
+            name="activity"
+            type="com.pro.nyangcrush.GameActivity"/>
+    </data>
+
     <LinearLayout android:orientation="vertical"
         android:background="#fbe6bd"
         tools:context=".GameActivity"
