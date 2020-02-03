@@ -11,7 +11,7 @@
     </data>
 
     <LinearLayout android:orientation="vertical"
-        android:background="#fbe6bd"
+        android:background="@color/creamYellow"
         tools:context=".GameActivity"
         android:layout_height="match_parent"
         android:layout_width="match_parent">
@@ -24,37 +24,14 @@
             android:layout_marginTop="20dp"
             android:layout_marginRight="15dp"
             android:layout_gravity="right"/>
-<<<<<<< HEAD
-
-        <!-- 점수 -->
-        <TextView android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_gravity="left"
-            android:textColor="#fff"
-            android:textSize="25dp"
-            android:text="High Sco | "
-            android:fontFamily="@font/black_han_sans"/>
-
-        <TextView android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_gravity="left"
-            android:textColor="#fff"
-            android:textSize="25dp"
-            android:text="Now Sco |"
-            android:fontFamily="@font/black_han_sans"/>
-
-        <TextView android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:fontFamily="@font/black_han_sans"/>
-=======
 
         <!-- 점수 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginBottom="-10dp">
+            android:layout_marginBottom="-10dp"
+            android:paddingLeft="10dp">
             
             <TextView
                 android:layout_height="wrap_content"
@@ -83,7 +60,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginBottom="10dp">
+            android:layout_marginBottom="10dp"
+            android:paddingLeft="10dp">
 
             <TextView android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
@@ -102,8 +80,8 @@
                 android:textColor="@color/brown"
                 android:layout_marginLeft="20dp"
                 android:id="@+id/nowScore"/>
->>>>>>> 02d67277bc429dfad46318402a0ac5ce677b5047
 
+        </LinearLayout>
 
         <!-- 시간, 카운트 표시 -->
         <LinearLayout android:orientation="horizontal"
@@ -126,8 +104,6 @@
                 android:fontFamily="@font/black_han_sans"
                 android:layout_marginLeft="100dp"/>
 
-<<<<<<< HEAD
-=======
         </LinearLayout>
 
         <LinearLayout android:orientation="horizontal"
@@ -154,8 +130,6 @@
                 android:fontFamily="@font/black_han_sans"
                 android:layout_marginLeft="100dp"
                 android:id="@+id/count"/>
-
->>>>>>> 02d67277bc429dfad46318402a0ac5ce677b5047
         </LinearLayout>
 
         <!-- 게임 판 -->
@@ -178,21 +152,14 @@
             <TextView
                 android:id="@+id/game_plate"
                 android:layout_width="match_parent"
-<<<<<<< HEAD
                 android:layout_height="20dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginBottom="50dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/game_hide_dust_bar"/>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-=======
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/game_hide_dust_bar"
                 android:background="@color/richWhite"/>
-        </FrameLayout>
->>>>>>> 02d67277bc429dfad46318402a0ac5ce677b5047
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
 </layout>
