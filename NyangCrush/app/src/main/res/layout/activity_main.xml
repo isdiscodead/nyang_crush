@@ -22,6 +22,7 @@
 
             <!-- 이거 버튼으로 하셔야 돼요... 눌러야져 우리 ... -->
             <Button android:layout_height="50dp"
+                android:id="@+id/btn_help"
                 android:layout_width="50dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="5dp"
@@ -29,6 +30,7 @@
                 android:background="@drawable/btn_help"/>
 
             <Button android:layout_height="50dp"
+                android:id="@+id/btn_set"
                 android:layout_width="50dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="15dp"
@@ -58,6 +60,7 @@
             android:gravity="center"/>
 
         <Button android:background="@drawable/btn_blue"
+            android:id="@+id/btn_ranking"
             android:layout_height="50dp"
             android:layout_width="200dp"
             android:layout_gravity="center"
@@ -68,7 +71,8 @@
             android:text="랭크 확인"
             android:gravity="center"/>
 
-        <Button android:background="@drawable/btn_yellow_bef"
+        <Button android:background="@drawable/btn_yellow"
+            android:id="@+id/btn_game_start"
             android:layout_height="100dp"
             android:layout_width="200dp"
             android:layout_gravity="center"

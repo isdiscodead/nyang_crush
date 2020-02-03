@@ -19,6 +19,7 @@
 
         <!-- 일시정지 버튼 -->
         <Button android:background="@drawable/btn_pause"
+            android:id="@+id/btn_pause"
             android:layout_height="50dp"
             android:layout_width="50dp"
             android:layout_marginTop="20dp"

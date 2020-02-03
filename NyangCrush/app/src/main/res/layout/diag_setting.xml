@@ -25,6 +25,7 @@
                 android:fontFamily="@font/black_han_sans"/>
 
             <Button
+                android:id="@+id/btn_close"
                 android:layout_marginStart="70dp"
                 android:layout_marginTop="-10dp"
                 android:layout_width="20dp"
@@ -45,7 +46,7 @@
                 android:layout_marginEnd="10dp"
                 android:text="배경음"
                 android:textColor="@color/pink"
-                android:textSize="25sp"
+                android:textSize="20sp"
                 android:fontFamily="@font/black_han_sans"/>
 
             <Switch
@@ -91,7 +92,7 @@
                 android:layout_marginEnd="10dp"
                 android:text="효과음"
                 android:textColor="@color/pink"
-                android:textSize="25sp"
+                android:textSize="20sp"
                 android:fontFamily="@font/black_han_sans"/>
 
             <Switch
@@ -123,6 +124,7 @@
             android:progressDrawable="@drawable/seekbar"/>
 
         <Button
+            android:id="@+id/btn_logout"
             android:layout_width="150dp"
             android:layout_height="40dp"
             android:layout_marginTop="20dp"

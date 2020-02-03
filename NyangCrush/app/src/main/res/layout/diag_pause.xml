@@ -8,7 +8,7 @@
 
         <!-- 메뉴 제목 -->
         <LinearLayout
-            android:layout_width="350dp"
+            android:layout_width="300dp"
             android:layout_height="80dp"
             android:gravity="center_horizontal"
             android:orientation="horizontal">
@@ -24,6 +24,7 @@
                 android:fontFamily="@font/black_han_sans"/>
 
             <Button
+                android:id="@+id/btn_close"
                 android:layout_marginStart="70dp"
                 android:layout_marginTop="-10dp"
                 android:layout_width="20dp"
@@ -32,6 +33,7 @@
         </LinearLayout>
 
         <Button
+            android:id="@+id/btn_replay"
             android:layout_margin="5dp"
             android:layout_width="120dp"
             android:layout_height="50dp"
@@ -42,6 +44,7 @@
             android:fontFamily="@font/black_han_sans" />
 
         <Button
+            android:id="@+id/btn_stop"
             android:layout_margin="5dp"
             android:layout_width="120dp"
             android:layout_height="50dp"
@@ -52,6 +55,7 @@
             android:fontFamily="@font/black_han_sans"/>
 
         <Button
+            android:id="@+id/btn_back"
             android:layout_margin="5dp"
             android:layout_width="120dp"
             android:layout_height="50dp"
