@@ -5,7 +5,6 @@
         android:orientation="vertical" android:layout_width="match_parent"
         android:layout_height="match_parent" android:paddingHorizontal="10dp">
 
-<<<<<<< HEAD
         <!-- 맨 위에 본인 순위 올라오고 순위 안에 없다면 '-'로 표시 -->
         <!-- 본인 순위는 백그라운드 색상 다르게 ! ( 연노랑 ? ) -->
         <TextView
@@ -17,13 +16,12 @@
             android:fontFamily="@font/black_han_sans"
             android:textSize="30dp"
             android:textColor="@color/brown"/>
-=======
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:orientation="horizontal"
             android:background="@drawable/rank_box">
->>>>>>> 8011cb0fb75e7b3181aa1a7a5c87ddb9a5e62cab
 
             <!-- 맨 위에 본인 순위 올라오고 순위 안에 없다면 '-'로 표시 -->
             <!-- 본인 순위는 백그라운드 색상 다르게 ! ( 연노랑 ? ) -->
@@ -33,12 +31,11 @@
                 android:layout_weight="1"
                 android:text="1"
                 android:gravity="right"
-                android:fontFamily="@font/Black_han_sans"
+                android:fontFamily="@font/black_han_sans"
                 android:paddingTop="7dp"
                 android:textSize="30dp"
                 android:textColor="@color/brown"/>
 
-<<<<<<< HEAD
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -55,12 +52,11 @@
                 android:layout_height="match_parent"
                 android:layout_weight="2"
                 android:layout_marginLeft="10dp"
-                android:fontFamily="@font/Black_han_sans"
+                android:fontFamily="@font/black_han_sans"
                 android:gravity="center"
                 android:text="USER NAME"
                 android:textColor="@color/pink"
                 android:textSize="20dp" />
->>>>>>> 8011cb0fb75e7b3181aa1a7a5c87ddb9a5e62cab
 
             <TextView
                 android:layout_width="wrap_content"
@@ -70,11 +66,10 @@
                 android:text="000000000000"
                 android:paddingTop="13dp"
                 android:gravity="left"
-                android:fontFamily="@font/Black_han_sans"
+                android:fontFamily="@font/black_han_sans"
                 android:textSize="20dp"
                 android:textColor="@color/brown"/>
 
         </LinearLayout>
-
     </LinearLayout>
 </layout>

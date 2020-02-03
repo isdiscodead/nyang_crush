@@ -22,7 +22,7 @@
                 android:layout_marginStart="90dp"
                 android:textColor="@color/blue"
                 android:textSize="30sp"
-                android:fontFamily="@font/Black_han_sans"/>
+                android:fontFamily="@font/black_han_sans"/>
 
             <Button
                 android:id="@+id/btn_close"
@@ -47,7 +47,7 @@
                 android:text="배경음"
                 android:textColor="@color/pink"
                 android:textSize="20sp"
-                android:fontFamily="@font/Black_han_sans"/>
+                android:fontFamily="@font/black_han_sans"/>
 
             <Switch
                 android:layout_width="100dp"
@@ -62,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:text="ON"
                 android:layout_gravity="center"
-                android:fontFamily="@font/Black_han_sans"
+                android:fontFamily="@font/black_han_sans"
                 android:textColor="@color/brown"
                 android:layout_marginStart="5dp"/>
 
@@ -93,7 +93,7 @@
                 android:text="효과음"
                 android:textColor="@color/pink"
                 android:textSize="20sp"
-                android:fontFamily="@font/Black_han_sans"/>
+                android:fontFamily="@font/black_han_sans"/>
 
             <Switch
                 android:layout_width="100dp"
@@ -108,7 +108,7 @@
                 android:layout_height="wrap_content"
                 android:text="ON"
                 android:layout_gravity="center"
-                android:fontFamily="@font/Black_han_sans"
+                android:fontFamily="@font/black_han_sans"
                 android:textColor="@color/brown"
                 android:layout_marginStart="5dp"/>
 
@@ -131,7 +131,7 @@
             android:text="로그아웃"
             android:textColor="#fff"
             android:textSize="25sp"
-            android:fontFamily="@font/Black_han_sans"
+            android:fontFamily="@font/black_han_sans"
             android:background="@drawable/btn_blue"/>
 
     </LinearLayout>

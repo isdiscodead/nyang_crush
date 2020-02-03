@@ -1,103 +1,8 @@
-<<<<<<< HEAD
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:background="@drawable/background"
-    android:orientation="vertical"
-    >
-
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right">
-
-
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/btn_help"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginTop="10dp"
-        />
-
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/btn_setting"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="10dp"
-        />
-
-    </LinearLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="High Score"
-        android:fontFamily="@font/black_han_sans"
-        android:textColor="#4B4949"
-        android:layout_marginLeft="100dp"
-        android:layout_marginTop="50dp"
-        android:textSize="20dp"
-        />
-
-    <Button
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/btn_pink"
-        android:layout_gravity="center"
-        android:text="점"
-        android:fontFamily="@font/black_han_sans"
-        android:gravity="center"
-        android:textSize="25dp"
-        android:textColor="#fff"
-
-        />
-
-    <Button
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/btn_blue"
-        android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        android:text="랭크 확인"
-        android:fontFamily="@font/black_han_sans"
-        android:gravity="center"
-        android:textSize="25dp"
-        android:textColor="#fff"
-        />
-
-
-    <Button
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/btn_yellow_bef"
-        android:layout_gravity="center"
-        android:layout_marginTop="270dp"
-        android:layout_marginBottom="70dp"
-        android:text="GAME\nSTART"
-        android:fontFamily="@font/black_han_sans"
-        android:gravity="center"
-        android:textSize="25dp"
-        android:textColor="#fff"
-    />
-
-
-
-</LinearLayout>
-=======
 <?xml version="1.0" encoding="UTF-8"?>
 
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
     <!-- 데이터 바인딩 -->
     <data>
         <variable
@@ -108,31 +13,106 @@
     <LinearLayout android:orientation="vertical"
         android:background="@drawable/background"
         tools:context=".MainActivity" android:layout_height="match_parent"
-        android:layout_width="match_parent" xmlns:tools="http://schemas.android.com/tools"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:android="http://schemas.android.com/apk/res/android">
+        android:layout_width="match_parent">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="240dp"
+            android:layout_height="50dp"
+            android:background="@drawable/white_box"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/bell_fill"
+                android:layout_marginTop="20dp"
+                android:id="@+id/bell1"
+                android:layout_centerVertical="true"
+                />
+
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/bell_fill"
+                android:layout_marginTop="20dp"
+                android:id="@+id/bell2"
+                android:layout_toRightOf="@+id/bell1"
+                android:layout_centerVertical="true"
+                />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/bell_fill"
+                android:layout_marginTop="20dp"
+                android:id="@+id/bell3"
+                android:layout_toRightOf="@id/bell2"
+                android:layout_centerVertical="true"
+                />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/bell_fill"
+                android:layout_marginTop="20dp"
+                android:id="@+id/bell4"
+                android:layout_toRightOf="@id/bell3"
+                android:layout_centerVertical="true"
+
+                />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/bell_fill"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="20dp"
+                android:id="@+id/bell5"
+                android:layout_toRightOf="@id/bell4"
+                android:layout_centerVertical="true"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/bell5"
+                android:text="00:30"
+                android:textSize="20dp"
+                android:textColor="@color/brown"
+                android:layout_centerVertical="true"/>
+
+
+        </RelativeLayout>
+
 
         <!-- 상단 메뉴 -->
-        <LinearLayout android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_gravity="right">
-
-            <!-- 이거 버튼으로 하셔야 돼요... 눌러야져 우리 ... -->
             <Button android:layout_height="50dp"
                 android:id="@+id/btn_help"
                 android:layout_width="50dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="5dp"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="30dp"
                 android:background="@drawable/btn_help"/>
 
-            <Button android:layout_height="50dp"
+            <Button
                 android:id="@+id/btn_set"
                 android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="15dp"
-                android:layout_marginLeft="10dp"
-                android:background="@drawable/btn_setting"/>
+                android:background="@drawable/btn_setting" />
+
+
 
         </LinearLayout>
 
@@ -143,7 +123,7 @@
             android:layout_marginLeft="80dp"
             android:textSize="20dp"
             android:textColor="#4B4949"
-            android:fontFamily="@font/Black_han_sans"
+            android:fontFamily="@font/black_han_sans"
             android:text="High Score"/>
 
         <TextView android:background="@drawable/btn_pink"
@@ -152,7 +132,7 @@
             android:layout_gravity="center"
             android:textSize="25dp"
             android:textColor="#fff"
-            android:fontFamily="@font/Black_han_sans"
+            android:fontFamily="@font/black_han_sans"
             android:text="점수 확인"
             android:gravity="center"/>
 
@@ -164,7 +144,7 @@
             android:layout_marginTop="10dp"
             android:textSize="25dp"
             android:textColor="#fff"
-            android:fontFamily="@font/Black_han_sans"
+            android:fontFamily="@font/black_han_sans"
             android:text="랭크 확인"
             android:gravity="center"/>
 
@@ -176,7 +156,7 @@
             android:layout_marginTop="285dp"
             android:textSize="25dp"
             android:textColor="#fff"
-            android:fontFamily="@font/Black_han_sans"
+            android:fontFamily="@font/black_han_sans"
             android:text="GAME\nSTART"
             android:gravity="center"
             android:layout_marginBottom="70dp"/>
@@ -184,4 +164,3 @@
     </LinearLayout>
 
 </layout>
->>>>>>> 8011cb0fb75e7b3181aa1a7a5c87ddb9a5e62cab
