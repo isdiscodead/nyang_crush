@@ -11,7 +11,7 @@
     </data>
 
     <LinearLayout android:orientation="vertical"
-        android:background="#fbe6bd"
+        android:background="@color/creamYellow"
         tools:context=".GameActivity"
         android:layout_height="match_parent"
         android:layout_width="match_parent">
@@ -21,10 +21,9 @@
             android:id="@+id/btn_pause"
             android:layout_height="40dp"
             android:layout_width="40dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="15dp"
             android:layout_marginRight="15dp"
             android:layout_gravity="right"/>
-
         <!-- 점수 -->
         <LinearLayout
             android:layout_width="match_parent"
