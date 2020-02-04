@@ -720,11 +720,8 @@ public class GameActivity extends Activity {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-<<<<<<< HEAD
                     binding.nowScore.setText(""+String.format("Now Sco | %,d", userScore));
-=======
-                    binding.userScore.setText(""+String.format("%,d", userScore));
->>>>>>> 232950389d2db0ae33bfe1292592185ff67b53a2
+                    binding.nowScore.setText(""+String.format("%,d", userScore));
 //                    highScoreView.setText(""+String.format("%,d", highScore));
 
                 }
@@ -765,11 +762,8 @@ public class GameActivity extends Activity {
     private void basicSetting() {
         //점수 셋팅
         userScore = 0;
-<<<<<<< HEAD
-        binding.nowScore.setText(""+String.format("Now Sco | %,d", userScore));
-=======
-        binding.userScore.setText(""+String.format("%,d", userScore));
->>>>>>> 232950389d2db0ae33bfe1292592185ff67b53a2
+        binding.nowScore.setText(""+String.format("%,d", userScore));
+        binding.nowScore.setText(""+String.format("%,d", userScore));
 //        highScoreView.setText(""+String.format("%,d", highScore));
 
         //콤보셋팅
