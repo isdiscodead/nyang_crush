@@ -323,7 +323,13 @@ public class GameActivity extends Activity {
             }
         });//GestureDetector
 
+        mediaPlayer1 = MediaPlayer.create(this,R.raw.backgroundmusic1);
+        mediaPlayer2 = MediaPlayer.create(this,R.raw.backgroundmusic2);
+        mediaPlayer1.setLooping(true);
+        mediaPlayer2.setLooping(true);
 
+
+        mediaPlayer2.start();
     }//onCreate
 
     /**
@@ -1017,5 +1023,20 @@ public class GameActivity extends Activity {
     public void onBackPressed() {
         super.onBackPressed();
 
+        //게임속 음악 끄고 타이틀화면 음악 재생
+        mediaPlayer2.stop();
+
+
+
+
+        //mediaPlayer1.start();
+
+
+    }*/
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mediaPlayer2.stop();
     }
 }

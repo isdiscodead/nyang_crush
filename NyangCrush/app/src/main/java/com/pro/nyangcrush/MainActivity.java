@@ -8,6 +8,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -22,6 +23,7 @@ public class MainActivity extends Activity {
 
      ActivityMainBinding binding;
      Dialog dialog;
+     private MediaPlayer mediaPlayer, mediaPlayer2;
 
      // 다이얼로그 내부 버튼
     Button btn_close, btn_logout;
@@ -96,8 +98,38 @@ public class MainActivity extends Activity {
             public void onClick(View view) {
                 Intent i = new Intent(MainActivity.this, GameActivity.class);
                 startActivity(i);
+
+                //mediaPlayer2.start();
+                mediaPlayer.stop();
+
+
             }
         });
+
+        mediaPlayer = MediaPlayer.create(this, R.raw.backgroundmusic1);
+        mediaPlayer2 = MediaPlayer.create(this, R.raw.backgroundmusic2);
+        mediaPlayer.setLooping(true);
+        mediaPlayer2.setLooping(true);
+
+    }//onCreate()
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        mediaPlayer = MediaPlayer.create(this, R.raw.backgroundmusic1);
+        mediaPlayer.setLooping(true);
+        mediaPlayer.start();
+
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        mediaPlayer.stop();
+        mediaPlayer2.stop();
     }
 
     // 다이어그램 온클릭 리스너
