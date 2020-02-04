@@ -45,6 +45,8 @@ public class GameActivity extends Activity {
     private static final int GAME_TERMINATED = 2;
     private static final int GAME_PLAYING = 3;
 
+    //배경음악
+    MediaPlayer mediaPlayer1, mediaPlayer2;
 
     private int plateSize;
     private int division9; // plate를 9로 나눈 값
@@ -1018,21 +1020,18 @@ public class GameActivity extends Activity {
     }
 
 
-    /////////////////////////생명 주기
+    ////////////////////////////////////////
+    // 생명 주기                          //
+    ////////////////////////////////////////
     @Override
     public void onBackPressed() {
         super.onBackPressed();
 
         //게임속 음악 끄고 타이틀화면 음악 재생
         mediaPlayer2.stop();
-
-
-
-
         //mediaPlayer1.start();
 
-
-    }*/
+    }
 
     @Override
     protected void onDestroy() {
