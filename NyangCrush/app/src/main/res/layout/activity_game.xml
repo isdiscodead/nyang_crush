@@ -19,6 +19,7 @@
         <!-- 일시정지 버튼 -->
         <Button android:background="@drawable/btn_pause"
             android:id="@+id/btn_pause"
+<<<<<<< HEAD
             android:layout_height="40dp"
             android:layout_width="40dp"
             android:layout_marginTop="20dp"
@@ -26,6 +27,14 @@
             android:layout_gravity="right"/>
 
         <!-- 최고 점수 -->
+=======
+            android:layout_height="50dp"
+            android:layout_width="50dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="15dp"
+            android:layout_gravity="right"/>
+
+>>>>>>> 232950389d2db0ae33bfe1292592185ff67b53a2
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -33,6 +42,10 @@
             android:layout_marginBottom="-10dp"
             android:paddingLeft="10dp">
 
+<<<<<<< HEAD
+=======
+            <!-- 점수 -->
+>>>>>>> 232950389d2db0ae33bfe1292592185ff67b53a2
             <TextView
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
@@ -80,7 +93,12 @@
                 android:fontFamily="@font/black_han_sans"
                 android:textColor="@color/brown"
                 android:layout_marginLeft="20dp"
+<<<<<<< HEAD
                 android:id="@+id/nowScore"/>
+=======
+                android:id="@+id/userScore"/>
+
+>>>>>>> 232950389d2db0ae33bfe1292592185ff67b53a2
 
         </LinearLayout>
 
@@ -108,9 +126,16 @@
         </LinearLayout>
 
         <LinearLayout android:orientation="horizontal"
+<<<<<<< HEAD
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_gravity="center">
+=======
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_gravity="center">
+>>>>>>> 232950389d2db0ae33bfe1292592185ff67b53a2
 
             <TextView
                 android:layout_width="90dp"
@@ -132,6 +157,7 @@
                 android:id="@+id/count"/>
         </LinearLayout>
 
+<<<<<<< HEAD
         <!-- 게임 시작 메시지 -->
         <ImageView
             android:id="@+id/gameStartMessage"
@@ -142,6 +168,8 @@
             android:visibility="gone"/>
 
 
+=======
+>>>>>>> 232950389d2db0ae33bfe1292592185ff67b53a2
         <!-- 게임 판 -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layout"
@@ -151,22 +179,33 @@
             <TextView
                 android:id="@+id/game_hide_dust_bar"
                 android:layout_width="0dp"
-                android:layout_height="20dp"
+                android:layout_height="5dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                app:layout_constraintBottom_toTopOf="@+id/game_plate"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintBottom_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
             <TextView
                 android:id="@+id/game_plate"
                 android:layout_width="match_parent"
+<<<<<<< HEAD
                 android:layout_height="20dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
+=======
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+>>>>>>> 232950389d2db0ae33bfe1292592185ff67b53a2
                 android:layout_marginBottom="50dp"
+                android:background="@color/richWhite"
                 app:layout_constraintEnd_toEndOf="parent"
+<<<<<<< HEAD
                 app:layout_constraintTop_toBottomOf="@+id/game_hide_dust_bar"
                 android:background="@color/richWhite"/>
+=======
+                app:layout_constraintTop_toBottomOf="@+id/game_hide_dust_bar" />
+>>>>>>> 232950389d2db0ae33bfe1292592185ff67b53a2
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 </layout>

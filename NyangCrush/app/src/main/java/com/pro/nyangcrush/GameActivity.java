@@ -48,7 +48,9 @@ public class GameActivity extends Activity {
     private NyangPosition[][] nyangPositions;
     private boolean touchStatus; //true면 터치가 가능한 상태임
     private int userScore;
-    private int combo;
+
+    private int combo; //콤보 점수
+    private int cnt; //첫터치 반응 확인
 
     //게임말 스왑시 필요한 두 먼지의 좌표
     private int e1X;
@@ -181,13 +183,13 @@ public class GameActivity extends Activity {
 
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float v1, float v2) {
-                //먼지를 이동시키기 위해 스와이프를 한 경우 onFling이벤트가 발생
+                //게임말를 이동시키기 위해 스와이프를 한 경우 onFling이벤트가 발생
                 //터치가 불가능한 상태일 경우 return false
                 if(!touchStatus) {
-                    Log.i("dd", "touchStatus false");
+//                    Log.i("dd", "touchStatus false");
                     return false;
                 } else {
-                    Log.i("dd", "touchStatus true");
+//                    Log.i("dd", "touchStatus true");
                     touchStatus = false;
                     int[] plateLocation = new int[2]; //위치를 받을 배열 설정
 
@@ -268,6 +270,8 @@ public class GameActivity extends Activity {
                                 if(!checkNyangArray()) {
                                     //터트릴 먼지가 하나도 없을 경우 다시 스왑함으로써 원상태로 되돌림
                                     swapNyang(e1X, e2X, e1Y, e2Y, true); //좌표 1 , 2 , 6 , 6
+
+
                                 } else {
                                     fillCompletedListener = new FillCompletedListener();
                                     FillCompletedListener.FillCallback fillCallback = new FillCompletedListener.FillCallback() {
@@ -277,11 +281,18 @@ public class GameActivity extends Activity {
 
                                             if(!checkNyangArray()) {
                                                 touchStatus = true;
+
+                                                combo = 0;
+                                                cnt = 0;
                                             } else {
                                                 fillBlank();
+
                                             }
                                         }
                                     };
+                                    //첫터치 3개이상 블록을 터트렸을때 반응
+                                    cnt++;
+                                    Log.i("fa","첫 터짐 반응 : "+cnt);
                                     fillCompletedListener.setFillCallback(fillCallback); //콜백 등록
                                     fillBlank();
                                 }
@@ -333,23 +344,23 @@ public class GameActivity extends Activity {
     }//setDustArray
 
 
-    //먼지 스왑 애니메이션
+    //게임말 스왑 애니메이션
     private void swapNyang(final int x1, final int x2, final int y1, final int y2, final boolean restore) {
         //restore가 true면 되돌리기 작업임
-        //먼지1 : 사용자가 처음 터치한 먼지
-        //먼지2 : 사용자가 교환하려고 드래그한 자리에 있는 먼지
+        //게임말1 : 사용자가 처음 터치한 먼지
+        //게임말2 : 사용자가 교환하려고 드래그한 자리에 있는 먼지
 
-        //먼지1 좌표 얻어오기
+        //게임말1 좌표 얻어오기
         final int nyang1X = (int)nyangPositions[y1][x1].getX();
         final int nyang1Y = (int)nyangPositions[y1][x1].getY();
         Log.i("dd", "nyang1X"+ nyang1X+"// Y " +nyang1Y );
 
 
-        //먼지2 좌표 얻어오기
+        //게임말2 좌표 얻어오기
         final int nyang2X = (int)nyangPositions[y2][x2].getX();
         final int nyang2Y = (int)nyangPositions[y2][x2].getY();
 
-        //먼지1을 먼지2 쪽으로 이동
+        //게임말1을 게임말2 쪽으로 이동
         TranslateAnimation translateAnimation1 = new TranslateAnimation(
                 Animation.RELATIVE_TO_SELF , 0
                 ,Animation.RELATIVE_TO_SELF , x2 - x1
@@ -378,7 +389,7 @@ public class GameActivity extends Activity {
         });
         nyangArray[y1][x1].startAnimation(translateAnimation1);
 
-        //먼지2를 먼지1 쪽으로 이동
+        //게임말2를 게임말1 쪽으로 이동
         TranslateAnimation translateAnimation2 = new TranslateAnimation(
                 Animation.RELATIVE_TO_SELF , 0
                 ,Animation.RELATIVE_TO_SELF , x1 - x2
@@ -407,7 +418,7 @@ public class GameActivity extends Activity {
         });
         nyangArray[y2][x2].startAnimation(translateAnimation2);
 
-        //먼지 스왑
+        //게임말 스왑
         NyangImageView tmpNyang = nyangArray[y2][x2];
         nyangArray[y2][x2] = nyangArray[y1][x1];
         nyangArray[y1][x1] = tmpNyang;
@@ -441,8 +452,8 @@ public class GameActivity extends Activity {
             for(int w = nyangArray.length - 1 ; w >= 0 ; w--) {
                 if(nyangArray[w][q] == null) {
                     nullCount++;
-                    Log.i("dd","null : "+ nullCount);
                     totalNullCount++;
+
                     NyangImageView nyangImageView = new NyangImageView(GameActivity.this
                             , (int)binding.gameHideDustBar.getX() + (division9 * q)
                             , (int)binding.gameHideDustBar.getY()
@@ -497,7 +508,6 @@ public class GameActivity extends Activity {
                             }
                         });
                         nyangArray[y][x].startAnimation(tranAnimation);
-
                     }
                 }
 
@@ -509,9 +519,11 @@ public class GameActivity extends Activity {
 
 
     private void fillPlate(final ArrayList<NyangImageView> newNyangList, final int x) {
+
         for(int q = 0 ; q < newNyangList.size() ; q++) {
             final int index = q;
-            combo++;
+
+
             //생성되있는 먼지들을 아래로 이동시키며 채워넣음
             nyangArray[newNyangList.size() - index - 1][x] = newNyangList.get(index);
 
@@ -529,6 +541,7 @@ public class GameActivity extends Activity {
                     nyangArray[newNyangList.size() - index - 1][x].setY(nyangPositions[newNyangList.size() - index - 1][x].getY());
 
                     fillCompletedListener.fillComplete();
+
                 }
 
                 @Override
@@ -669,6 +682,12 @@ public class GameActivity extends Activity {
                         break;
                     }
                 }
+
+                if(count >= 2){
+
+                }else{
+
+                }
             }
         }
 
@@ -677,6 +696,7 @@ public class GameActivity extends Activity {
             int i = Integer.parseInt(removeList.get(q).split(",")[0]);
             int j = Integer.parseInt(removeList.get(q).split(",")[1]);
             nyangArray[i][j] = null;
+
         }
 
         if(flag && gameStatus == GAME_PLAYING) {
@@ -685,19 +705,28 @@ public class GameActivity extends Activity {
             //점수 갱신
             userScore += (removeList.size() * 10);
 
-            //콤보 점수
-            if(combo > 0 ) {
-                userScore += combo * 5;
+            //콤보부분
+            if(cnt > 0){ //첫터치 1이상 반응 후
+                combo++; //콤보증가
             }
+            Log.i("fa","combo : "+combo);
+
+                 //콤보 점수
+                userScore += combo * 5;
+
 
 //            highScore = highScore < userScore ? userScore : highScore;
 
             handler.post(new Runnable() {
                 @Override
                 public void run() {
+<<<<<<< HEAD
                     binding.nowScore.setText(""+String.format("Now Sco | %,d", userScore));
+=======
+                    binding.userScore.setText(""+String.format("%,d", userScore));
+>>>>>>> 232950389d2db0ae33bfe1292592185ff67b53a2
 //                    highScoreView.setText(""+String.format("%,d", highScore));
-                    Log.i("fa", "combo :" +combo);
+
                 }
             });
 
@@ -736,8 +765,15 @@ public class GameActivity extends Activity {
     private void basicSetting() {
         //점수 셋팅
         userScore = 0;
+<<<<<<< HEAD
         binding.nowScore.setText(""+String.format("Now Sco | %,d", userScore));
+=======
+        binding.userScore.setText(""+String.format("%,d", userScore));
+>>>>>>> 232950389d2db0ae33bfe1292592185ff67b53a2
 //        highScoreView.setText(""+String.format("%,d", highScore));
+
+        //콤보셋팅
+        combo = 0;
 
         //미디어 플레이어 셋팅
 //        setMediaPlayer();
