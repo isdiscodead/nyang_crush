@@ -21,41 +21,18 @@
             android:id="@+id/btn_pause"
             android:layout_height="50dp"
             android:layout_width="50dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:layout_marginRight="15dp"
             android:layout_gravity="right"/>
 
-        <!-- 점수 -->
-<<<<<<< HEAD
-        <TextView android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_gravity="left"
-            android:textColor="#fff"
-            android:textSize="25dp"
-            android:text="High Sco | "
-            android:fontFamily="@font/black_han_sans"/>
-
-        <TextView android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_gravity="left"
-            android:textColor="#fff"
-            android:textSize="25dp"
-            android:text="Now Sco |"
-            android:id="@+id/userScore"
-            android:fontFamily="@font/black_han_sans"/>
-
-        <TextView android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:fontFamily="@font/black_han_sans"/>
-=======
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginBottom="-10dp"
             android:paddingLeft="10dp">
-            
+
+            <!-- 점수 -->
             <TextView
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
@@ -102,8 +79,8 @@
                 android:fontFamily="@font/black_han_sans"
                 android:textColor="@color/brown"
                 android:layout_marginLeft="20dp"
-                android:id="@+id/nowScore"/>
->>>>>>> 147ea49fe5c92a5e924742960f29d869c9a9f545
+                android:id="@+id/userScore"/>
+
 
         </LinearLayout>
 
@@ -128,15 +105,13 @@
                 android:fontFamily="@font/black_han_sans"
                 android:layout_marginLeft="100dp"/>
 
-<<<<<<< HEAD
-=======
         </LinearLayout>
 
         <LinearLayout android:orientation="horizontal"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginBottom="20dp">
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_gravity="center">
 
             <TextView
                 android:layout_width="90dp"
@@ -156,11 +131,9 @@
                 android:fontFamily="@font/black_han_sans"
                 android:layout_marginLeft="100dp"
                 android:id="@+id/count"/>
->>>>>>> 147ea49fe5c92a5e924742960f29d869c9a9f545
         </LinearLayout>
 
         <!-- 게임 판 -->
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layout"
             android:layout_width="match_parent"
@@ -169,32 +142,22 @@
             <TextView
                 android:id="@+id/game_hide_dust_bar"
                 android:layout_width="0dp"
-                android:layout_height="20dp"
+                android:layout_height="5dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                app:layout_constraintBottom_toTopOf="@+id/game_plate"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintBottom_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
             <TextView
                 android:id="@+id/game_plate"
                 android:layout_width="match_parent"
-<<<<<<< HEAD
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                android:background="#fff"
+                android:layout_marginBottom="50dp"
+                android:background="@color/richWhite"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/game_hide_dust_bar" />
-
-=======
-                android:layout_height="20dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginBottom="50dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/game_hide_dust_bar"
-                android:background="@color/richWhite"/>
->>>>>>> 147ea49fe5c92a5e924742960f29d869c9a9f545
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>

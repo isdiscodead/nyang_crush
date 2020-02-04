@@ -462,6 +462,7 @@ public class GameActivity extends Activity {
                         final int y = w;
                         final int newY = w + nullCount;
 
+
                         nyangArray[newY][x] = nyangList.get(y);
                         Log.i("dd","null : "+ nullCount);
                         TranslateAnimation tranAnimation = new TranslateAnimation(
@@ -507,9 +508,11 @@ public class GameActivity extends Activity {
 
 
     private void fillPlate(final ArrayList<NyangImageView> newNyangList, final int x) {
+
         for(int q = 0 ; q < newNyangList.size() ; q++) {
             final int index = q;
-            combo++;
+
+
             //생성되있는 먼지들을 아래로 이동시키며 채워넣음
             nyangArray[newNyangList.size() - index - 1][x] = newNyangList.get(index);
 
@@ -527,6 +530,7 @@ public class GameActivity extends Activity {
                     nyangArray[newNyangList.size() - index - 1][x].setY(nyangPositions[newNyangList.size() - index - 1][x].getY());
 
                     fillCompletedListener.fillComplete();
+
                 }
 
                 @Override
@@ -693,7 +697,7 @@ public class GameActivity extends Activity {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    binding.userScore.setText(""+String.format("Now Sco | %,d", userScore));
+                    binding.userScore.setText(""+String.format("%,d", userScore));
 //                    highScoreView.setText(""+String.format("%,d", highScore));
                     Log.i("fa", "combo :" +combo);
                 }
@@ -734,7 +738,7 @@ public class GameActivity extends Activity {
     private void basicSetting() {
         //점수 셋팅
         userScore = 0;
-        binding.userScore.setText(""+String.format("Now Sco | %,d", userScore));
+        binding.userScore.setText(""+String.format("%,d", userScore));
 //        highScoreView.setText(""+String.format("%,d", highScore));
 
         //미디어 플레이어 셋팅
