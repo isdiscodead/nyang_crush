@@ -834,9 +834,11 @@ public class GameActivity extends Activity {
             @Override
             public void run() {
                 //글자 사라지는 애니메이션
-                Animation animation = AnimationUtils.loadAnimation(GameActivity.this, R.anim.ready_go_anim2);
-                binding.gameStartMessage.startAnimation(animation);
-                animation.setAnimationListener(new Animation.AnimationListener() {
+                Log.i("anim", "포스트");
+                Animation animation2 = AnimationUtils.loadAnimation(GameActivity.this, R.anim.ready_go_anim2);
+                binding.gameStartMessage.clearAnimation();
+                binding.gameStartMessage.startAnimation(animation2);
+                animation2.setAnimationListener(new Animation.AnimationListener() {
                     @Override
                     public void onAnimationEnd(Animation animation) {
                         // 애니메이션 끝나면 사라지게 !
@@ -845,7 +847,7 @@ public class GameActivity extends Activity {
 
                     @Override
                     public void onAnimationStart(Animation animation) {
-
+                        Log.i("anim", "애니메이션2");
                     }
                     @Override
                     public void onAnimationRepeat(Animation animation) {
@@ -854,7 +856,7 @@ public class GameActivity extends Activity {
                 });
 
                 // startGameTimer();
-                touchStatus = true; //터치 가능
+                touchStatus = true; // 터치 가능
             }
         }, 3000);
     }
