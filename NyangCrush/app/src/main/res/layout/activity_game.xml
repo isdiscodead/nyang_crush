@@ -91,12 +91,13 @@
             android:layout_width="wrap_content"
             android:layout_gravity="center">
 
-            <TextView android:layout_height="wrap_content"
+            <TextView
                 android:layout_width="wrap_content"
-                android:textColor="#6E5C5C"
-                android:textSize="30dp"
+                android:layout_height="match_parent"
+                android:fontFamily="@font/black_han_sans"
                 android:text="TIME"
-                android:fontFamily="@font/black_han_sans"/>
+                android:textColor="#6E5C5C"
+                android:textSize="30dp" />
 
             <TextView android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
@@ -120,14 +121,16 @@
                 android:background="@drawable/white_box"
                 android:fontFamily="@font/black_han_sans"
                 android:textColor="@color/pink"
-                android:textSize="30dp"
+                android:textSize="25dp"
+                android:gravity="center"
                 android:id="@+id/time"/>
 
             <TextView
                 android:layout_height="35dp"
                 android:layout_width="90dp"
                 android:textColor="@color/pink"
-                android:textSize="30dp"
+                android:textSize="25dp"
+                android:gravity="center"
                 android:background="@drawable/white_box"
                 android:fontFamily="@font/black_han_sans"
                 android:layout_marginLeft="100dp"

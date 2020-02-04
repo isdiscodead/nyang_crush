@@ -46,20 +46,22 @@ public class GameActivity extends Activity {
     private static final int GAME_PLAYING = 3;
 
 
-    //임시
-    boolean dd = false;
-
     private int plateSize;
     private int division9; // plate를 9로 나눈 값
     private int gameStatus;
     private NyangImageView[][] nyangArray;
     private NyangPosition[][] nyangPositions;
     private boolean touchStatus; //true면 터치가 가능한 상태임
+    //점수 부분
     private int userScore;
 
     private int combo; //콤보 점수
     private int cnt; //첫터치 반응 확인
 
+    //타이머부분
+    private int timer; //게임 플레이 타임
+    private int time; //게임진행 타임
+    private boolean timerThreadContoller; //게임중지 / 게임진행 확인용
     //게임말 스왑시 필요한 두 먼지의 좌표
     private int e1X;
     private int e1Y;
@@ -114,6 +116,10 @@ public class GameActivity extends Activity {
                 btn_stop.setOnClickListener( dialClick );
                 btn_replay.setOnClickListener( dialClick );
                 btn_close.setOnClickListener( dialClick );
+                //게임 중지
+                if(gameStatus == GAME_PLAYING  && touchStatus) {
+                    pauseGame();
+                }
             }
         });//btnPause.setOnClickListener
 
@@ -143,8 +149,6 @@ public class GameActivity extends Activity {
                 hideBarLayoutParams.width = plateSize;
                 hideBarLayoutParams.height = plateSize / 9;
                 binding.gameHideDustBar.setLayoutParams(hideBarLayoutParams);
-                gameStatus = GAME_PLAYING;
-
 
                 //판의 크기를 설정한 후
                 binding.gamePlate.post(new Runnable() {
@@ -222,14 +226,14 @@ public class GameActivity extends Activity {
                         e1Y = ((int)e1.getY() - plateY) / division9; //993 / 115 = 8.xxx
 
                         //좌표값 첫 터치 로그 확인
-                        Log.i("dd"," e1.getX"+((int)e1.getX() - plateX));
-                        Log.i("dd"," e1.getY"+((int)e1.getY() - plateY));
+//                        Log.i("dd"," e1.getX"+((int)e1.getX() - plateX));
+//                        Log.i("dd"," e1.getY"+((int)e1.getY() - plateY));
 
                         //터치를 뗀 위치의 좌표
                         e2X = ((int)e2.getX() - plateX) / division9;
                         e2Y = ((int)e2.getY() - plateY) / division9;
 
-                        Log.i("dd","e1x : "+e1X + " / e1Y : "+e1Y +"/ e2X : "+e2X +"/ e2Y : "+e2Y);
+//                        Log.i("dd","e1x : "+e1X + " / e1Y : "+e1Y +"/ e2X : "+e2X +"/ e2Y : "+e2Y);
 
                         //스왑할 먼지의 좌표 조정
                         //두칸 이상의 범위를 드래그한 경우 좌표값을 한칸으로 조정해줌
@@ -252,7 +256,7 @@ public class GameActivity extends Activity {
 
                         //좌표 1 -> 2 && 1 -> 2 대각선드래그 // 1 == 1 & 2 == 2 제자리드래그
                         if((e1X != e2X && e1Y != e2Y) || (e1X == e2X && e1Y == e2Y)) {
-                            Log.i("잘못된 드래그 ->", e1Y+" -> "+e2Y+" || "+e1X+" -> "+e2X);
+//                            Log.i("잘못된 드래그 ->", e1Y+" -> "+e2Y+" || "+e1X+" -> "+e2X);
                             //잘못된 드래그 방지
                             //1. 대각선 드래그
                             //2. 제자리 드래그
@@ -361,7 +365,7 @@ public class GameActivity extends Activity {
         //게임말1 좌표 얻어오기
         final int nyang1X = (int)nyangPositions[y1][x1].getX();
         final int nyang1Y = (int)nyangPositions[y1][x1].getY();
-        Log.i("dd", "nyang1X"+ nyang1X+"// Y " +nyang1Y );
+//        Log.i("dd", "nyang1X"+ nyang1X+"// Y " +nyang1Y );
 
 
         //게임말2 좌표 얻어오기
@@ -484,7 +488,6 @@ public class GameActivity extends Activity {
                         final int newY = w + nullCount;
 
                         nyangArray[newY][x] = nyangList.get(y);
-                        Log.i("dd","null : "+ nullCount);
                         TranslateAnimation tranAnimation = new TranslateAnimation(
                                 Animation.RELATIVE_TO_SELF , 0
                                 ,Animation.RELATIVE_TO_SELF , 0
@@ -712,14 +715,16 @@ public class GameActivity extends Activity {
 //            stackedNumber -= (float)removeList.size() / 2;
             //점수 갱신
             userScore += (removeList.size() * 10);
-
+            timer += 2;
             //콤보부분
             if(cnt > 0){ //첫터치 1이상 반응 후
                 combo++; //콤보증가
+                binding.count.setText(""+combo);
             }
             Log.i("fa","combo : "+combo);
 
                  //콤보 점수
+                //콤보당 *5 증가
                 userScore += combo * 5;
 
 
@@ -728,7 +733,6 @@ public class GameActivity extends Activity {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    binding.nowScore.setText(""+String.format("Now Sco | %,d", userScore));
                     binding.nowScore.setText(""+String.format("%,d", userScore));
 //                    highScoreView.setText(""+String.format("%,d", highScore));
 
@@ -770,7 +774,17 @@ public class GameActivity extends Activity {
     private void basicSetting() {
         //점수 셋팅
         userScore = 0;
-        binding.nowScore.setText(""+String.format("%,d", userScore));
+
+        gameStatus = GAME_PLAYING;
+        touchStatus = true;
+
+        //초기 셋팅 타이머
+        timerThreadContoller = true;
+        timer = 30;//시작 타임
+        time = 0;//진행 시간
+
+        startGameTimer();
+
         binding.nowScore.setText(""+String.format("%,d", userScore));
 //        highScoreView.setText(""+String.format("%,d", highScore));
 
@@ -800,6 +814,7 @@ public class GameActivity extends Activity {
                     break;
                 default:
                     dialog.dismiss();
+                    continueGame();
                     break;
 
             }
@@ -826,11 +841,8 @@ public class GameActivity extends Activity {
         /*if(effectSound)
             gameStartSoundReturnNumber = soundPool.play(gameStartSound, effectSoundVolume, effectSoundVolume,  1,  0,  1.0f);*/
 
-        //타이머바 셋팅
-        // timerBar.setProgress(targetNumber);
-
         //관련 변수 초기화
-        // timerThreadContoller = true; //타이머 쓰레드 컨트롤 변수
+        timerThreadContoller = true; //타이머 쓰레드 컨트롤 변수
         gameStatus = GAME_PLAYING;
 
         // Game Start 메시지 보이게 함
@@ -841,7 +853,7 @@ public class GameActivity extends Activity {
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.ready_go_anim);
         binding.gameStartMessage.startAnimation(animation);
 
-        // 2.5초 뒤 게임 타이머 시작
+        // 1.5초 뒤 게임 타이머 시작
          handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -866,32 +878,31 @@ public class GameActivity extends Activity {
                 // startGameTimer();    // 타이머 시작
                 touchStatus = true; // 터치 가능
             }
-        }, 2500);
+        }, 1500);
     }
 
     //게임 타이머 시작
-    /*private void startGameTimer() {
+    private void startGameTimer() {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 //타이머 루프
                 while(timerThreadContoller) {
                     try {
-                        Thread.sleep(100);
-                        timer++; //순수 게임시간
-                        stackedNumber++;
+                        Thread.sleep(1000);
+                        timer--; //순수 게임시간
+                        time++;
 
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
-                                //0.1초 마다 타이머 바 갱신
-                                // 우리는 초 카운트 할 거니까 1초마다 숫자 늘리면 됨
-                                timerBar.setProgress(targetNumber - stackedNumber);
+                                // 0.1초 마다 타이머 바 갱신
+                                binding.time.setText(timer+"");
                             }
                         });
 
-                        if(stackedNumber >= targetNumber) {
-                            // 게임 종료 조건
+                        if(timer == 0) {
+                            //게임 종료 조건
                             timerThreadContoller = false;
                         }
                     } catch (InterruptedException e) {
@@ -909,7 +920,6 @@ public class GameActivity extends Activity {
             }
         }).start();
     }
-*/
 
     //게임 종료
     private void endGame() {
@@ -939,7 +949,13 @@ public class GameActivity extends Activity {
                 TextView isBestScore = dialog.findViewById(R.id.best_score);
 
                 Button replay_btn = dialog.findViewById(R.id.btn_replay);
-                replay_btn.setOnClickListener(dialClick);
+                replay_btn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                        gameReplay();
+                    }
+                });
 
                 Button stop_btn = dialog.findViewById(R.id.btn_stop);
                 stop_btn.setOnClickListener(new View.OnClickListener() {
@@ -961,7 +977,7 @@ public class GameActivity extends Activity {
 
     //게임 다시하기
     private void gameReplay() {
-        //기존 plate 내의 먼지 전부 제거
+        //기존 plate 내의 게임말들 전부 제거
         for(int q = 0 ; q < nyangArray.length ; q++) {
             for(int w = 0 ; w < nyangArray[q].length ; w++) {
                 binding.layout.removeView(nyangArray[q][w]);
@@ -977,6 +993,23 @@ public class GameActivity extends Activity {
         startGame();
     }
 
+    //게임 중지
+    private void pauseGame() {
+        if(gameStatus == GAME_TERMINATED) return;
+        timerThreadContoller = false;
+        gameStatus = GAME_PAUSED; //GAME_PAUSED = 1
+        touchStatus = false;
+
+    }
+
+    //게임 이어하기
+    private void continueGame() {
+        if(gameStatus == GAME_TERMINATED) return;
+        timerThreadContoller = true;
+        startGameTimer();
+        gameStatus = GAME_PLAYING;
+        touchStatus = true;
+    }
 
 
     /////////////////////////생명 주기
