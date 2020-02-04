@@ -5,11 +5,14 @@ import androidx.databinding.DataBindingUtil;
 import android.app.Activity;
 import android.app.Dialog;
 import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +23,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.pro.nyangcrush.databinding.ActivityGameBinding;
 
@@ -35,6 +40,9 @@ public class GameActivity extends Activity {
     Button btn_replay, btn_stop, btn_back, btn_close ;
 
     //게임 상태
+    private static final int BEFORE_THE_GAME_START = 0;
+    private static final int GAME_PAUSED = 1;
+    private static final int GAME_TERMINATED = 2;
     private static final int GAME_PLAYING = 3;
 
 
@@ -783,8 +791,12 @@ public class GameActivity extends Activity {
         public void onClick(View view) {
             switch ( view.getId() ){
                 case R.id.btn_replay :
+                    gameReplay();
+                    dialog.dismiss();
                     break;
                 case R.id.btn_stop :
+                    endGame();
+                    dialog.dismiss();
                     break;
                 default:
                     dialog.dismiss();
@@ -829,14 +841,13 @@ public class GameActivity extends Activity {
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.ready_go_anim);
         binding.gameStartMessage.startAnimation(animation);
 
-        // 3초 뒤 게임 타이머 시작
+        // 2.5초 뒤 게임 타이머 시작
          handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 //글자 사라지는 애니메이션
-                Log.i("anim", "포스트");
                 Animation animation2 = AnimationUtils.loadAnimation(GameActivity.this, R.anim.ready_go_anim2);
-                binding.gameStartMessage.clearAnimation();
+                binding.gameStartMessage.clearAnimation();  // 이전 애니메이션 정보 삭제 ( 오류 방지 )
                 binding.gameStartMessage.startAnimation(animation2);
                 animation2.setAnimationListener(new Animation.AnimationListener() {
                     @Override
@@ -844,21 +855,18 @@ public class GameActivity extends Activity {
                         // 애니메이션 끝나면 사라지게 !
                         binding.gameStartMessage.setVisibility(View.GONE);
                     }
-
                     @Override
                     public void onAnimationStart(Animation animation) {
-                        Log.i("anim", "애니메이션2");
                     }
                     @Override
                     public void onAnimationRepeat(Animation animation) {
-
                     }
                 });
 
-                // startGameTimer();
+                // startGameTimer();    // 타이머 시작
                 touchStatus = true; // 터치 가능
             }
-        }, 3000);
+        }, 2500);
     }
 
     //게임 타이머 시작
@@ -902,6 +910,74 @@ public class GameActivity extends Activity {
         }).start();
     }
 */
+
+    //게임 종료
+    private void endGame() {
+        //기록 저장
+        // saveRecord();
+
+        // mediaPlayer.stop();
+        touchStatus = false;
+        gameStatus = GAME_TERMINATED;
+
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                //게임 종료 다이얼로그 생성
+                final Dialog dialog = new Dialog(GameActivity.this);
+
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.getWindow().getAttributes().windowAnimations = R.style.CustomDialogAnimation;
+                dialog.setContentView( R.layout.diag_game_end );
+                dialog.setCancelable(false);
+                dialog.show();
+
+                TextView score = dialog.findViewById(R.id.score);
+                TextView playTime = dialog.findViewById(R.id.time);
+                TextView isBestTime = dialog.findViewById(R.id.best_time);
+                TextView isBestScore = dialog.findViewById(R.id.best_score);
+
+                Button replay_btn = dialog.findViewById(R.id.btn_replay);
+                replay_btn.setOnClickListener(dialClick);
+
+                Button stop_btn = dialog.findViewById(R.id.btn_stop);
+                stop_btn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                        finish();
+                    }
+                });
+
+                score.setText(String.format("%,d", userScore));
+                playTime.setText(String.format("%d", 999));
+
+                isBestScore.setVisibility(userScore == 100 ? View.VISIBLE : View.INVISIBLE);
+                isBestTime.setVisibility(Integer.parseInt(playTime.getText().toString()) == 999 ? View.VISIBLE : View.INVISIBLE);
+            }
+        });
+    }
+
+    //게임 다시하기
+    private void gameReplay() {
+        //기존 plate 내의 먼지 전부 제거
+        for(int q = 0 ; q < nyangArray.length ; q++) {
+            for(int w = 0 ; w < nyangArray[q].length ; w++) {
+                binding.layout.removeView(nyangArray[q][w]);
+                nyangArray[q][w] = null;
+            }
+        }
+        do {
+            //겹치는게 없을 때까지 plate 셋팅
+            setNyangArray();
+        } while (checkNyangArray());
+
+        basicSetting();
+        startGame();
+    }
+
+
 
     /////////////////////////생명 주기
     @Override
