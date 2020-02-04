@@ -144,9 +144,11 @@ public class GameActivity extends Activity {
                             //겹치는게 없을 때까지 판을 셋팅
                             setNyangArray();
                         } while (checkNyangArray());
-                        basicSetting();
                     }
                 });
+
+                basicSetting();
+                startGame();
 
                 //리스너 지우기
                 removeOnGlobalLayoutListener( binding.gamePlate.getViewTreeObserver(), mGlobalLayoutListener);
@@ -693,7 +695,7 @@ public class GameActivity extends Activity {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    binding.userScore.setText(""+String.format("Now Sco | %,d", userScore));
+                    binding.nowScore.setText(""+String.format("Now Sco | %,d", userScore));
 //                    highScoreView.setText(""+String.format("%,d", highScore));
                     Log.i("fa", "combo :" +combo);
                 }
@@ -734,7 +736,7 @@ public class GameActivity extends Activity {
     private void basicSetting() {
         //점수 셋팅
         userScore = 0;
-        binding.userScore.setText(""+String.format("Now Sco | %,d", userScore));
+        binding.nowScore.setText(""+String.format("Now Sco | %,d", userScore));
 //        highScoreView.setText(""+String.format("%,d", highScore));
 
         //미디어 플레이어 셋팅
@@ -762,6 +764,112 @@ public class GameActivity extends Activity {
         }
     };
 
+    ////////////////////////////////////////////////////
+    //      게임 진행 ( 시작 - 종료 - 리플레이 )      //
+    ////////////////////////////////////////////////////
+
+    //게임 시작
+    private void startGame() {
+        try {
+            Thread.sleep(300);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        //사운드 재생
+        /*if(backgroundSound)
+            mediaPlayer.start();*/
+
+        //효과음 재생
+        /*if(effectSound)
+            gameStartSoundReturnNumber = soundPool.play(gameStartSound, effectSoundVolume, effectSoundVolume,  1,  0,  1.0f);*/
+
+        //타이머바 셋팅
+        // timerBar.setProgress(targetNumber);
+
+        //관련 변수 초기화
+        // timerThreadContoller = true; //타이머 쓰레드 컨트롤 변수
+        gameStatus = GAME_PLAYING;
+
+        // Game Start 메시지 보이게 함
+        binding.gameStartMessage.setVisibility(View.VISIBLE);
+        binding.gameStartMessage.bringToFront();
+
+        // 글자 날아오는 애니메이션
+        Animation animation = AnimationUtils.loadAnimation(this, R.anim.ready_go_anim);
+        binding.gameStartMessage.startAnimation(animation);
+
+        // 3초 뒤 게임 타이머 시작
+         handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //글자 사라지는 애니메이션
+                Animation animation = AnimationUtils.loadAnimation(GameActivity.this, R.anim.ready_go_anim2);
+                binding.gameStartMessage.startAnimation(animation);
+                animation.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        // 애니메이션 끝나면 사라지게 !
+                        binding.gameStartMessage.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+
+                // startGameTimer();
+                touchStatus = true; //터치 가능
+            }
+        }, 3000);
+    }
+
+    //게임 타이머 시작
+    /*private void startGameTimer() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //타이머 루프
+                while(timerThreadContoller) {
+                    try {
+                        Thread.sleep(100);
+                        timer++; //순수 게임시간
+                        stackedNumber++;
+
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                //0.1초 마다 타이머 바 갱신
+                                // 우리는 초 카운트 할 거니까 1초마다 숫자 늘리면 됨
+                                timerBar.setProgress(targetNumber - stackedNumber);
+                            }
+                        });
+
+                        if(stackedNumber >= targetNumber) {
+                            // 게임 종료 조건
+                            timerThreadContoller = false;
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                //게임 상태가 GAME_PLAYING 일때만 게임 종료로 넘어감
+                //이유는 onDestory에서도 위의 타이머 루프를 빠져나오기 때문. 그 땐 endGame()이 실행되면 안됨
+                if(gameStatus != GAME_PLAYING)  {
+                    return;
+                } else {
+                    endGame();
+                }
+            }
+        }).start();
+    }
+*/
 
     /////////////////////////생명 주기
     @Override
