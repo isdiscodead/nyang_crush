@@ -25,6 +25,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.pro.nyangcrush.databinding.ActivityGameBinding;
 
@@ -60,7 +61,7 @@ public class GameActivity extends Activity {
 
     private int combo; //콤보 점수
     private int cnt; //첫터치 반응 확인
-    private int combotime;
+    private int combotime; //콤보 유지시간
 
     //타이머부분
     private int timer; //게임 플레이 타임
@@ -97,33 +98,38 @@ public class GameActivity extends Activity {
         nyangArray = new NyangImageView[9][9]; //게임 판 9X9
         nyangPositions = new NyangPosition[9][9]; //게임말 9X9배치
 
+
         /* pause 버튼 눌렀을 때 다이얼로그 생성 */
         binding.btnPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dialog = new Dialog( GameActivity.this );
+                dialog = new Dialog(GameActivity.this);
 
-                dialog.setCancelable( false );
+                dialog.setCancelable(false);
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-                dialog.setContentView( R.layout.diag_pause );
+                dialog.setContentView(R.layout.diag_pause);
 
-                btn_back = dialog.findViewById( R.id.btn_back );
-                btn_stop = dialog.findViewById( R.id.btn_stop );
-                btn_replay = dialog.findViewById( R.id.btn_replay );
-                btn_close = dialog.findViewById( R.id.btn_close );
+                btn_back = dialog.findViewById(R.id.btn_back);
+                btn_stop = dialog.findViewById(R.id.btn_stop);
+                btn_replay = dialog.findViewById(R.id.btn_replay);
+                btn_close = dialog.findViewById(R.id.btn_close);
 
                 dialog.show();
 
-                btn_back.setOnClickListener( dialClick );
-                btn_stop.setOnClickListener( dialClick );
-                btn_replay.setOnClickListener( dialClick );
-                btn_close.setOnClickListener( dialClick );
+                btn_back.setOnClickListener(dialClick);
+                btn_stop.setOnClickListener(dialClick);
+                btn_replay.setOnClickListener(dialClick);
+                btn_close.setOnClickListener(dialClick);
+
                 //게임 중지
-                if(gameStatus == GAME_PLAYING  && touchStatus) {
+                if (gameStatus == GAME_PLAYING && touchStatus) {
                     pauseGame();
+
                 }
+
+
             }
         });//btnPause.setOnClickListener
 
@@ -138,8 +144,6 @@ public class GameActivity extends Activity {
             public void onGlobalLayout() {
                 //plate에 아이템을 9x9로 배치하기 위해 정확히 9로 나눠지는 수치를 계산
                 plateSize = ( binding.gamePlate.getWidth() / 9) * 9;
-                Log.i("my",""+plateSize);
-                touchStatus = true;
                 //plate 넓이, 높이 설정
                 //ViewGroup : View의 부모 , view는 textview, editview, button, imageview등
                 //자식객체밖에 못건듬
@@ -164,7 +168,6 @@ public class GameActivity extends Activity {
                         } while (checkNyangArray());
                         basicSetting();
                         startGame();
-
                     }
                 });
 
@@ -730,16 +733,20 @@ public class GameActivity extends Activity {
             //콤보부분
             if(cnt > 0){ //첫터치 1이상 반응 후
                 combo++; //콤보증가
+
+                if(removeList.size() >= 3){
+                    userScore += removeList.size() * combo;
+                }
             }
 
             binding.count.setText(""+combo);
 
-            Log.i("fa","combo : "+combo);
+//            Log.i("fa","combo : "+combo);
 
-                 //콤보 점수
-                //콤보당 * 5 증가
-                userScore += combo * 5;
-
+            //콤보 점수
+            //콤보당 * 5 증가
+            userScore += combo * 5;
+            Log.i("fa","combo : "+userScore);
 
 //            highScore = highScore < userScore ? userScore : highScore;
 
@@ -757,7 +764,7 @@ public class GameActivity extends Activity {
             /*if(effectSound)
                 soundPool.play(dustRemoveSound, effectSoundVolume, effectSoundVolume,  1,  0,  1);
             */
-   }
+        }
 
         return flag;
     }//checklist
@@ -793,13 +800,10 @@ public class GameActivity extends Activity {
 
         gameStatus = GAME_PLAYING;
         touchStatus = true;
-
-        //초기 셋팅 타이머
         timerThreadContoller = true;
-        timer = 30;//시작 타임
-        binding.time.setText(""+timer);
-        time = 0;//진행 시간
 
+        timer = 5;//시작 타임
+        time = 0;//진행 시간
         binding.nowScore.setText(""+String.format("%,d", userScore));
 //        highScoreView.setText(""+String.format("%,d", highScore));
 
@@ -809,8 +813,6 @@ public class GameActivity extends Activity {
         //미디어 플레이어 셋팅
 //        setMediaPlayer();
 
-//        timer = 0;
-//        stackedNumber = 0;
     }
 
 
@@ -856,6 +858,9 @@ public class GameActivity extends Activity {
         /*if(effectSound)
             gameStartSoundReturnNumber = soundPool.play(gameStartSound, effectSoundVolume, effectSoundVolume,  1,  0,  1.0f);*/
 
+
+        binding.time.setText(""+timer);
+
         //관련 변수 초기화
         timerThreadContoller = true; //타이머 쓰레드 컨트롤 변수
         gameStatus = GAME_PLAYING;
@@ -869,7 +874,7 @@ public class GameActivity extends Activity {
         binding.gameStartMessage.startAnimation(animation);
 
         // 1.5초 뒤 게임 타이머 시작
-         handler.postDelayed(new Runnable() {
+        handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 //글자 사라지는 애니메이션
@@ -908,7 +913,7 @@ public class GameActivity extends Activity {
                         timer--; //순수 게임시간
                         time++;
                         combotime--;
-                        Log.i("fa","time : "+combotime);
+
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
@@ -923,7 +928,7 @@ public class GameActivity extends Activity {
                             }
                         });
 
-                        if(timer == 0) {
+                        if(timer <= 0) {
                             //게임 종료 조건
                             timerThreadContoller = false;
                         }
@@ -983,8 +988,9 @@ public class GameActivity extends Activity {
                 stop_btn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        dialog.dismiss();
                         finish();
+                        dialog.dismiss();
+
                     }
                 });
 
@@ -1014,6 +1020,8 @@ public class GameActivity extends Activity {
         startGame();
     }
 
+
+
     //게임 중지
     private void pauseGame() {
         if(gameStatus == GAME_TERMINATED) return;
@@ -1032,17 +1040,24 @@ public class GameActivity extends Activity {
         touchStatus = true;
     }
 
-
     ////////////////////////////////////////
     // 생명 주기                          //
     ////////////////////////////////////////
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        binding.btnPause.performClick();
 
-        //게임속 음악 끄고 타이틀화면 음악 재생
-//        mediaPlayer2.stop();
-        //mediaPlayer1.start();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        binding.btnPause.performClick();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
 
     }
 
