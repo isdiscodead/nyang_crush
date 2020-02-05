@@ -55,9 +55,9 @@ public class GameActivity extends Activity {
     private NyangImageView[][] nyangArray;
     private NyangPosition[][] nyangPositions;
     private boolean touchStatus; //true면 터치가 가능한 상태임
+
     //점수 부분
     private int userScore;
-
     private int combo; //콤보 점수
     private int cnt; //첫터치 반응 확인
     private int combotime;
@@ -66,6 +66,7 @@ public class GameActivity extends Activity {
     private int timer; //게임 플레이 타임
     private int time; //게임진행 타임
     private boolean timerThreadContoller; //게임중지 / 게임진행 확인용
+
     //게임말 스왑시 필요한 두 먼지의 좌표
     private int e1X;
     private int e1Y;
