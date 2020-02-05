@@ -46,7 +46,8 @@ public class GameActivity extends Activity {
     private static final int GAME_PLAYING = 3;
 
     //배경음악
-    MediaPlayer mediaPlayer1, mediaPlayer2;
+//    MediaPlayer mediaPlayer1, mediaPlayer2;
+
 
     private int plateSize;
     private int division9; // plate를 9로 나눈 값
@@ -59,6 +60,7 @@ public class GameActivity extends Activity {
 
     private int combo; //콤보 점수
     private int cnt; //첫터치 반응 확인
+    private int combotime;
 
     //타이머부분
     private int timer; //게임 플레이 타임
@@ -160,11 +162,11 @@ public class GameActivity extends Activity {
                             //겹치는게 없을 때까지 판을 셋팅
                             setNyangArray();
                         } while (checkNyangArray());
+                        basicSetting();
+                        startGame();
+
                     }
                 });
-
-                basicSetting();
-                startGame();
 
                 //리스너 지우기
                 removeOnGlobalLayoutListener( binding.gamePlate.getViewTreeObserver(), mGlobalLayoutListener);
@@ -325,13 +327,13 @@ public class GameActivity extends Activity {
             }
         });//GestureDetector
 
-        mediaPlayer1 = MediaPlayer.create(this,R.raw.backgroundmusic1);
-        mediaPlayer2 = MediaPlayer.create(this,R.raw.backgroundmusic2);
-        mediaPlayer1.setLooping(true);
-        mediaPlayer2.setLooping(true);
-
-
-        mediaPlayer2.start();
+//        mediaPlayer1 = MediaPlayer.create(this,R.raw.backgroundmusic1);
+//        mediaPlayer2 = MediaPlayer.create(this,R.raw.backgroundmusic2);
+//        mediaPlayer1.setLooping(true);
+//        mediaPlayer2.setLooping(true);
+//
+//
+//        mediaPlayer2.start();
     }//onCreate
 
     /**
@@ -719,20 +721,23 @@ public class GameActivity extends Activity {
         }
 
         if(flag && gameStatus == GAME_PLAYING) {
-            //시간초 추가
-//            stackedNumber -= (float)removeList.size() / 2;
             //점수 갱신
             userScore += (removeList.size() * 10);
             timer += 2;
+
+            combotime = 2;
+
             //콤보부분
             if(cnt > 0){ //첫터치 1이상 반응 후
                 combo++; //콤보증가
-                binding.count.setText(""+combo);
             }
+
+            binding.count.setText(""+combo);
+
             Log.i("fa","combo : "+combo);
 
                  //콤보 점수
-                //콤보당 *5 증가
+                //콤보당 * 5 증가
                 userScore += combo * 5;
 
 
@@ -783,15 +788,17 @@ public class GameActivity extends Activity {
         //점수 셋팅
         userScore = 0;
 
+        //콤보유지 시간
+        combotime = 3;
+
         gameStatus = GAME_PLAYING;
         touchStatus = true;
 
         //초기 셋팅 타이머
         timerThreadContoller = true;
         timer = 30;//시작 타임
+        binding.time.setText(""+timer);
         time = 0;//진행 시간
-
-        startGameTimer();
 
         binding.nowScore.setText(""+String.format("%,d", userScore));
 //        highScoreView.setText(""+String.format("%,d", highScore));
@@ -883,7 +890,7 @@ public class GameActivity extends Activity {
                     }
                 });
 
-                // startGameTimer();    // 타이머 시작
+                startGameTimer();    // 타이머 시작
                 touchStatus = true; // 터치 가능
             }
         }, 1500);
@@ -900,12 +907,19 @@ public class GameActivity extends Activity {
                         Thread.sleep(1000);
                         timer--; //순수 게임시간
                         time++;
-
+                        combotime--;
+                        Log.i("fa","time : "+combotime);
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
-                                // 0.1초 마다 타이머 바 갱신
+                                // 1초 마다 타이머 바 갱신
                                 binding.time.setText(timer+"");
+
+                                if(combotime == 0){
+                                    binding.count.setText(""+combo);
+                                    combotime = 3;
+                                }
+
                             }
                         });
 
@@ -996,7 +1010,6 @@ public class GameActivity extends Activity {
             //겹치는게 없을 때까지 plate 셋팅
             setNyangArray();
         } while (checkNyangArray());
-
         basicSetting();
         startGame();
     }
@@ -1028,7 +1041,7 @@ public class GameActivity extends Activity {
         super.onBackPressed();
 
         //게임속 음악 끄고 타이틀화면 음악 재생
-        mediaPlayer2.stop();
+//        mediaPlayer2.stop();
         //mediaPlayer1.start();
 
     }
@@ -1036,6 +1049,6 @@ public class GameActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mediaPlayer2.stop();
+//        mediaPlayer2.stop();
     }
 }
