@@ -3,6 +3,7 @@ package com.pro.nyangcrush;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
@@ -13,6 +14,8 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -26,7 +29,9 @@ import java.util.Objects;
 
 public class MainActivity extends Activity {
 
-    SharedPreferences pref;
+     SharedPreferences pref;
+     Handler bellHandler;
+
      ActivityMainBinding binding;
      Dialog dialog;
      private MediaPlayer mediaPlayer, mediaPlayer2;
@@ -44,6 +49,7 @@ public class MainActivity extends Activity {
     // 어플리케이션 종료 및 시작 시간 ( 추가된 방울 계산하기 위함 )
     Long stop_time;
     Long start_time;
+    int wait_time;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,27 +134,10 @@ public class MainActivity extends Activity {
         mediaPlayer.setLooping(true);
         mediaPlayer2.setLooping(true);
 
-        // SharedPreference 초기화
-        pref = getSharedPreferences("SHARE", MODE_PRIVATE );
+    }//onCreate()
 
-        // 저장된 방울 개수 가져옴 ( 기본값 5 )
-        user_bell = pref.getInt("bell",  0 );
-        user_bell = 0;
-
-        // 저장된 종료 시간 가져오고, 시작 시간도 구한다.
-        stop_time = pref.getLong("stop_time", System.currentTimeMillis() );
-        start_time = System.currentTimeMillis();
-
-        // 만약 현재 저장되어있는 방울이 5개 미만이라면
-        // 지난 시간을 계산하여 방울을 추가해준다.
-        if ( user_bell <= MAX_BELL ) {
-            int plus_bell =  (int)(( start_time - stop_time ) / 1000 );
-            user_bell += plus_bell;
-            if ( user_bell > MAX_BELL ) {
-                user_bell = MAX_BELL;
-            }
-        }
-
+    // 방울 채우기 메서드
+    public void fill_bells() {
         // bell 배열 채우기
         bells[0] = binding.bell1;
         bells[1] = binding.bell2;
@@ -164,10 +153,7 @@ public class MainActivity extends Activity {
                 bells[i].setImageBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.bell_fill));
             }
         }
-
-        // 방울이 5개 미만이라면 handler 를 통해 계속해서 1초에 한 번씩 시간을 증가시킨다.
-
-    }//onCreate()
+    }
 
     @Override
     protected void onStart() {
@@ -193,8 +179,76 @@ public class MainActivity extends Activity {
         super.onStop();
         SharedPreferences.Editor edit = pref.edit();
         edit.putInt("bell", user_bell);
-        edit.putLong("stop_time", System.currentTimeMillis() );
+        edit.putLong("time", System.currentTimeMillis() - ( 1800 - wait_time) * 1000 ); // 종료 시간 기록
         edit.commit();
+        bellHandler.removeMessages(0);
+    }
+
+    @SuppressLint("HandlerLeak")
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // SharedPreference 초기화
+        pref = getSharedPreferences("SHARE", MODE_PRIVATE );
+
+        // 저장된 방울 개수 가져옴 ( 기본값 5 )
+        user_bell = pref.getInt("bell",  0 );
+
+        // 저장된 종료 시간 가져오고, 시작 시간도 구한다.
+        stop_time = pref.getLong("time", System.currentTimeMillis() );
+        start_time = System.currentTimeMillis();
+
+        // 만약 현재 저장되어있는 방울이 5개 미만이라면
+        // 지난 시간을 계산하여 방울을 추가해준다.
+        if ( user_bell <= MAX_BELL ) {
+            // 개당 30분 대기
+            // wait_time = 60 * 30;
+            int plus_bell =  (int)(( start_time - stop_time ) / 1800000 );
+            // 핸들러에서 사용할 wait_time 설정
+            wait_time = 1800 - (int)(( start_time - stop_time ) / 1000 ) ;
+/*            if ( wait_time <= 0 ) {
+                wait_time = 1800;
+            }*/
+            user_bell += plus_bell;
+            if ( user_bell > MAX_BELL ) {
+                user_bell = MAX_BELL;
+            }
+        }
+
+        // 방울 채우기
+        fill_bells();
+
+        // 방울이 5개 미만이라면 wait_time 을 주고 handler 를 통해 계속해서 1초에 한 번씩 시간을 증가시킨다.
+        if ( user_bell < 5 ) {
+            bellHandler = new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
+                    bellHandler.sendEmptyMessageDelayed(0, 1000);
+                    wait_time --;
+
+                    // 분, 초로 분할
+                    int minute = wait_time / 60 ;
+                    int sec = wait_time % 60 ;
+
+                    binding.bellTime.setText(String.format("%02d:%02d", minute, sec));
+
+                    if ( wait_time == 0 && user_bell < 4 ) {
+                        // 아직 더 채워야 하는 경우
+                        user_bell ++;
+                        fill_bells();
+                        wait_time = 1800;
+                    } else if ( wait_time == 0 && user_bell == 4 ) {
+                        // 이제 다 찬 경우
+                        bellHandler.removeMessages(0);
+                        user_bell ++;
+                        fill_bells();
+                    }
+                }
+            };
+
+            bellHandler.sendEmptyMessage(0);
+        }
     }
 
     // 다이어그램 온클릭 리스너
