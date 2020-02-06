@@ -268,9 +268,9 @@ public class MainActivity extends Activity {
             int plus_bell =  (int)(( start_time - stop_time ) / 1800000 );
             // 핸들러에서 사용할 wait_time 설정
             wait_time = 1800 - (int)(( start_time - stop_time ) / 1000 ) ;
-/*            if ( wait_time <= 0 ) {
-                wait_time = 1800;
-            }*/
+            if ( wait_time <= 0 ) {
+                wait_time *= -1;
+            }
             user_bell += plus_bell;
             if ( user_bell > MAX_BELL ) {
                 user_bell = MAX_BELL;
