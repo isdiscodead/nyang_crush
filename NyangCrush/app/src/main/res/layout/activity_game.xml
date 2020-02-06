@@ -28,6 +28,7 @@
         <!-- 최고 점수 -->
         <LinearLayout
             android:layout_width="match_parent"
+            android:layout_marginTop="30dp"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginBottom="-10dp"
@@ -87,6 +88,7 @@
 
         <!-- 시간, 카운트 표시 -->
         <LinearLayout android:orientation="horizontal"
+            android:layout_marginTop="30dp"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:layout_gravity="center">
@@ -152,7 +154,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp">
 
             <TextView
                 android:id="@+id/game_hide_dust_bar"
