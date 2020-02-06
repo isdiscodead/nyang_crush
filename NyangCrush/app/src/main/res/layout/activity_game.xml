@@ -96,6 +96,8 @@
                 android:layout_height="match_parent"
                 android:fontFamily="@font/black_han_sans"
                 android:text="TIME"
+                android:paddingLeft="15dp"
+                android:layout_marginRight="-15dp"
                 android:textColor="#6E5C5C"
                 android:textSize="30dp" />
 
@@ -103,9 +105,9 @@
                 android:layout_width="wrap_content"
                 android:textColor="#6E5C5C"
                 android:textSize="30dp"
-                android:text="COUNT"
+                android:text="COMBO"
                 android:fontFamily="@font/black_han_sans"
-                android:layout_marginLeft="100dp"/>
+                android:layout_marginLeft="110dp"/>
 
         </LinearLayout>
 
