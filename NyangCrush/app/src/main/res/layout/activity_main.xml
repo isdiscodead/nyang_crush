@@ -25,9 +25,9 @@
             android:layout_width="240dp"
             android:layout_height="50dp"
             android:background="@drawable/white_box"
+            android:paddingLeft="5dp"
             android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            >
+            android:layout_marginLeft="10dp">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -119,7 +119,7 @@
             android:layout_marginTop="50dp"
             android:layout_marginLeft="80dp"
             android:textSize="20dp"
-            android:textColor="#4B4949"
+            android:textColor="@color/brown"
             android:fontFamily="@font/black_han_sans"
             android:text="High Score"/>
 

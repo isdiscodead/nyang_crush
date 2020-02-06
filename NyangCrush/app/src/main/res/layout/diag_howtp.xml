@@ -1,35 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <FrameLayout
         android:orientation="vertical" android:layout_width="350dp"
         android:layout_height="450dp"
         android:background="@drawable/diag_concept">
 
         <LinearLayout
             android:layout_width="350dp"
-            android:layout_height="450dp"
+            android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="HOW TO PLAY"
+                android:fontFamily="@font/black_han_sans"
                 android:padding="30dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="-10dp"
+                android:text="HOW TO PLAY"
                 android:textColor="@color/blue"
-                android:textSize="30sp"
-                android:fontFamily="@font/black_han_sans"/>
+                android:textSize="30sp" />
 
             <Button
                 android:id="@+id/btn_close"
-                android:layout_marginTop="-10dp"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:background="@drawable/diag_close"/>
+                android:layout_marginTop="-10dp"
+                android:background="@drawable/diag_close" />
 
         </LinearLayout>
 
-        <!-- 나중에 이미지 추가해야 함 !! ( 게임 이미지 완성되면 추가 ) -->
+        <LinearLayout
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
 
-    </LinearLayout>
+            <LinearLayout
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:src="@drawable/block_can"
+                    android:layout_margin="5dp"/>
+                <ImageView
+                    android:id="@+id/block1"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:src="@drawable/block_jelly"
+                    android:layout_margin="5dp"/>
+                <ImageView
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:src="@drawable/block_fish"
+                    android:layout_margin="5dp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:src="@drawable/block_crewel"
+                    android:layout_margin="5dp"/>
+                <ImageView
+                    android:id="@+id/block2"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:src="@drawable/block_food"
+                    android:layout_margin="5dp"/>
+                <ImageView
+                    android:id="@+id/block3"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:src="@drawable/block_jelly"
+                    android:layout_margin="5dp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:src="@drawable/block_box"
+                    android:layout_margin="5dp"/>
+                <ImageView
+                    android:id="@+id/block4"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:src="@drawable/block_jelly"
+                    android:layout_margin="5dp"/>
+                <ImageView
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:src="@drawable/block_can"
+                    android:layout_margin="5dp"/>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/black_han_sans"
+                android:textColor="@color/brown"
+                android:textSize="15sp"
+                android:padding="5dp"
+                android:text="같은 모양의 블럭이 3개 이상 모이면 블럭들이 사라지면서 점수를 얻을 수 있어요 ! 블럭을 터트릴 때마다 시간이 증가합니다. " />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/nyang_foot"
+            android:layout_width="90dp"
+            android:layout_gravity="right|center_vertical"
+            android:layout_height="90dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="15dp"
+            android:src="@drawable/nyang_foot" />
+
+    </FrameLayout>
 </layout>

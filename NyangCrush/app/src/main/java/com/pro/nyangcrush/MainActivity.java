@@ -19,6 +19,9 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -51,6 +54,9 @@ public class MainActivity extends Activity {
     Long start_time;
     int wait_time;
 
+    // 도움말 다이얼로그 애니메이션
+    private Animation helpAnim;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +79,61 @@ public class MainActivity extends Activity {
                 btn_close.setOnClickListener( dialClick );
 
                 dialog.show();
+
+                // 애니메이션 개체들
+                final ImageView finger = dialog.findViewById(R.id.nyang_foot);
+                final ImageView dust1 = dialog.findViewById(R.id.block1);
+                final ImageView dust2 = dialog.findViewById(R.id.block4);
+                final ImageView dust3 = dialog.findViewById(R.id.block3);
+                final ImageView dust4 = dialog.findViewById(R.id.block2);
+
+                final Handler handler = new Handler();
+
+                //시작 애니메이션 반복 쓰레드
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        while( dialog.isShowing() ) {
+                            try {
+                                handler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        helpAnim = AnimationUtils.loadAnimation(MainActivity.this, R.anim.finger_anim);
+                                        helpAnim.setFillAfter(true);
+                                        finger.startAnimation(helpAnim);
+
+                                        TranslateAnimation tranAnimation2 = new TranslateAnimation(
+                                                Animation.RELATIVE_TO_SELF , 0
+                                                ,Animation.RELATIVE_TO_SELF , 1
+                                                ,Animation.RELATIVE_TO_SELF , 0
+                                                ,Animation.RELATIVE_TO_SELF , 0);
+                                        tranAnimation2.setDuration(1000);
+                                        tranAnimation2.setStartOffset(1000);
+                                        tranAnimation2.setFillAfter(true);
+                                        helpAnim = AnimationUtils.loadAnimation(MainActivity.this, R.anim.help_dialog_dust_anim2);
+                                        helpAnim.setFillAfter(true);
+                                        dust4.startAnimation(helpAnim);
+
+                                        helpAnim = AnimationUtils.loadAnimation(MainActivity.this, R.anim.help_dialog_dust_anim);
+                                        helpAnim.setFillAfter(true);
+                                        dust3.startAnimation(helpAnim);
+
+                                        helpAnim = AnimationUtils.loadAnimation(MainActivity.this, R.anim.remove_nyang);
+                                        helpAnim.setFillAfter(true);
+                                        helpAnim.setStartOffset(2000);
+                                        helpAnim.setDuration(500);
+                                        dust1.startAnimation(helpAnim);
+                                        dust2.startAnimation(helpAnim);
+
+                                    }
+                                });
+                                Thread.sleep(4000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }).start();
             }
         });
 
@@ -207,9 +268,9 @@ public class MainActivity extends Activity {
             int plus_bell =  (int)(( start_time - stop_time ) / 1800000 );
             // 핸들러에서 사용할 wait_time 설정
             wait_time = 1800 - (int)(( start_time - stop_time ) / 1000 ) ;
-/*            if ( wait_time <= 0 ) {
-                wait_time = 1800;
-            }*/
+            if ( wait_time <= 0 ) {
+                wait_time *= -1;
+            }
             user_bell += plus_bell;
             if ( user_bell > MAX_BELL ) {
                 user_bell = MAX_BELL;
