@@ -153,7 +153,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/game_hide_dust_bar"
+                android:id="@+id/game_hide_Nyang_bar"
                 android:layout_width="0dp"
                 android:layout_height="5dp"
                 android:layout_marginStart="8dp"

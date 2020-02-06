@@ -154,10 +154,10 @@ public class GameActivity extends Activity {
                 binding.gamePlate.setLayoutParams(plateLayoutParams); //레이아웃속성 변경 / 원래는 리니어
 
                 //hideBar넓이, 높이 설정                      //레이아웃 속성객체 얻어옴
-                ViewGroup.LayoutParams hideBarLayoutParams = binding.gameHideDustBar.getLayoutParams(); //game_hide_dust_bar
+                ViewGroup.LayoutParams hideBarLayoutParams = binding.gameHideNyangBar.getLayoutParams(); //game_hide_dust_bar
                 hideBarLayoutParams.width = plateSize;
                 hideBarLayoutParams.height = plateSize / 9;
-                binding.gameHideDustBar.setLayoutParams(hideBarLayoutParams);
+                binding.gameHideNyangBar.setLayoutParams(hideBarLayoutParams);
 
                 //판의 크기를 설정한 후
                 binding.gamePlate.post(new Runnable() {
@@ -288,7 +288,7 @@ public class GameActivity extends Activity {
                                 }
 
                                 if(!checkNyangArray()) {
-                                    //터트릴 먼지가 하나도 없을 경우 다시 스왑함으로써 원상태로 되돌림
+                                    //터트릴 블록 하나도 없을 경우 다시 스왑함으로써 원상태로 되돌림
                                     swapNyang(e1X, e2X, e1Y, e2Y, true); //좌표 1 , 2 , 6 , 6
 
 
@@ -302,7 +302,6 @@ public class GameActivity extends Activity {
                                             if(!checkNyangArray()) {
                                                 touchStatus = true;
 
-                                                combo = 0;
                                                 cnt = 0;
                                             } else {
                                                 fillBlank();
@@ -311,8 +310,40 @@ public class GameActivity extends Activity {
                                         }
                                     };
                                     //첫터치 3개이상 블록을 터트렸을때 반응
-                                    cnt++;
-                                    Log.i("fa","첫 터짐 반응 : "+cnt);
+                                    cnt++; //
+
+                                    //x x
+                                    //x x
+                                    //x x
+                                    //위 같이 터치 후 2개 연속 터질경우 콤보 증가
+                                    int sum = 0;
+                                    for(int q = 0 ; q < nyangArray.length ; q++) {
+                                        String row = "";
+                                        for(int w = 0 ; w < nyangArray[q].length ; w++) {
+                                            row += nyangArray[q][w] == null ? 1 : 0;
+                                            row += " ";
+
+                                            if(q >= 1 && w >= 1) {
+                                                if (nyangArray[q - 1][w - 1] == nyangArray[q][w] ) {
+                                                    sum++;
+                                                    combo++;
+
+                                                    //서로 매치되는부분
+                                                    //x x x
+                                                    //o o o
+                                                    if(sum >= 2){
+                                                        combo--;
+                                                    }
+//                                                    Log.i("dustArray ", "2쌍방 : "+ sum);
+
+                                                }
+
+                                            }
+                                        }
+                                        binding.count.setText(""+combo);
+                                        sum = 0;
+                                    }
+
                                     fillCompletedListener.setFillCallback(fillCallback); //콜백 등록
                                     fillBlank();
                                 }
@@ -458,14 +489,14 @@ public class GameActivity extends Activity {
     private void fillBlank() {
         int totalNullCount = 0;
 
-  /*      for(int q = 0 ; q < nyangArray.length ; q++) {
-            String row = "";
-            for(int w = 0 ; w < nyangArray[q].length ; w++) {
-                row += nyangArray[q][w] == null ? "x" : "o";
-                row += " ";
-            }
-            Log.i("dustArray "+q, row);
-        }*/
+//        for(int q = 0 ; q < nyangArray.length ; q++) {
+//            String row = "";
+//            for(int w = 0 ; w < nyangArray[q].length ; w++) {
+//                row += nyangArray[q][w] == null ? 1 : 0;
+//                row += " ";
+//            }
+////            Log.i("dustArray "+q,"row"+ row);
+//        }
 
         for(int q = 0 ; q < nyangArray.length ; q++) {
             final ArrayList<NyangImageView> newNyangList = new ArrayList<>();
@@ -481,13 +512,13 @@ public class GameActivity extends Activity {
                     totalNullCount++;
 
                     NyangImageView nyangImageView = new NyangImageView(GameActivity.this
-                            , (int)binding.gameHideDustBar.getX() + (division9 * q)
-                            , (int)binding.gameHideDustBar.getY()
+                            , (int)binding.gameHideNyangBar.getX() + (division9 * q)
+                            , (int)binding.gameHideNyangBar.getY()
                             , division9
                             , division9
                             , (int)(Math.random() * 6) + 1);
                     binding.layout.addView(nyangImageView);
-                    binding.gameHideDustBar.bringToFront();
+                    binding.gameHideNyangBar.bringToFront();
                     newNyangList.add(nyangImageView);
 
                     if(w == 0) {
@@ -726,28 +757,42 @@ public class GameActivity extends Activity {
 
         if(flag && gameStatus == GAME_PLAYING) {
             //점수 갱신
-            userScore += (removeList.size() * 10);
-            timer += 2;
+            userScore += (removeList.size() * 10); //기본블록 점수 90
+            timer += 1;
 
-            combotime = 2;
+            //콤보유지시간 5초
+            combotime = 5;
+
+            //5콤보이상 콤보유지시간 3초
+            if(combo >= 5){
+                combotime = 3;
+            }
+
+            //10콤보이상 유지 2초;
+            else if(combo >= 10){
+                combotime = 2;
+            }
+
+
 
             //콤보부분
-            if(cnt > 0){ //첫터치 1이상 반응 후
-                combo++; //콤보증가
 
-                if(removeList.size() >= 3){
+
+            if(cnt > 0){ //첫터치 1초과 반응 후
+                combo++; //콤보증가
+//                Log.i("fa ", "2쌍방 : "+ cnt);
+
+                if(removeList.size() >= 12){
+                    //콤보중 4블록이상 터졌을때 추가점수
                     userScore += removeList.size() * combo;
                 }
             }
 
             binding.count.setText(""+combo);
 
-//            Log.i("fa","combo : "+combo);
-
             //콤보 점수
-            //콤보당 * 5 증가
-            userScore += combo * 5;
-            Log.i("fa","combo : "+userScore);
+            // 30 * 콤보
+            userScore += ( removeList.size()/3 ) * combo;
 
 //            highScore = highScore < userScore ? userScore : highScore;
 
@@ -797,13 +842,15 @@ public class GameActivity extends Activity {
         userScore = 0;
 
         //콤보유지 시간
-        combotime = 3;
+        combotime = 0;
+
+        binding.count.setText(""+combo);
 
         gameStatus = GAME_PLAYING;
         touchStatus = true;
         timerThreadContoller = true;
 
-        timer = 5;//시작 타임
+        timer = 30;//시작 타임
         time = 0;//진행 시간
         binding.nowScore.setText(""+String.format("%,d", userScore));
 //        highScoreView.setText(""+String.format("%,d", highScore));
@@ -915,6 +962,7 @@ public class GameActivity extends Activity {
                         time++;
                         combotime--;
 
+                        Log.i("dustArray ", ""+combotime);
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
@@ -923,7 +971,8 @@ public class GameActivity extends Activity {
 
                                 if(combotime == 0){
                                     binding.count.setText(""+combo);
-                                    combotime = 3;
+                                    combo = 0;
+                                    combotime = 1 ;
                                 }
 
                             }
