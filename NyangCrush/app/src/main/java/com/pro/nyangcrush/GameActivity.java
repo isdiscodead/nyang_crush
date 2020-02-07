@@ -1076,7 +1076,7 @@ public class GameActivity extends Activity {
                 });
 
                 score.setText(String.format("%,d", userScore));
-                playTime.setText(String.format("%d", 999));
+                playTime.setText(String.format("%d", time));
 
                 isBestScore.setVisibility(userScore == 100 ? View.VISIBLE : View.INVISIBLE);
                 isBestTime.setVisibility(Integer.parseInt(playTime.getText().toString()) == 999 ? View.VISIBLE : View.INVISIBLE);
@@ -1110,7 +1110,6 @@ public class GameActivity extends Activity {
         timerThreadContoller = false;
         gameStatus = GAME_PAUSED; //GAME_PAUSED = 1
         touchStatus = false;
-
     }
 
     //게임 이어하기
@@ -1129,7 +1128,7 @@ public class GameActivity extends Activity {
     public void onBackPressed() {
         binding.btnPause.performClick();
         //게임속 음악 끄고 타이틀화면 음악 재생
-        mediaPlayer2.stop();
+        mediaPlayer2.pause();
         //mediaPlayer1.start();
 
     }
@@ -1137,16 +1136,20 @@ public class GameActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        binding.btnPause.performClick();
-        mediaPlayer2.stop();
+
+        if(gameStatus == GAME_PLAYING ) {
+            binding.btnPause.performClick();
+        }
+        mediaPlayer2.pause();
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        if(mediaPlayer2 != null)
+            mediaPlayer2.start();
 
-        mediaPlayer2.start();
     }
 
     @Override

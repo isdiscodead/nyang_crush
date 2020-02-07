@@ -176,7 +176,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="50dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/game_hide_dust_bar"
+                app:layout_constraintTop_toBottomOf="@+id/game_hide_Nyang_bar"
                 android:background="@color/richWhite"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
