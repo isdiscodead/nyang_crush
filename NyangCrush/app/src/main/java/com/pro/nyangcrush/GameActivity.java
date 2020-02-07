@@ -68,7 +68,7 @@ public class GameActivity extends Activity {
     private int time; //게임진행 타임
     private boolean timerThreadContoller; //게임중지 / 게임진행 확인용
 
-    //게임말 스왑시 필요한 두 먼지의 좌표
+    //게임말 스왑시 필요한 두 게임블록의 좌표
     private int e1X;
     private int e1Y;
     private int e2X;
@@ -154,7 +154,7 @@ public class GameActivity extends Activity {
                 binding.gamePlate.setLayoutParams(plateLayoutParams); //레이아웃속성 변경 / 원래는 리니어
 
                 //hideBar넓이, 높이 설정                      //레이아웃 속성객체 얻어옴
-                ViewGroup.LayoutParams hideBarLayoutParams = binding.gameHideNyangBar.getLayoutParams(); //game_hide_dust_bar
+                ViewGroup.LayoutParams hideBarLayoutParams = binding.gameHideNyangBar.getLayoutParams(); //game_hide_Nyang_bar
                 hideBarLayoutParams.width = plateSize;
                 hideBarLayoutParams.height = plateSize / 9;
                 binding.gameHideNyangBar.setLayoutParams(hideBarLayoutParams);
@@ -229,7 +229,7 @@ public class GameActivity extends Activity {
                             && e2.getY() >= plateY
                             && e2.getY() <= plateY + plateSize) {
 
-                        //처음 터치한 먼지의 좌표
+                        //처음 터치한 게임블록의 좌표
                         e1X = ((int)e1.getX() - plateX) / division9;  // 58 / 115 = 0
                         e1Y = ((int)e1.getY() - plateY) / division9; //993 / 115 = 8.xxx
 
@@ -243,7 +243,7 @@ public class GameActivity extends Activity {
 
 //                        Log.i("dd","e1x : "+e1X + " / e1Y : "+e1Y +"/ e2X : "+e2X +"/ e2Y : "+e2Y);
 
-                        //스왑할 먼지의 좌표 조정
+                        //스왑할 게임블록의 좌표 조정
                         //두칸 이상의 범위를 드래그한 경우 좌표값을 한칸으로 조정해줌
                         e2X = Math.abs(e1X - e2X) >= 2 ? //Math.abs절대값
                                 e1X > e2X ?
@@ -291,6 +291,9 @@ public class GameActivity extends Activity {
                                     //터트릴 블록 하나도 없을 경우 다시 스왑함으로써 원상태로 되돌림
                                     swapNyang(e1X, e2X, e1Y, e2Y, true); //좌표 1 , 2 , 6 , 6
 
+                                    //콤보 유지시간중 블록을 잘못 건드려 터트릴게 없을 경우 콤보 초기화
+                                    combo = 0;
+                                    binding.count.setText(""+combo);
 
                                 } else {
                                     fillCompletedListener = new FillCompletedListener();
@@ -301,7 +304,6 @@ public class GameActivity extends Activity {
 
                                             if(!checkNyangArray()) {
                                                 touchStatus = true;
-
                                                 cnt = 0;
                                             } else {
                                                 fillBlank();
@@ -320,8 +322,6 @@ public class GameActivity extends Activity {
                                     for(int q = 0 ; q < nyangArray.length ; q++) {
                                         String row = "";
                                         for(int w = 0 ; w < nyangArray[q].length ; w++) {
-                                            row += nyangArray[q][w] == null ? 1 : 0;
-                                            row += " ";
 
                                             if(q >= 1 && w >= 1) {
                                                 if (nyangArray[q - 1][w - 1] == nyangArray[q][w] ) {
@@ -334,7 +334,6 @@ public class GameActivity extends Activity {
                                                     if(sum >= 2){
                                                         combo--;
                                                     }
-//                                                    Log.i("dustArray ", "2쌍방 : "+ sum);
 
                                                 }
 
@@ -372,18 +371,18 @@ public class GameActivity extends Activity {
     }//onCreate
 
     /**
-     * plate에 먼지를 채워넣음
+     * plate에 게임블록을 채워넣음
      */
     private void setNyangArray(){
         division9 = plateSize/9;
         for(int q = 0 ; q < nyangArray.length ; q++) {
             for(int w = 0 ; w < nyangArray[q].length ; w++) {
                 if(nyangArray[q][w] == null) {
-                    //먼지 포지션만을 저장하는 배열
+                    //게임블록 포지션만을 저장하는 배열
                     nyangPositions[q][w] = new NyangPosition((int)binding.gamePlate.getX() + (division9 * w),
                             (int)binding.gamePlate.getY() + (division9 * q));
 
-                    //실제 먼지가 저장되는 배열 배열판에 게임말이미지 등록
+                    //실제 게임블록이 저장되는 배열 배열판에 게임말이미지 등록
                     nyangArray[q][w] = new NyangImageView(GameActivity.this
                             , (int)binding.gamePlate.getX() + (division9 * w)
                             , (int)binding.gamePlate.getY() + (division9 * q)
@@ -404,8 +403,8 @@ public class GameActivity extends Activity {
     //게임말 스왑 애니메이션
     private void swapNyang(final int x1, final int x2, final int y1, final int y2, final boolean restore) {
         //restore가 true면 되돌리기 작업임
-        //게임말1 : 사용자가 처음 터치한 먼지
-        //게임말2 : 사용자가 교환하려고 드래그한 자리에 있는 먼지
+        //게임말1 : 사용자가 처음 터치한 블록
+        //게임말2 : 사용자가 교환하려고 드래그한 자리에 있는 블록
 
         //게임말1 좌표 얻어오기
         final int nyang1X = (int)nyangPositions[y1][x1].getX();
@@ -483,7 +482,7 @@ public class GameActivity extends Activity {
 
 
     /**
-     * 먼지 삭제 후 공백 채우는 메소드
+     * 블록 삭제 후 공백 채우는 메소드
      */
 
     private void fillBlank() {
@@ -549,7 +548,7 @@ public class GameActivity extends Activity {
                                 nyangArray[newY][x].setY(nyangPositions[newY][x].getY());
 
                                 if(y == 0) {
-                                    //먼지들을 아래로 옮기고 난 후 공백을 채워넣음
+                                    //블록들을 아래로 옮기고 난 후 공백을 채워넣음
                                     fillPlate(newNyangList, x);
                                 }
                             }
@@ -580,7 +579,7 @@ public class GameActivity extends Activity {
             final int index = q;
 
 
-            //생성되있는 먼지들을 아래로 이동시키며 채워넣음
+            //생성되있는 블록들을 아래로 이동시키며 채워넣음
             nyangArray[newNyangList.size() - index - 1][x] = newNyangList.get(index);
 
             TranslateAnimation tranAnimation = new TranslateAnimation(
@@ -615,8 +614,8 @@ public class GameActivity extends Activity {
 
 
     /**
-     * 현재 plate에 동일한 모양의 먼지가 일렬로 3개 이상 나열된 곳이 있는지 체크 후
-     * 있다면, 나열된 먼지 삭제 후 점수 획득 및 true 리턴
+     * 현재 plate에 동일한 모양의 블록이 일렬로 3개 이상 나열된 곳이 있는지 체크 후
+     * 있다면, 나열된 블록 삭제 후 점수 획득 및 true 리턴
      * 없다면, false 리턴
      * @return
      */
@@ -651,8 +650,8 @@ public class GameActivity extends Activity {
                     if(count >= 2) {
 
                         /**
-                         * 카운팅이 2 이상 된 경우 연속된 3개의 먼지가 있다는 의미 이므로
-                         * 현재 검사한 먼지의 좌표(q, w)를 기준으로 인접한 같은 모양의 먼지를 모두 삭제함
+                         * 카운팅이 2 이상 된 경우 연속된 3개의 블록이 있다는 의미 이므로
+                         * 현재 검사한 블록의 좌표(q, w)를 기준으로 인접한 같은 모양의 블록을 모두 삭제함
                          * 범위는 기준점(q, w)에서 부터 최대 2칸
                          */
                         flag = true;
@@ -748,7 +747,7 @@ public class GameActivity extends Activity {
         }
 
         for(int q = 0 ; q < removeList.size() ; q++) {
-            //실제 dustArray에서 먼지 삭제
+            //실제 nyangArray에서 블록 삭제
             int i = Integer.parseInt(removeList.get(q).split(",")[0]);
             int j = Integer.parseInt(removeList.get(q).split(",")[1]);
             nyangArray[i][j] = null;
@@ -756,6 +755,7 @@ public class GameActivity extends Activity {
         }
 
         if(flag && gameStatus == GAME_PLAYING) {
+
             //점수 갱신
             userScore += (removeList.size() * 10); //기본블록 점수 90
             timer += 1;
@@ -806,7 +806,7 @@ public class GameActivity extends Activity {
             });
 
 
-            //먼지 터지는 효과음
+            //블록 터지는 효과음
             /*if(effectSound)
                 soundPool.play(dustRemoveSound, effectSoundVolume, effectSoundVolume,  1,  0,  1);
             */
@@ -962,7 +962,6 @@ public class GameActivity extends Activity {
                         time++;
                         combotime--;
 
-                        Log.i("dustArray ", ""+combotime);
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
@@ -1102,7 +1101,7 @@ public class GameActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        binding.btnPause.performClick();
+//        binding.btnPause.performClick();
     }
 
     @Override
