@@ -648,8 +648,8 @@ public class GameActivity extends Activity {
         final ArrayList<String> removeList = new ArrayList<>();
         boolean flag = false; //리턴할 변수
 
-        for(int q = 0 ; q < nyangArray.length ; q++) {
-            for(int w = 0 ; w < nyangArray[q].length ; w++) {
+        for (int q = 0; q < nyangArray.length; q++) {
+            for (int w = 0; w < nyangArray[q].length; w++) {
                 int verticalMin = q - 2 < 0 ? 0 : q - 2;
                 int verticalMax = q + 2 >= nyangArray.length ? nyangArray.length - 1 : q + 2;
                 int horizontalMin = w - 2 < 0 ? 0 : w - 2;
@@ -663,16 +663,16 @@ public class GameActivity extends Activity {
 
                 int count = 0;
 
-                for(int e = verticalMin + 1 ; e <= verticalMax ; e++) {
+                for (int e = verticalMin + 1; e <= verticalMax; e++) {
                     //세로 탐색
-                    if(nyangArray[e - 1][w].getNyangType() == nyangArray[e][w].getNyangType()) {
+                    if (nyangArray[e - 1][w].getNyangType() == nyangArray[e][w].getNyangType()) {
                         count++;
 
                     } else {
                         count = 0;
                     }
 
-                    if(count >= 2) {
+                    if (count >= 2) {
 
                         /**
                          * 카운팅이 2 이상 된 경우 연속된 3개의 블록이 있다는 의미 이므로
@@ -681,34 +681,34 @@ public class GameActivity extends Activity {
                          */
                         flag = true;
 
-                        removeList.add(q+","+w);
+                        removeList.add(q + "," + w);
 
-                        for(int r = q + 1 ; r <= verticalMax ; r++) {
-                            if(nyangArray[q][w].getNyangType() == nyangArray[r][w].getNyangType()) {
-                                if(binding.layout.getViewWidget(nyangArray[r][w]) != null) {
+                        for (int r = q + 1; r <= verticalMax; r++) {
+                            if (nyangArray[q][w].getNyangType() == nyangArray[r][w].getNyangType()) {
+                                if (binding.layout.getViewWidget(nyangArray[r][w]) != null) {
                                     //리무브 애니메이션
                                     Animation anim = AnimationUtils.loadAnimation(this, R.anim.remove_nyang);
                                     nyangArray[r][w].startAnimation(anim);
                                 }
 
                                 binding.layout.removeView(nyangArray[r][w]);
-                                removeList.add(r+","+w);
+                                removeList.add(r + "," + w);
 
                             } else {
                                 break;
                             }
                         }
 
-                        for(int r = q - 1 ; r >= verticalMin ; r--) {
-                            if(nyangArray[q][w].getNyangType() == nyangArray[r][w].getNyangType()) {
-                                if(binding.layout.getViewWidget(nyangArray[r][w]) != null) {
+                        for (int r = q - 1; r >= verticalMin; r--) {
+                            if (nyangArray[q][w].getNyangType() == nyangArray[r][w].getNyangType()) {
+                                if (binding.layout.getViewWidget(nyangArray[r][w]) != null) {
                                     //리무브 애니메이션
                                     Animation anim = AnimationUtils.loadAnimation(this, R.anim.remove_nyang);
                                     nyangArray[r][w].startAnimation(anim);
                                 }
 
                                 binding.layout.removeView(nyangArray[r][w]);
-                                removeList.add(r+","+w);
+                                removeList.add(r + "," + w);
                             } else {
                                 break;
                             }
@@ -718,43 +718,43 @@ public class GameActivity extends Activity {
                 }
 
                 count = 0;
-                for(int e = horizontalMin + 1 ; e <= horizontalMax ; e++) {
+                for (int e = horizontalMin + 1; e <= horizontalMax; e++) {
                     //가로 탐색
-                    if(nyangArray[q][e - 1].getNyangType() == nyangArray[q][e].getNyangType()) {
+                    if (nyangArray[q][e - 1].getNyangType() == nyangArray[q][e].getNyangType()) {
                         count++;
                     } else {
                         count = 0;
                     }
 
-                    if(count >= 2) {
+                    if (count >= 2) {
                         flag = true;
 
-                        removeList.add(q+","+w);
-                        for(int r = w + 1 ; r <= horizontalMax ; r++) {
-                            if(nyangArray[q][w].getNyangType() == nyangArray[q][r].getNyangType()) {
-                                if(binding.layout.getViewWidget(nyangArray[q][r]) != null) {
+                        removeList.add(q + "," + w);
+                        for (int r = w + 1; r <= horizontalMax; r++) {
+                            if (nyangArray[q][w].getNyangType() == nyangArray[q][r].getNyangType()) {
+                                if (binding.layout.getViewWidget(nyangArray[q][r]) != null) {
                                     //리무브 애니메이션
                                     Animation anim = AnimationUtils.loadAnimation(this, R.anim.remove_nyang);
                                     nyangArray[q][r].startAnimation(anim);
                                 }
 
                                 binding.layout.removeView(nyangArray[q][r]);
-                                removeList.add(q+","+r);
+                                removeList.add(q + "," + r);
                             } else {
                                 break;
                             }
                         }
 
-                        for(int r = w - 1 ; r >= horizontalMin ; r--) {
-                            if(nyangArray[q][w].getNyangType() == nyangArray[q][r].getNyangType()) {
-                                if(binding.layout.getViewWidget(nyangArray[q][r]) != null) {
+                        for (int r = w - 1; r >= horizontalMin; r--) {
+                            if (nyangArray[q][w].getNyangType() == nyangArray[q][r].getNyangType()) {
+                                if (binding.layout.getViewWidget(nyangArray[q][r]) != null) {
                                     //리무브 애니메이션
                                     Animation anim = AnimationUtils.loadAnimation(this, R.anim.remove_nyang);
                                     nyangArray[q][r].startAnimation(anim);
                                 }
 
                                 binding.layout.removeView(nyangArray[q][r]);
-                                removeList.add(q+","+r);
+                                removeList.add(q + "," + r);
                             } else {
                                 break;
                             }
@@ -763,15 +763,15 @@ public class GameActivity extends Activity {
                     }
                 }
 
-                if(count >= 2){
+                if (count >= 2) {
 
-                }else{
+                } else {
 
                 }
             }
         }
 
-        for(int q = 0 ; q < removeList.size() ; q++) {
+        for (int q = 0; q < removeList.size(); q++) {
             //실제 nyangArray에서 블록 삭제
             int i = Integer.parseInt(removeList.get(q).split(",")[0]);
             int j = Integer.parseInt(removeList.get(q).split(",")[1]);
@@ -779,7 +779,7 @@ public class GameActivity extends Activity {
 
         }
 
-        if(flag && gameStatus == GAME_PLAYING) {
+        if (flag && gameStatus == GAME_PLAYING) {
 
             //점수 갱신
             userScore += (removeList.size() * 10); //기본블록 점수 90
@@ -789,60 +789,55 @@ public class GameActivity extends Activity {
             combotime = 5;
 
             //5콤보이상 콤보유지시간 3초
-            if(combo >= 5){
+            if (combo >= 5) {
                 combotime = 3;
             }
 
             //10콤보이상 유지 2초;
-            else if(combo >= 10){
+            else if (combo >= 10) {
                 combotime = 2;
             }
-
 
 
             //콤보부분
 
 
-            if(cnt > 0){ //첫터치 1초과 반응 후
+            if (cnt > 0) { //첫터치 1초과 반응 후
                 combo++; //콤보증가
 //                Log.i("fa ", "2쌍방 : "+ cnt);
 
-                if(removeList.size() >= 12){
+                if (removeList.size() >= 12) {
                     //콤보중 4블록이상 터졌을때 추가점수
                     userScore += removeList.size() * combo;
                 }
             }
 
-            binding.count.setText(""+combo);
+            binding.count.setText("" + combo);
 
             //콤보 점수
             // 30 * 콤보
-            userScore += ( removeList.size()/3 ) * combo;
+            userScore += (removeList.size() / 3) * combo;
 
 //            highScore = highScore < userScore ? userScore : highScore;
 
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    binding.nowScore.setText(""+String.format("%,d", userScore));
+                    binding.nowScore.setText("" + String.format("%,d", userScore));
 //                    highScoreView.setText(""+String.format("%,d", highScore));
 
                 }
             });
 
 
-<<<<<<< HEAD
             //블록 터지는 효과음
             /*if(effectSound)
                 soundPool.play(dustRemoveSound, effectSoundVolume, effectSoundVolume,  1,  0,  1);
             */
         }
-=======
-            //먼지 터지는 효과음
-            mediaPlayer3.start();
 
-   }
->>>>>>> d80955f0cf402cb45e5bbe56b945303df645cdc6
+        //먼지 터지는 효과음
+        mediaPlayer3.start();
 
         return flag;
     }//checklist
@@ -1142,12 +1137,9 @@ public class GameActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-<<<<<<< HEAD
-//        binding.btnPause.performClick();
-=======
         binding.btnPause.performClick();
         mediaPlayer2.stop();
->>>>>>> d80955f0cf402cb45e5bbe56b945303df645cdc6
+
     }
 
     @Override
