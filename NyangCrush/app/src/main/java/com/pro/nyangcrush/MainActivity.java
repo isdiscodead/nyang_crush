@@ -12,7 +12,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.SoundPool;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -37,6 +40,7 @@ public class MainActivity extends Activity {
 
      ActivityMainBinding binding;
      Dialog dialog;
+     //배경음
      private MediaPlayer mediaPlayer, mediaPlayer2;
 
      // 다이얼로그 내부 버튼
@@ -45,6 +49,11 @@ public class MainActivity extends Activity {
     // 유저 방울 개수
     int user_bell;
     final static int MAX_BELL = 5;
+
+    //효과음
+    SoundPool soundPool;
+    private boolean effectSound;
+    private int btnClick1;
 
     // 방울 배열
     ImageView[] bells = new ImageView[MAX_BELL];
@@ -63,10 +72,19 @@ public class MainActivity extends Activity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         binding.setActivity(this);
 
+        //효과음 사운드풀 초기화
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            soundPool = new SoundPool.Builder().setMaxStreams(2).build();
+        }else{
+            soundPool = new SoundPool(2, AudioManager.STREAM_MUSIC, 1);
+        }
+
+        btnClick1 = soundPool.load(this, R.raw.can, 1);
         /* 도움말 버튼 눌렀을 때 다이얼로그 생성 */
         binding.btnHelp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                soundPool.play(btnClick1, 1,1, 1,0,1);
                 dialog = new Dialog( MainActivity.this );
 
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -141,6 +159,7 @@ public class MainActivity extends Activity {
         binding.btnSet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                soundPool.play(btnClick1, 1,1, 1,0,1);
                 dialog = new Dialog( MainActivity.this );
 
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -162,6 +181,7 @@ public class MainActivity extends Activity {
         binding.btnRanking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                soundPool.play(btnClick1, 1,1, 1,0,1);
                 dialog = new Dialog( MainActivity.this );
 
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -180,6 +200,7 @@ public class MainActivity extends Activity {
         binding.btnGameStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                soundPool.play(btnClick1, 1,1, 1,0,1);
                 Intent i = new Intent(MainActivity.this, GameActivity.class);
                 startActivity(i);
 
@@ -225,6 +246,12 @@ public class MainActivity extends Activity {
         mediaPlayer.start();
 
 
+    }
+    @SuppressLint("HandlerLeak")
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mediaPlayer.stop();
     }
 
     @Override
@@ -318,10 +345,12 @@ public class MainActivity extends Activity {
         public void onClick(View view) {
             switch ( view.getId() ){
                 case R.id.btn_close :
+                    soundPool.play(btnClick1, 1,1, 1,0,1);
                     dialog.dismiss();
                     break;
                 case R.id.btn_logout :
                     Toast.makeText(MainActivity.this, "로그아웃", Toast.LENGTH_SHORT).show();
+                    soundPool.play(btnClick1, 1,1, 1,0,1);
                     break;
 
             }

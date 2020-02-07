@@ -7,7 +7,10 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.SoundPool;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -32,6 +35,9 @@ import com.pro.nyangcrush.databinding.ActivityGameBinding;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import static android.os.Build.*;
+import static com.pro.nyangcrush.FillCompletedListener.*;
+import static com.pro.nyangcrush.FillCompletedListener.*;
 public class GameActivity extends Activity {
 
     ActivityGameBinding binding;
@@ -47,8 +53,11 @@ public class GameActivity extends Activity {
     private static final int GAME_PLAYING = 3;
 
     //배경음악
-//    MediaPlayer mediaPlayer1, mediaPlayer2;
+    MediaPlayer mediaPlayer1, mediaPlayer2, mediaPlayer3, mediaPlayer4;
 
+    //효과음
+    SoundPool soundPool;
+    private int btnClick1;
 
     private int plateSize;
     private int division9; // plate를 9로 나눈 값
@@ -104,11 +113,13 @@ public class GameActivity extends Activity {
         binding.btnPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                soundPool.play(btnClick1, 1,1, 1,0,1);
                 dialog = new Dialog(GameActivity.this);
 
                 dialog.setCancelable(false);
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.getWindow().getAttributes().windowAnimations = R.style.CustomDialogAnimation;
 
                 dialog.setContentView(R.layout.diag_pause);
 
@@ -290,6 +301,7 @@ public class GameActivity extends Activity {
                                 if(!checkNyangArray()) {
                                     //터트릴 블록 하나도 없을 경우 다시 스왑함으로써 원상태로 되돌림
                                     swapNyang(e1X, e2X, e1Y, e2Y, true); //좌표 1 , 2 , 6 , 6
+                                    mediaPlayer4.start();
 
                                     //콤보 유지시간중 블록을 잘못 건드려 터트릴게 없을 경우 콤보 초기화
                                     combo = 0;
@@ -361,13 +373,26 @@ public class GameActivity extends Activity {
             }
         });//GestureDetector
 
-//        mediaPlayer1 = MediaPlayer.create(this,R.raw.backgroundmusic1);
-//        mediaPlayer2 = MediaPlayer.create(this,R.raw.backgroundmusic2);
-//        mediaPlayer1.setLooping(true);
-//        mediaPlayer2.setLooping(true);
-//
-//
-//        mediaPlayer2.start();
+        //효과음 사운드풀 초기화
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            soundPool = new SoundPool.Builder().setMaxStreams(2).build();
+        }else{
+            soundPool = new SoundPool(2, AudioManager.STREAM_MUSIC, 1);
+        }
+
+        btnClick1 = soundPool.load(this, R.raw.can, 1);
+
+        mediaPlayer1 = MediaPlayer.create(this,R.raw.backgroundmusic1);
+        mediaPlayer2 = MediaPlayer.create(this,R.raw.backgroundmusic2);
+        mediaPlayer3 = MediaPlayer.create(this, R.raw.toy);
+        mediaPlayer4 = MediaPlayer.create(this,R.raw.kitty);
+        mediaPlayer1.setLooping(true);
+        mediaPlayer2.setLooping(true);
+        mediaPlayer3.setLooping(false);
+        mediaPlayer4.setLooping(false);
+
+
+        mediaPlayer2.start();
     }//onCreate
 
     /**
@@ -806,11 +831,18 @@ public class GameActivity extends Activity {
             });
 
 
+<<<<<<< HEAD
             //블록 터지는 효과음
             /*if(effectSound)
                 soundPool.play(dustRemoveSound, effectSoundVolume, effectSoundVolume,  1,  0,  1);
             */
         }
+=======
+            //먼지 터지는 효과음
+            mediaPlayer3.start();
+
+   }
+>>>>>>> d80955f0cf402cb45e5bbe56b945303df645cdc6
 
         return flag;
     }//checklist
@@ -848,6 +880,7 @@ public class GameActivity extends Activity {
 
         gameStatus = GAME_PLAYING;
         touchStatus = true;
+        //초기 셋팅 타이머
         timerThreadContoller = true;
 
         timer = 30;//시작 타임
@@ -870,14 +903,17 @@ public class GameActivity extends Activity {
         public void onClick(View view) {
             switch ( view.getId() ){
                 case R.id.btn_replay :
+                    soundPool.play(btnClick1, 1,1, 1,0,1);
                     gameReplay();
                     dialog.dismiss();
                     break;
                 case R.id.btn_stop :
+                    soundPool.play(btnClick1, 1,1, 1,0,1);
                     endGame();
                     dialog.dismiss();
                     break;
                 default:
+                    soundPool.play(btnClick1, 1,1, 1,0,1);
                     dialog.dismiss();
                     continueGame();
                     break;
@@ -1037,8 +1073,9 @@ public class GameActivity extends Activity {
                 stop_btn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        finish();
+                        soundPool.play(btnClick1, 1,1, 1,0,1);
                         dialog.dismiss();
+                        finish();
 
                     }
                 });
@@ -1065,6 +1102,7 @@ public class GameActivity extends Activity {
             //겹치는게 없을 때까지 plate 셋팅
             setNyangArray();
         } while (checkNyangArray());
+        soundPool.play(btnClick1, 1,1, 1,0,1);
         basicSetting();
         startGame();
     }
@@ -1095,19 +1133,28 @@ public class GameActivity extends Activity {
     @Override
     public void onBackPressed() {
         binding.btnPause.performClick();
+        //게임속 음악 끄고 타이틀화면 음악 재생
+        mediaPlayer2.stop();
+        //mediaPlayer1.start();
 
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+<<<<<<< HEAD
 //        binding.btnPause.performClick();
+=======
+        binding.btnPause.performClick();
+        mediaPlayer2.stop();
+>>>>>>> d80955f0cf402cb45e5bbe56b945303df645cdc6
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
+        mediaPlayer2.start();
     }
 
     @Override
