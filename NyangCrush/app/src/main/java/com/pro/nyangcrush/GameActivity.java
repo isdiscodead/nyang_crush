@@ -1136,7 +1136,6 @@ public class GameActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-
         if(gameStatus == GAME_PLAYING ) {
             binding.btnPause.performClick();
         }
@@ -1156,5 +1155,9 @@ public class GameActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
 //        mediaPlayer2.stop();
+
+        //쓰레드 중지
+        gameStatus = GAME_TERMINATED;
+        timerThreadContoller = false;
     }
 }
