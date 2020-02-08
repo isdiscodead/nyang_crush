@@ -17,128 +17,148 @@
         android:layout_width="match_parent">
 
         <!-- 일시정지 버튼 -->
-        <Button android:background="@drawable/btn_pause"
-            android:id="@+id/btn_pause"
-            android:layout_height="40dp"
-            android:layout_width="40dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="15dp"
-            android:layout_gravity="right"/>
-
-        <!-- 최고 점수 -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_marginTop="30dp"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginBottom="-10dp"
-            android:paddingLeft="10dp">
+            android:gravity="right">
 
-
-            <TextView
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_gravity="left"
-                android:textColor="#fff"
-                android:textSize="25dp"
-                android:text="High Sco | "
-                android:fontFamily="@font/black_han_sans"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="100000"
-                android:textSize="25dp"
-                android:fontFamily="@font/black_han_sans"
-                android:textColor="@color/brown"
-                android:layout_marginLeft="15dp"
-                android:id="@+id/highScore"/>
+            <Button android:background="@drawable/btn_pause"
+                android:id="@+id/btn_pause"
+                android:layout_height="40dp"
+                android:layout_width="40dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="15dp"/>
 
         </LinearLayout>
 
-        <!-- 현재 점수 -->
+        <!-- 최고 점수 & 현재 점수 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="20dp"
-            android:paddingLeft="10dp">
+            android:orientation="vertical">
 
-            <TextView android:layout_height="wrap_content"
+            <!-- 최고 점수 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_marginTop="30dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="-10dp"
+                android:paddingLeft="10dp">
+
+
+                <TextView
+                    android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
+                    android:layout_marginLeft="10dp"
                     android:layout_gravity="left"
-                    android:layout_marginLeft="12dp"
                     android:textColor="#fff"
                     android:textSize="25dp"
-                    android:text="Now Sco |"
+                    android:text="High Sco | "
                     android:fontFamily="@font/black_han_sans"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0"
-                android:textSize="25dp"
-                android:fontFamily="@font/black_han_sans"
-                android:textColor="@color/brown"
-                android:layout_marginLeft="20dp"
-                android:id="@+id/nowScore"/>
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="100000"
+                    android:textSize="25dp"
+                    android:fontFamily="@font/black_han_sans"
+                    android:textColor="@color/brown"
+                    android:layout_marginLeft="15dp"
+                    android:id="@+id/highScore"/>
+
+            </LinearLayout>
+
+            <!-- 현재 점수 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="20dp"
+                android:paddingLeft="10dp">
+
+                <TextView android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:layout_gravity="left"
+                        android:layout_marginLeft="12dp"
+                        android:textColor="#fff"
+                        android:textSize="25dp"
+                        android:text="Now Sco |"
+                        android:fontFamily="@font/black_han_sans"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textSize="25dp"
+                    android:fontFamily="@font/black_han_sans"
+                    android:textColor="@color/brown"
+                    android:layout_marginLeft="20dp"
+                    android:id="@+id/nowScore"/>
+
+            </LinearLayout>
         </LinearLayout>
 
-        <!-- 시간, 카운트 표시 -->
-        <LinearLayout android:orientation="horizontal"
-            android:layout_marginTop="30dp"
+        <!-- 시간, 콤보 표시 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout android:orientation="horizontal"
+                android:layout_marginTop="30dp"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/black_han_sans"
+                    android:text="TIME"
+                    android:paddingLeft="15dp"
+                    android:layout_marginRight="-15dp"
+                    android:textColor="#6E5C5C"
+                    android:textSize="30dp" />
+
+                <TextView android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:textColor="#6E5C5C"
+                    android:textSize="30dp"
+                    android:text="COMBO"
+                    android:fontFamily="@font/black_han_sans"
+                    android:layout_marginLeft="110dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout android:orientation="horizontal"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:layout_marginBottom="20dp"
             android:layout_gravity="center">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:fontFamily="@font/black_han_sans"
-                android:text="TIME"
-                android:paddingLeft="15dp"
-                android:layout_marginRight="-15dp"
-                android:textColor="#6E5C5C"
-                android:textSize="30dp" />
+                <TextView
+                    android:layout_width="90dp"
+                    android:layout_height="35dp"
+                    android:background="@drawable/white_box"
+                    android:fontFamily="@font/black_han_sans"
+                    android:textColor="@color/pink"
+                    android:textSize="25dp"
+                    android:gravity="center"
+                    android:id="@+id/time"/>
 
-            <TextView android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:textColor="#6E5C5C"
-                android:textSize="30dp"
-                android:text="COMBO"
-                android:fontFamily="@font/black_han_sans"
-                android:layout_marginLeft="110dp"/>
-
-        </LinearLayout>
-
-        <LinearLayout android:orientation="horizontal"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:layout_gravity="center">
-
-            <TextView
-                android:layout_width="90dp"
-                android:layout_height="35dp"
-                android:background="@drawable/white_box"
-                android:fontFamily="@font/black_han_sans"
-                android:textColor="@color/pink"
-                android:textSize="25dp"
-                android:gravity="center"
-                android:id="@+id/time"/>
-
-            <TextView
-                android:layout_height="35dp"
-                android:layout_width="90dp"
-                android:textColor="@color/pink"
-                android:textSize="25dp"
-                android:gravity="center"
-                android:background="@drawable/white_box"
-                android:fontFamily="@font/black_han_sans"
-                android:layout_marginLeft="100dp"
-                android:id="@+id/count"/>
+                <TextView
+                    android:layout_height="35dp"
+                    android:layout_width="90dp"
+                    android:textColor="@color/pink"
+                    android:textSize="25dp"
+                    android:gravity="center"
+                    android:background="@drawable/white_box"
+                    android:fontFamily="@font/black_han_sans"
+                    android:layout_marginLeft="100dp"
+                    android:id="@+id/count"/>
+            </LinearLayout>
         </LinearLayout>
 
         <!-- 게임 시작 메시지 -->
@@ -179,5 +199,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/game_hide_Nyang_bar"
                 android:background="@color/richWhite"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+
     </LinearLayout>
 </layout>
