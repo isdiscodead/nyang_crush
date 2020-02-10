@@ -19,7 +19,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_weight="1">
 
         <RelativeLayout
             android:layout_width="240dp"
@@ -91,6 +92,7 @@
                 android:textSize="15dp"
                 android:textColor="@color/brown"
                 android:layout_centerVertical="true"/>
+
         </RelativeLayout>
 
 
@@ -114,49 +116,85 @@
         </LinearLayout>
 
         <!-- 점수 / 랭크 확인 + 게임 시작-->
-        <TextView android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_marginTop="50dp"
-            android:layout_marginLeft="80dp"
-            android:textSize="20dp"
-            android:textColor="@color/brown"
-            android:fontFamily="@font/black_han_sans"
-            android:text="High Score"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1">
 
-        <TextView android:background="@drawable/btn_pink"
-            android:layout_height="80dp"
-            android:layout_width="250dp"
-            android:layout_gravity="center"
-            android:textSize="25dp"
-            android:textColor="#fff"
-            android:fontFamily="@font/black_han_sans"
-            android:text="점수 확인"
-            android:gravity="center"/>
+            <TextView android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="50dp"
+                android:layout_marginLeft="80dp"
+                android:textSize="20dp"
+                android:textColor="@color/brown"
+                android:fontFamily="@font/black_han_sans"
+                android:text="High Score"/>
 
-        <Button android:background="@drawable/btn_blue"
-            android:id="@+id/btn_ranking"
-            android:layout_height="50dp"
-            android:layout_width="200dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:textSize="25dp"
-            android:textColor="#fff"
-            android:fontFamily="@font/black_han_sans"
-            android:text="랭크 확인"
-            android:gravity="center"/>
+            <TextView android:background="@drawable/btn_pink"
+                android:layout_height="80dp"
+                android:layout_width="250dp"
+                android:layout_gravity="center"
+                android:textSize="25dp"
+                android:textColor="#fff"
+                android:fontFamily="@font/black_han_sans"
+                android:text="점수 확인"
+                android:gravity="center"/>
 
-        <Button android:background="@drawable/btn_yellow"
-            android:id="@+id/btn_game_start"
-            android:layout_height="100dp"
-            android:layout_width="200dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="285dp"
+            <Button android:background="@drawable/btn_blue"
+                android:id="@+id/btn_ranking"
+                android:layout_height="50dp"
+                android:layout_width="200dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:textSize="25dp"
+                android:textColor="#fff"
+                android:fontFamily="@font/black_han_sans"
+                android:text="랭크 확인"
+                android:gravity="center"/>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="100dp"/>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:orientation="vertical"
+            android:gravity="bottom">
+
+            <Button
+                android:id="@+id/btn_game_start"
+                android:layout_width="200dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:background="@drawable/btn_yellow"
+                android:fontFamily="@font/black_han_sans"
+                android:gravity="center"
+                android:text="GAME\nSTART"
+                android:textColor="#fff"
+                android:textSize="30dp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
             android:textSize="30dp"
-            android:textColor="#fff"
-            android:fontFamily="@font/black_han_sans"
-            android:text="GAME\nSTART"
-            android:gravity="center"
-            android:layout_marginBottom="70dp"/>
+            android:layout_weight="1"/>
 
     </LinearLayout>
 
