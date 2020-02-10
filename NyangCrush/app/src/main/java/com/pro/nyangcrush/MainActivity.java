@@ -228,7 +228,7 @@ public class MainActivity extends Activity {
         bells[4] = binding.bell5;
 
         // 방울 개수만큼 fill_bell 로, 나머지는 empty
-        for( int i = 0 ; i < 5; i++ ) {
+        for( int i = 0 ; i < MAX_BELL; i++ ) {
             if ( user_bell < i+1 ) {
                 bells[i].setImageBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.bell_empty));
             } else {
@@ -308,7 +308,7 @@ public class MainActivity extends Activity {
         fill_bells();
 
         // 방울이 5개 미만이라면 wait_time 을 주고 handler 를 통해 계속해서 1초에 한 번씩 시간을 증가시킨다.
-        if ( user_bell < 5 ) {
+        if ( user_bell < MAX_BELL ) {
             bellHandler = new Handler() {
                 @Override
                 public void handleMessage(Message msg) {
