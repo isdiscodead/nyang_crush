@@ -383,16 +383,13 @@ public class GameActivity extends Activity {
         btnClick1 = soundPool.load(this, R.raw.can, 1);
 
         mediaPlayer1 = MediaPlayer.create(this,R.raw.backgroundmusic1);
-        mediaPlayer2 = MediaPlayer.create(this,R.raw.backgroundmusic2);
+
         mediaPlayer3 = MediaPlayer.create(this, R.raw.toy);
         mediaPlayer4 = MediaPlayer.create(this,R.raw.kitty);
         mediaPlayer1.setLooping(true);
-        mediaPlayer2.setLooping(true);
         mediaPlayer3.setLooping(false);
         mediaPlayer4.setLooping(false);
 
-
-        mediaPlayer2.start();
     }//onCreate
 
     /**
@@ -887,8 +884,13 @@ public class GameActivity extends Activity {
         combo = 0;
 
         //미디어 플레이어 셋팅
-//        setMediaPlayer();
+        setMediaPlayer();
 
+    }
+
+    private void setMediaPlayer(){
+        mediaPlayer2 = MediaPlayer.create(this,R.raw.backgroundmusic2);
+        mediaPlayer2.setLooping(true);
     }
 
 
@@ -932,6 +934,7 @@ public class GameActivity extends Activity {
         //사운드 재생
         /*if(backgroundSound)
             mediaPlayer.start();*/
+        mediaPlayer2.start();
 
         //효과음 재생
         /*if(effectSound)
@@ -1110,6 +1113,7 @@ public class GameActivity extends Activity {
         timerThreadContoller = false;
         gameStatus = GAME_PAUSED; //GAME_PAUSED = 1
         touchStatus = false;
+        mediaPlayer2.pause();
     }
 
     //게임 이어하기
@@ -1119,6 +1123,7 @@ public class GameActivity extends Activity {
         startGameTimer();
         gameStatus = GAME_PLAYING;
         touchStatus = true;
+        mediaPlayer2.start();
     }
 
     ////////////////////////////////////////
@@ -1146,9 +1151,6 @@ public class GameActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(mediaPlayer2 != null)
-            mediaPlayer2.start();
-
     }
 
     @Override
