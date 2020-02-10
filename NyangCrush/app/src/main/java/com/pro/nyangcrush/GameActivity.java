@@ -150,32 +150,32 @@ public class GameActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN); //상단 틀 없애기*/
 
 
-        //plate가 그려진 후 넓이와 높이를 구하기 위한 리스너
+        // plate가 그려진 후 넓이와 높이를 구하기 위한 리스너
         mGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                //plate에 아이템을 9x9로 배치하기 위해 정확히 9로 나눠지는 수치를 계산
-                plateSize = ( binding.gamePlate.getWidth() / 9) * 9;
-                //plate 넓이, 높이 설정
-                //ViewGroup : View의 부모 , view는 textview, editview, button, imageview등
-                //자식객체밖에 못건듬
+                // plate 에 블록을 9x9로 배치하기 위해 정확히 9로 나눠지는 수치를 계산
+                plateSize = ( binding.gamePlate.getWidth() / 9 ) * 9;
+                // plate 넓이, 높이 설정
+                // ViewGroup : View 의 부모 , 여기서 view 는 textView, editView, button, imageView 등
+                // 자식 객체 밖에 못 건듦
                 ViewGroup.LayoutParams plateLayoutParams =  binding.gamePlate.getLayoutParams(); //game_plate
-                plateLayoutParams.width = plateSize; //레이아웃 wid어th값 속성 지정
-                plateLayoutParams.height = plateSize; //레이아웃 height값 속성 지정
-                binding.gamePlate.setLayoutParams(plateLayoutParams); //레이아웃속성 변경 / 원래는 리니어
+                plateLayoutParams.width = plateSize; // 레이아웃 width값 속성 지정
+                plateLayoutParams.height = plateSize; // 레이아웃 height값 속성 지정
+                binding.gamePlate.setLayoutParams(plateLayoutParams); // 레이아웃속성 변경 ( 원래는 Linear )
 
-                //hideBar넓이, 높이 설정                      //레이아웃 속성객체 얻어옴
-                ViewGroup.LayoutParams hideBarLayoutParams = binding.gameHideNyangBar.getLayoutParams(); //game_hide_Nyang_bar
+                // hideBar 넓이, 높이 설정                      // 레이아웃 속성 객체 얻어옴
+                ViewGroup.LayoutParams hideBarLayoutParams = binding.gameHideNyangBar.getLayoutParams(); // game_hide_Nyang_bar
                 hideBarLayoutParams.width = plateSize;
                 hideBarLayoutParams.height = plateSize / 9;
                 binding.gameHideNyangBar.setLayoutParams(hideBarLayoutParams);
 
-                //판의 크기를 설정한 후
+                // 판의 크기를 설정한 후
                 binding.gamePlate.post(new Runnable() {
                     @Override
                     public void run() {
                         do {
-                            //겹치는게 없을 때까지 판을 셋팅
+                            // 겹치는게 없을 때까지 블록을 셋팅
                             setNyangArray();
                         } while (checkNyangArray());
                         basicSetting();
@@ -393,18 +393,19 @@ public class GameActivity extends Activity {
     }//onCreate
 
     /**
-     * plate에 게임블록을 채워넣음
+     * plate 에 게임블록을 채워넣음
      */
     private void setNyangArray(){
         division9 = plateSize/9;
+
         for(int q = 0 ; q < nyangArray.length ; q++) {
             for(int w = 0 ; w < nyangArray[q].length ; w++) {
                 if(nyangArray[q][w] == null) {
-                    //게임블록 포지션만을 저장하는 배열
+                    // 게임 블록 포지션만을 저장하는 배열
                     nyangPositions[q][w] = new NyangPosition((int)binding.gamePlate.getX() + (division9 * w),
                             (int)binding.gamePlate.getY() + (division9 * q));
 
-                    //실제 게임블록이 저장되는 배열 배열판에 게임말이미지 등록
+                    // 실제 게임블록이 저장되는 배열; 배열판에 블록 이미지 등록
                     nyangArray[q][w] = new NyangImageView(GameActivity.this
                             , (int)binding.gamePlate.getX() + (division9 * w)
                             , (int)binding.gamePlate.getY() + (division9 * q)
@@ -412,14 +413,12 @@ public class GameActivity extends Activity {
                             , division9
                             , (int)(Math.random() * 6) + 1);
 
-
+                    // 게임판 레이아웃에 만들어진 view 를 추가해준다.
                     binding.layout.addView(nyangArray[q][w]);
-
-
                 }
             }
         }
-    }//setDustArray
+    }// setNyangArray
 
 
     //게임말 스왑 애니메이션
@@ -683,7 +682,7 @@ public class GameActivity extends Activity {
                         for (int r = q + 1; r <= verticalMax; r++) {
                             if (nyangArray[q][w].getNyangType() == nyangArray[r][w].getNyangType()) {
                                 if (binding.layout.getViewWidget(nyangArray[r][w]) != null) {
-                                    //리무브 애니메이션
+                                    // 리무브 애니메이션
                                     Animation anim = AnimationUtils.loadAnimation(this, R.anim.remove_nyang);
                                     nyangArray[r][w].startAnimation(anim);
                                 }
