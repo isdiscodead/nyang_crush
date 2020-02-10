@@ -4,6 +4,7 @@ import androidx.databinding.DataBindingUtil;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -59,6 +60,10 @@ public class GameActivity extends Activity {
     SoundPool soundPool;
     private int btnClick1;
 
+    // 유저 벨
+    SharedPreferences pref;
+    int user_bell;
+
     private int plateSize;
     private int division9; // plate를 9로 나눈 값
     private int gameStatus;
@@ -70,10 +75,10 @@ public class GameActivity extends Activity {
     private int userScore;
     private int combo; //콤보 점수
     private int cnt; //첫터치 반응 확인
-    private int combotime; //콤보 유지시간
+    private float combotime; //콤보 유지시간
 
     //타이머부분
-    private int timer; //게임 플레이 타임
+    private float timer; //게임 플레이 타임
     private int time; //게임진행 타임
     private boolean timerThreadContoller; //게임중지 / 게임진행 확인용
 
@@ -108,6 +113,8 @@ public class GameActivity extends Activity {
         nyangArray = new NyangImageView[9][9]; //게임 판 9X9
         nyangPositions = new NyangPosition[9][9]; //게임말 9X9배치
 
+        // SharedPreference 초기화
+        pref = getSharedPreferences("SHARE", MODE_PRIVATE);
 
         /* pause 버튼 눌렀을 때 다이얼로그 생성 */
         binding.btnPause.setOnClickListener(new View.OnClickListener() {
@@ -779,11 +786,14 @@ public class GameActivity extends Activity {
 
             //점수 갱신
             userScore += (removeList.size() * 10); //기본블록 점수 90
-            timer += 1;
+            timer += 0.5f;
 
             //콤보유지시간 5초
             combotime = 5;
 
+            if(combo >= 1){
+                timer += 0.2f;
+            }
             //5콤보이상 콤보유지시간 3초
             if (combo >= 5) {
                 combotime = 3;
@@ -930,6 +940,14 @@ public class GameActivity extends Activity {
             e.printStackTrace();
         }
 
+        // 벨 하나 감소
+        user_bell = pref.getInt("bell", 5);
+        user_bell --;
+        SharedPreferences.Editor edit = pref.edit();
+        edit.putInt("bell", user_bell);
+        edit.commit();
+        Log.i("bell", ""+user_bell);
+
         //사운드 재생
         /*if(backgroundSound)
             mediaPlayer.start();*/
@@ -990,23 +1008,24 @@ public class GameActivity extends Activity {
                 //타이머 루프
                 while(timerThreadContoller) {
                     try {
-                        Thread.sleep(1000);
-                        timer--; //순수 게임시간
+                        Thread.sleep(100);
+                        timer -= 0.1f; //순수 게임시간
                         time++;
-                        combotime--;
+                        combotime -= 0.1f;
 
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
                                 // 1초 마다 타이머 바 갱신
-                                binding.time.setText(timer+"");
+                                binding.time.setText(String.format("%.1f",timer));
 
-                                if(combotime == 0){
+                                if(combotime <= 0){
                                     binding.count.setText(""+combo);
                                     combo = 0;
                                     combotime = 1 ;
-                                }
 
+                                }
+                                Log.i("fa",""+combotime);
                             }
                         });
 
@@ -1078,8 +1097,7 @@ public class GameActivity extends Activity {
                 });
 
                 score.setText(String.format("%,d", userScore));
-                playTime.setText(String.format("%d", time));
-
+                playTime.setText(String.format("%d", time / 10));
                 isBestScore.setVisibility(userScore == 100 ? View.VISIBLE : View.INVISIBLE);
                 isBestTime.setVisibility(Integer.parseInt(playTime.getText().toString()) == 999 ? View.VISIBLE : View.INVISIBLE);
             }
@@ -1088,6 +1106,24 @@ public class GameActivity extends Activity {
 
     //게임 다시하기
     private void gameReplay() {
+
+        pref = getSharedPreferences("SHARE", MODE_PRIVATE);
+        user_bell = pref.getInt("bell", 5);
+
+        // 남은 방울이 없다면 finish
+        if ( user_bell == 0 ) {
+            Toast.makeText(GameActivity.this, "남은 방울이 없다냥 !", Toast.LENGTH_SHORT).show();
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    //
+                    finish();
+                }
+            }, 1000 );
+            return;
+        }
+
         //기존 plate 내의 게임말들 전부 제거
         for(int q = 0 ; q < nyangArray.length ; q++) {
             for(int w = 0 ; w < nyangArray[q].length ; w++) {

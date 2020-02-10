@@ -66,11 +66,15 @@ public class MainActivity extends Activity {
     // 도움말 다이얼로그 애니메이션
     private Animation helpAnim;
 
+    @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         binding.setActivity(this);
+
+        // SharedPreference 초기화
+        pref = getSharedPreferences("SHARE", MODE_PRIVATE );
 
         //효과음 사운드풀 초기화
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
@@ -200,6 +204,16 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View view) {
                 soundPool.play(btnClick1, 1,1, 1,0,1);
+
+                pref = getSharedPreferences("SHARE", MODE_PRIVATE);
+                user_bell = pref.getInt("bell", 5);
+
+                // 남은 방울이 없다면 return
+                if ( user_bell == 0 ) {
+                    Toast.makeText(MainActivity.this, "남은 방울이 없다냥 !", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 Intent i = new Intent(MainActivity.this, GameActivity.class);
                 startActivity(i);
 
@@ -214,6 +228,41 @@ public class MainActivity extends Activity {
         mediaPlayer2 = MediaPlayer.create(this, R.raw.backgroundmusic2);
         mediaPlayer.setLooping(true);
         mediaPlayer2.setLooping(true);
+
+        /* 벨 핸들러 */
+        bellHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                bellHandler.sendEmptyMessageDelayed(0, 1000);
+                wait_time --;
+
+                // 분, 초로 분할
+                int minute = wait_time / 60 ;
+                int sec = wait_time % 60 ;
+
+                binding.bellTime.setText(String.format("%02d:%02d", minute, sec));
+
+                if ( wait_time == 0 && user_bell < 4 ) {
+                    // 아직 더 채워야 하는 경우
+                    user_bell ++;
+                    SharedPreferences.Editor edit = pref.edit();
+                    edit.putInt("bell", user_bell);
+                    edit.commit();
+                    fill_bells();
+                    wait_time = 1800;
+                } else if ( wait_time == 0 && user_bell == 4 ) {
+                    // 이제 다 찬 경우 ( 더이상 충전 x )
+                    bellHandler.removeMessages(0);  // 핸들러 삭제
+                    user_bell ++;
+                    SharedPreferences.Editor edit = pref.edit();
+                    edit.putInt("bell", user_bell);
+                    edit.commit();
+                    fill_bells();
+                }
+
+
+            }
+        };
 
     }//onCreate()
 
@@ -265,10 +314,13 @@ public class MainActivity extends Activity {
     protected void onStop() {
         super.onStop();
         SharedPreferences.Editor edit = pref.edit();
+        user_bell = pref.getInt("bell", 5);
         edit.putInt("bell", user_bell);
         edit.putLong("time", System.currentTimeMillis() - ( 1800 - wait_time) * 1000 ); // 종료 시간 기록
         edit.commit();
         bellHandler.removeMessages(0);
+        Log.i("bell", "onStop");
+        Log.i("bell", "onStop: " + user_bell);
     }
 
     @SuppressLint("HandlerLeak")
@@ -276,11 +328,8 @@ public class MainActivity extends Activity {
     protected void onResume() {
         super.onResume();
 
-        // SharedPreference 초기화
-        pref = getSharedPreferences("SHARE", MODE_PRIVATE );
-
         // 저장된 방울 개수 가져옴 ( 기본값 5 )
-        user_bell = pref.getInt("bell",  0 );
+        user_bell = pref.getInt("bell",  0);
 
         // 저장된 종료 시간 가져오고, 시작 시간도 구한다.
         stop_time = pref.getLong("time", System.currentTimeMillis() );
@@ -308,35 +357,10 @@ public class MainActivity extends Activity {
 
         // 방울이 5개 미만이라면 wait_time 을 주고 handler 를 통해 계속해서 1초에 한 번씩 시간을 증가시킨다.
         if ( user_bell < MAX_BELL ) {
-            bellHandler = new Handler() {
-                @Override
-                public void handleMessage(Message msg) {
-                    bellHandler.sendEmptyMessageDelayed(0, 1000);
-                    wait_time --;
-
-                    // 분, 초로 분할
-                    int minute = wait_time / 60 ;
-                    int sec = wait_time % 60 ;
-
-                    binding.bellTime.setText(String.format("%02d:%02d", minute, sec));
-
-                    if ( wait_time == 0 && user_bell < 4 ) {
-                        // 아직 더 채워야 하는 경우
-                        user_bell ++;
-                        fill_bells();
-                        wait_time = 1800;
-                    } else if ( wait_time == 0 && user_bell == 4 ) {
-                        // 이제 다 찬 경우 ( 더이상 충전 x )
-                        bellHandler.removeMessages(0);  // 핸들러 삭제
-                        user_bell ++;
-                        fill_bells();
-                    }
-                }
-            };
-
             bellHandler.sendEmptyMessage(0);
         }
     }
+
 
     // 다이어그램 온클릭 리스너
     View.OnClickListener dialClick = new View.OnClickListener() {
