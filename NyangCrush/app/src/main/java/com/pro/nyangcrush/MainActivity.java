@@ -80,6 +80,7 @@ public class MainActivity extends Activity {
         }
 
         btnClick1 = soundPool.load(this, R.raw.can, 1);
+
         /* 도움말 버튼 눌렀을 때 다이얼로그 생성 */
         binding.btnHelp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,8 +88,11 @@ public class MainActivity extends Activity {
                 soundPool.play(btnClick1, 1,1, 1,0,1);
                 dialog = new Dialog( MainActivity.this );
 
+                // 다이얼로그 타이틀 삭제
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                // 배경 프레임 삭제
                 Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                // 다이얼로그 커스텀 애니메이션 적용
                 dialog.getWindow().getAttributes().windowAnimations = R.style.CustomDialogAnimation;
 
                 dialog.setContentView( R.layout.diag_howtp );
@@ -99,15 +103,15 @@ public class MainActivity extends Activity {
                 dialog.show();
 
                 // 애니메이션 개체들
-                final ImageView finger = dialog.findViewById(R.id.nyang_foot);
-                final ImageView dust1 = dialog.findViewById(R.id.block1);
-                final ImageView dust2 = dialog.findViewById(R.id.block4);
-                final ImageView dust3 = dialog.findViewById(R.id.block3);
-                final ImageView dust4 = dialog.findViewById(R.id.block2);
+                final ImageView foot = dialog.findViewById(R.id.nyang_foot);
+                final ImageView block1 = dialog.findViewById(R.id.block1);
+                final ImageView block2 = dialog.findViewById(R.id.block4);
+                final ImageView block3 = dialog.findViewById(R.id.block3);
+                final ImageView block4 = dialog.findViewById(R.id.block2);
 
                 final Handler handler = new Handler();
 
-                //시작 애니메이션 반복 쓰레드
+                // 도움말 애니메이션 반복 쓰레드
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -116,36 +120,31 @@ public class MainActivity extends Activity {
                                 handler.post(new Runnable() {
                                     @Override
                                     public void run() {
+                                        // 고양이 발 움직임
                                         helpAnim = AnimationUtils.loadAnimation(MainActivity.this, R.anim.finger_anim);
-                                        helpAnim.setFillAfter(true);
-                                        finger.startAnimation(helpAnim);
+                                        helpAnim.setFillAfter(true);    // 움직인 상태를 계속 유지
+                                        foot.startAnimation(helpAnim);
 
-                                        TranslateAnimation tranAnimation2 = new TranslateAnimation(
-                                                Animation.RELATIVE_TO_SELF , 0
-                                                ,Animation.RELATIVE_TO_SELF , 1
-                                                ,Animation.RELATIVE_TO_SELF , 0
-                                                ,Animation.RELATIVE_TO_SELF , 0);
-                                        tranAnimation2.setDuration(1000);
-                                        tranAnimation2.setStartOffset(1000);
-                                        tranAnimation2.setFillAfter(true);
+                                        // 두 개의 블록 스왑
                                         helpAnim = AnimationUtils.loadAnimation(MainActivity.this, R.anim.help_dialog_dust_anim2);
                                         helpAnim.setFillAfter(true);
-                                        dust4.startAnimation(helpAnim);
-
+                                        block4.startAnimation(helpAnim);
                                         helpAnim = AnimationUtils.loadAnimation(MainActivity.this, R.anim.help_dialog_dust_anim);
                                         helpAnim.setFillAfter(true);
-                                        dust3.startAnimation(helpAnim);
+                                        block3.startAnimation(helpAnim);
 
+                                        // 맞춰진 블록 삭제
                                         helpAnim = AnimationUtils.loadAnimation(MainActivity.this, R.anim.remove_nyang);
                                         helpAnim.setFillAfter(true);
                                         helpAnim.setStartOffset(2000);
                                         helpAnim.setDuration(500);
-                                        dust1.startAnimation(helpAnim);
-                                        dust2.startAnimation(helpAnim);
+                                        block1.startAnimation(helpAnim);
+                                        block2.startAnimation(helpAnim);
 
                                     }
                                 });
-                                Thread.sleep(4000);
+                                Thread.sleep(4000); // 4초 간격으로 재실행
+
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
@@ -228,7 +227,7 @@ public class MainActivity extends Activity {
         bells[4] = binding.bell5;
 
         // 방울 개수만큼 fill_bell 로, 나머지는 empty
-        for( int i = 0 ; i < 5; i++ ) {
+        for( int i = 0 ; i < MAX_BELL; i++ ) {
             if ( user_bell < i+1 ) {
                 bells[i].setImageBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.bell_empty));
             } else {
@@ -308,7 +307,7 @@ public class MainActivity extends Activity {
         fill_bells();
 
         // 방울이 5개 미만이라면 wait_time 을 주고 handler 를 통해 계속해서 1초에 한 번씩 시간을 증가시킨다.
-        if ( user_bell < 5 ) {
+        if ( user_bell < MAX_BELL ) {
             bellHandler = new Handler() {
                 @Override
                 public void handleMessage(Message msg) {
@@ -327,8 +326,8 @@ public class MainActivity extends Activity {
                         fill_bells();
                         wait_time = 1800;
                     } else if ( wait_time == 0 && user_bell == 4 ) {
-                        // 이제 다 찬 경우
-                        bellHandler.removeMessages(0);
+                        // 이제 다 찬 경우 ( 더이상 충전 x )
+                        bellHandler.removeMessages(0);  // 핸들러 삭제
                         user_bell ++;
                         fill_bells();
                     }
