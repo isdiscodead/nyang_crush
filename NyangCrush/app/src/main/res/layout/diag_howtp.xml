@@ -128,4 +128,5 @@
             android:src="@drawable/nyang_foot" />
 
     </FrameLayout>
+
 </layout>

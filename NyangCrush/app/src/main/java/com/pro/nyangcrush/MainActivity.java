@@ -43,7 +43,7 @@ public class MainActivity extends Activity {
      ActivityMainBinding binding;
      Dialog dialog;
      //배경음
-     private MediaPlayer mediaPlayer, mediaPlayer2;
+     private MediaPlayer mediaPlayer1, mediaPlayer2;
 
      // 다이얼로그 내부 버튼
     Button btn_close, btn_logout;
@@ -52,7 +52,7 @@ public class MainActivity extends Activity {
     int user_bell;
     final static int MAX_BELL = 5;
 
-    //효과음
+    // 효과음
     SoundPool soundPool;
     private boolean effectSound = true;
     private boolean backgroundSound = true;
@@ -79,7 +79,7 @@ public class MainActivity extends Activity {
         // SharedPreference 초기화
         pref = getSharedPreferences("SHARE", MODE_PRIVATE );
 
-        //효과음 사운드풀 초기화
+        // 효과음 사운드풀 초기화
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
             soundPool = new SoundPool.Builder().setMaxStreams(2).build();
         }else{
@@ -134,10 +134,10 @@ public class MainActivity extends Activity {
                                         foot.startAnimation(helpAnim);
 
                                         // 두 개의 블록 스왑
-                                        helpAnim = AnimationUtils.loadAnimation(MainActivity.this, R.anim.help_dialog_dust_anim2);
+                                        helpAnim = AnimationUtils.loadAnimation(MainActivity.this, R.anim.help_dialog_nyang_anim2);
                                         helpAnim.setFillAfter(true);
                                         block4.startAnimation(helpAnim);
-                                        helpAnim = AnimationUtils.loadAnimation(MainActivity.this, R.anim.help_dialog_dust_anim);
+                                        helpAnim = AnimationUtils.loadAnimation(MainActivity.this, R.anim.help_dialog_nyang_anim);
                                         helpAnim.setFillAfter(true);
                                         block3.startAnimation(helpAnim);
 
@@ -345,14 +345,14 @@ public class MainActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        mediaPlayer.stop();
+        mediaPlayer1.stop();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
 
-        mediaPlayer.stop();
+        mediaPlayer1.stop();
         mediaPlayer2.stop();
     }
 

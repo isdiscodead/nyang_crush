@@ -8,8 +8,8 @@
         android:toYDelta="100%p"
         android:duration="400" />
 
-    <!--fromYDelta : 시작
-        toYDelta : 끝 -->
+    <!-- fromYDelta : 시작
+         toYDelta : 끝 -->
 
     <alpha
         xmlns:android="http://schemas.android.com/apk/res/android"

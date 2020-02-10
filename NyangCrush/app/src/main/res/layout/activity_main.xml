@@ -11,11 +11,15 @@
             type="com.pro.nyangcrush.MainActivity"/>
     </data>
 
-    <LinearLayout android:orientation="vertical"
+    <!-- 전체 레이아웃 -->
+    <LinearLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
         android:background="@drawable/background"
-        tools:context=".MainActivity" android:layout_height="match_parent"
-        android:layout_width="match_parent">
+        tools:context=".MainActivity" >
 
+        <!-- 방울, 상단 버튼 메뉴 레이아웃-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -23,116 +27,117 @@
             android:gravity="center"
             android:layout_weight="1">
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:background="@drawable/white_box"
-            android:paddingLeft="5dp"
-            android:layout_marginLeft="10dp"
-            android:layout_weight="1">
+            <!-- 방울 레이아웃 -->
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:background="@drawable/white_box"
+                android:paddingLeft="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1">
 
-            <ImageView
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:src="@drawable/bell_fill"
-                android:layout_marginTop="20dp"
-                android:id="@+id/bell1"
-                android:padding="3dp"
-                android:layout_centerVertical="true" />
+                <!-- 방울 1 ~ 5 -->
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/bell_fill"
+                    android:layout_marginTop="20dp"
+                    android:id="@+id/bell1"
+                    android:padding="3dp"
+                    android:layout_centerVertical="true" />
 
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/bell_fill"
+                    android:layout_marginTop="20dp"
+                    android:id="@+id/bell2"
+                    android:padding="3dp"
+                    android:layout_toRightOf="@+id/bell1"
+                    android:layout_centerVertical="true" />
 
-            <ImageView
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:src="@drawable/bell_fill"
-                android:layout_marginTop="20dp"
-                android:id="@+id/bell2"
-                android:padding="3dp"
-                android:layout_toRightOf="@+id/bell1"
-                android:layout_centerVertical="true"
-                />
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/bell_fill"
+                    android:layout_marginTop="20dp"
+                    android:id="@+id/bell3"
+                    android:padding="3dp"
+                    android:layout_toRightOf="@id/bell2"
+                    android:layout_centerVertical="true" />
 
-            <ImageView
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:src="@drawable/bell_fill"
-                android:layout_marginTop="20dp"
-                android:id="@+id/bell3"
-                android:padding="3dp"
-                android:layout_toRightOf="@id/bell2"
-                android:layout_centerVertical="true"
-                />
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/bell_fill"
+                    android:layout_marginTop="20dp"
+                    android:id="@+id/bell4"
+                    android:padding="3dp"
+                    android:layout_toRightOf="@id/bell3"
+                    android:layout_centerVertical="true" />
 
-            <ImageView
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:src="@drawable/bell_fill"
-                android:layout_marginTop="20dp"
-                android:id="@+id/bell4"
-                android:padding="3dp"
-                android:layout_toRightOf="@id/bell3"
-                android:layout_centerVertical="true"
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/bell_fill"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="20dp"
+                    android:id="@+id/bell5"
+                    android:padding="3dp"
+                    android:layout_toRightOf="@id/bell4"
+                    android:layout_centerVertical="true" />
 
-                />
+                <!-- 방울 시간 -->
+                <TextView
+                    android:id="@+id/bell_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/bell5"
+                    android:paddingLeft="5dp"
+                    android:text="00:00"
+                    android:textSize="15dp"
+                    android:textColor="@color/brown"
+                    android:layout_centerVertical="true"/>
 
-            <ImageView
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:src="@drawable/bell_fill"
-                android:layout_marginRight="5dp"
-                android:layout_marginTop="20dp"
-                android:id="@+id/bell5"
-                android:padding="3dp"
-                android:layout_toRightOf="@id/bell4"
-                android:layout_centerVertical="true"
-                />
+            </RelativeLayout>
 
-            <TextView
-                android:id="@+id/bell_time"
+            <!-- 상단 버튼 메뉴 레이아웃 -->
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/bell5"
-                android:paddingLeft="5dp"
-                android:text="00:00"
-                android:textSize="15dp"
-                android:textColor="@color/brown"
-                android:layout_centerVertical="true"/>
+                android:orientation="horizontal"
+                android:gravity="center|right"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1">
 
-        </RelativeLayout>
+                <!-- 게임 설명 버튼 -->
+                <Button
+                    android:layout_height="50dp"
+                    android:id="@+id/btn_help"
+                    android:layout_width="50dp"
+                    android:background="@drawable/btn_help" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center|right"
-            android:layout_marginRight="10dp"
-            android:layout_weight="1">
+                <!-- 배경음, 효과음 세팅 버튼 -->
+                <Button
+                    android:id="@+id/btn_set"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/btn_setting" />
 
-            <!-- 상단 버튼 메뉴 -->
-            <Button android:layout_height="50dp"
-                android:id="@+id/btn_help"
-                android:layout_width="50dp"
-                android:background="@drawable/btn_help" />
-
-            <Button
-                android:id="@+id/btn_set"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginLeft="10dp"
-                android:background="@drawable/btn_setting" />
+            </LinearLayout>
 
         </LinearLayout>
 
-        </LinearLayout>
-
-        <!-- 점수 / 랭크 확인 + 게임 시작-->
+        <!-- 점수 / 랭크 확인 + 게임 시작 레이아웃 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_weight="1">
 
-            <TextView android:layout_height="wrap_content"
+            <TextView
+                android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_marginTop="50dp"
                 android:layout_marginLeft="80dp"
@@ -141,7 +146,9 @@
                 android:fontFamily="@font/black_han_sans"
                 android:text="High Score"/>
 
-            <TextView android:background="@drawable/btn_pink"
+            <!-- 점수 확인 -->
+            <TextView
+                android:background="@drawable/btn_pink"
                 android:layout_height="80dp"
                 android:layout_width="250dp"
                 android:layout_gravity="center"
@@ -151,7 +158,9 @@
                 android:text="점수 확인"
                 android:gravity="center"/>
 
-            <Button android:background="@drawable/btn_blue"
+            <!-- 랭크확인 버튼 -->
+            <Button
+                android:background="@drawable/btn_blue"
                 android:id="@+id/btn_ranking"
                 android:layout_height="50dp"
                 android:layout_width="200dp"
@@ -178,6 +187,7 @@
 
         </RelativeLayout>
 
+        <!-- 게임 시작 버튼 레이아웃 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -185,6 +195,7 @@
             android:orientation="vertical"
             android:gravity="bottom">
 
+            <!-- 게임 시작 버튼 -->
             <Button
                 android:id="@+id/btn_game_start"
                 android:layout_width="200dp"
@@ -199,6 +210,7 @@
 
         </LinearLayout>
 
+        <!-- 핸드폰 해상도에 따른 크기 변동을 예방 할 view -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -206,6 +218,6 @@
             android:textSize="30dp"
             android:layout_weight="1"/>
 
-    </LinearLayout>
+    </LinearLayout>  <!-- 전체 레이아웃 -->
 
 </layout>

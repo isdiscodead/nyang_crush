@@ -5,6 +5,10 @@ import android.view.ViewGroup;
 
 import androidx.appcompat.widget.AppCompatImageView;
 
+/** /////////////
+ *  블럭이미지
+///////////// **/
+
 public class NyangImageView extends AppCompatImageView {
 
     private int nyangType;
@@ -44,7 +48,7 @@ public class NyangImageView extends AppCompatImageView {
         return nyangType;
     }
 
-    //절대위치값
+    // 절대위치값
     public int getAbsoluteX() {
         location = new int[2];
         this.getLocationOnScreen(location);

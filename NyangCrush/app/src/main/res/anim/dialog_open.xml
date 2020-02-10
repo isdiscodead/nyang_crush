@@ -7,4 +7,4 @@
     <!--세로축으로
         fromYDelta="100%p" : 시작시 100%p만큼 이동
         toYDelta : Y의 끝 위치 0
-       duration="400" 지속시간 0.4초 400ms -->
+        duration="400" 지속시간 0.4초 400ms -->

@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
     <!-- 데이터 바인딩 -->
     <data>
         <variable
@@ -10,29 +12,33 @@
             type="com.pro.nyangcrush.GameActivity"/>
     </data>
 
-    <LinearLayout android:orientation="vertical"
-        android:background="@color/creamYellow"
-        tools:context=".GameActivity"
+    <!-- 전체 레이아웃 -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_width="match_parent">
+        android:orientation="vertical"
+        android:background="@color/creamYellow"
+        tools:context=".GameActivity">
 
-        <!-- 일시정지 버튼 -->
+        <!-- 일시정지 버튼  레이아웃 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="right">
 
-            <Button android:background="@drawable/btn_pause"
-                android:id="@+id/btn_pause"
-                android:layout_height="40dp"
+            <!-- 일시정지 버튼 -->
+            <Button
                 android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/btn_pause"
+                android:id="@+id/btn_pause"
                 android:layout_marginTop="15dp"
                 android:layout_marginRight="15dp"/>
 
         </LinearLayout>
 
-        <!-- 최고 점수 & 현재 점수 -->
+        <!-- 최고 점수 & 현재 점수 레이아웃 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -41,16 +47,15 @@
             <!-- 최고 점수 -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_marginTop="15dp"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:layout_marginTop="15dp"
                 android:layout_marginBottom="-10dp"
                 android:paddingLeft="10dp">
 
-
                 <TextView
-                    android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_gravity="left"
                     android:textColor="#fff"
@@ -79,14 +84,16 @@
                 android:layout_marginTop="20dp"
                 android:paddingLeft="10dp">
 
-                <TextView android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:layout_gravity="left"
-                        android:layout_marginLeft="12dp"
-                        android:textColor="#fff"
-                        android:textSize="25dp"
-                        android:text="Now Sco |"
-                        android:fontFamily="@font/black_han_sans"/>
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="12dp"
+                    android:textColor="#fff"
+                    android:textSize="25dp"
+                    android:text="Now Sco |"
+                    android:fontFamily="@font/black_han_sans"/>
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -98,18 +105,21 @@
                     android:id="@+id/nowScore"/>
 
             </LinearLayout>
+
         </LinearLayout>
 
-        <!-- 시간, 콤보 표시 -->
+        <!-- 시간, 콤보 표시 레이아웃 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout android:orientation="horizontal"
-                android:layout_marginTop="15dp"
+            <!-- 시간, 콤보 -->
+            <LinearLayout
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="15dp"
                 android:layout_gravity="center">
 
                 <TextView
@@ -122,7 +132,8 @@
                     android:textColor="#6E5C5C"
                     android:textSize="30dp" />
 
-                <TextView android:layout_height="wrap_content"
+                <TextView
+                    android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:textColor="#6E5C5C"
                     android:textSize="30dp"
@@ -132,11 +143,13 @@
 
             </LinearLayout>
 
-            <LinearLayout android:orientation="horizontal"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:layout_gravity="center">
+            <!-- 시간, 콤보 표시박스 -->
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_gravity="center">
 
                 <TextView
                     android:layout_width="90dp"
@@ -158,7 +171,9 @@
                     android:fontFamily="@font/black_han_sans"
                     android:layout_marginLeft="100dp"
                     android:id="@+id/count"/>
+
             </LinearLayout>
+
         </LinearLayout>
 
         <!-- 게임 시작 메시지 -->
@@ -170,13 +185,15 @@
             android:src="@drawable/game_start_mess"
             android:visibility="gone"/>
 
-        <!-- 게임 판 -->
+        <!-- 게임 판 레이아웃 -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="10dp">
 
+            <!-- 동일한 블럭 3개 이상일때 삭제되는
+                 블록들을 채우기 위해 새로 나오는 블록 바 -->
             <TextView
                 android:id="@+id/game_hide_Nyang_bar"
                 android:layout_width="0dp"
@@ -186,6 +203,7 @@
                 app:layout_constraintBottom_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
 
+            <!-- 게임판 -->
             <TextView
                 android:id="@+id/game_plate"
                 android:layout_width="match_parent"
@@ -198,8 +216,9 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/game_hide_Nyang_bar"
                 android:background="@color/richWhite"/>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+    </LinearLayout> <!-- 전체 레이아웃 -->
 
-    </LinearLayout>
 </layout>
