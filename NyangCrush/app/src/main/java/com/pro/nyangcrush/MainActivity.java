@@ -289,7 +289,7 @@ public class MainActivity extends Activity {
 
         // 만약 현재 저장되어있는 방울이 5개 미만이라면
         // 지난 시간을 계산하여 방울을 추가해준다.
-        if ( user_bell <= MAX_BELL ) {
+        if ( user_bell < MAX_BELL ) {
             // 개당 30분 대기
             // wait_time = 60 * 30;
             int plus_bell =  (int)(( start_time - stop_time ) / 1800000 );
