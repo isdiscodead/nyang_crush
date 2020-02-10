@@ -20,64 +20,69 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:gravity="center"
             android:layout_weight="1">
 
         <RelativeLayout
-            android:layout_width="240dp"
+            android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:background="@drawable/white_box"
             android:paddingLeft="5dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp">
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
                 android:src="@drawable/bell_fill"
                 android:layout_marginTop="20dp"
                 android:id="@+id/bell1"
-                android:layout_centerVertical="true"
-                />
+                android:padding="3dp"
+                android:layout_centerVertical="true" />
 
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
                 android:src="@drawable/bell_fill"
                 android:layout_marginTop="20dp"
                 android:id="@+id/bell2"
+                android:padding="3dp"
                 android:layout_toRightOf="@+id/bell1"
                 android:layout_centerVertical="true"
                 />
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
                 android:src="@drawable/bell_fill"
                 android:layout_marginTop="20dp"
                 android:id="@+id/bell3"
+                android:padding="3dp"
                 android:layout_toRightOf="@id/bell2"
                 android:layout_centerVertical="true"
                 />
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
                 android:src="@drawable/bell_fill"
                 android:layout_marginTop="20dp"
                 android:id="@+id/bell4"
+                android:padding="3dp"
                 android:layout_toRightOf="@id/bell3"
                 android:layout_centerVertical="true"
 
                 />
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
                 android:src="@drawable/bell_fill"
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="20dp"
                 android:id="@+id/bell5"
+                android:padding="3dp"
                 android:layout_toRightOf="@id/bell4"
                 android:layout_centerVertical="true"
                 />
@@ -95,24 +100,29 @@
 
         </RelativeLayout>
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center|right"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1">
 
-        <!-- 상단 버튼 메뉴 -->
+            <!-- 상단 버튼 메뉴 -->
             <Button android:layout_height="50dp"
                 android:id="@+id/btn_help"
                 android:layout_width="50dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginLeft="30dp"
-                android:background="@drawable/btn_help"/>
+                android:background="@drawable/btn_help" />
 
             <Button
                 android:id="@+id/btn_set"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="15dp"
                 android:background="@drawable/btn_setting" />
+
+        </LinearLayout>
+
         </LinearLayout>
 
         <!-- 점수 / 랭크 확인 + 게임 시작-->
