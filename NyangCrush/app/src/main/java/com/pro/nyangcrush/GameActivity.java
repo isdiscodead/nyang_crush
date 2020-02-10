@@ -31,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.pro.nyangcrush.databinding.ActivityGameBinding;
 
 import java.util.ArrayList;
@@ -63,6 +64,10 @@ public class GameActivity extends Activity {
     // 유저 벨
     SharedPreferences pref;
     int user_bell;
+   private boolean effectSound;
+   private boolean backgroundSound;
+
+    private Gson gson;
 
     private int plateSize;
     private int division9; // plate를 9로 나눈 값
@@ -103,6 +108,7 @@ public class GameActivity extends Activity {
     //게임말 채우기 감지 콜백
     FillCompletedListener fillCompletedListener;
 
+    boolean effect = true, background = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,8 +119,9 @@ public class GameActivity extends Activity {
         nyangArray = new NyangImageView[9][9]; //게임 판 9X9
         nyangPositions = new NyangPosition[9][9]; //게임말 9X9배치
 
-        // SharedPreference 초기화
-        pref = getSharedPreferences("SHARE", MODE_PRIVATE);
+        SharedPreferences pref = getSharedPreferences("SHARE", MODE_PRIVATE);
+        effect = pref.getBoolean("effect", effect);
+        background = pref.getBoolean("background", background);
 
         /* pause 버튼 눌렀을 때 다이얼로그 생성 */
         binding.btnPause.setOnClickListener(new View.OnClickListener() {
@@ -308,6 +315,7 @@ public class GameActivity extends Activity {
                                 if(!checkNyangArray()) {
                                     //터트릴 블록 하나도 없을 경우 다시 스왑함으로써 원상태로 되돌림
                                     swapNyang(e1X, e2X, e1Y, e2Y, true); //좌표 1 , 2 , 6 , 6
+                                    if (effect)
                                     mediaPlayer4.start();
 
                                     //콤보 유지시간중 블록을 잘못 건드려 터트릴게 없을 경우 콤보 초기화
@@ -393,7 +401,7 @@ public class GameActivity extends Activity {
 
         mediaPlayer3 = MediaPlayer.create(this, R.raw.toy);
         mediaPlayer4 = MediaPlayer.create(this,R.raw.kitty);
-        mediaPlayer1.setLooping(true);
+//            mediaPlayer1.setLooping(true);
         mediaPlayer3.setLooping(false);
         mediaPlayer4.setLooping(false);
 
@@ -843,6 +851,7 @@ public class GameActivity extends Activity {
         }
 
         //먼지 터지는 효과음
+        if (effect)
         mediaPlayer3.start();
 
         return flag;
@@ -951,6 +960,7 @@ public class GameActivity extends Activity {
         //사운드 재생
         /*if(backgroundSound)
             mediaPlayer.start();*/
+        if (background)
         mediaPlayer2.start();
 
         //효과음 재생
@@ -1158,6 +1168,7 @@ public class GameActivity extends Activity {
         startGameTimer();
         gameStatus = GAME_PLAYING;
         touchStatus = true;
+        if (background)
         mediaPlayer2.start();
     }
 

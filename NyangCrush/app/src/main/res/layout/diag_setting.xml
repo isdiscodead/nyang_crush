@@ -56,7 +56,9 @@
                 android:thumb="@drawable/switch_thumb"
                 android:track="@drawable/switch_track"
                 android:textOff=""
-                android:textOn=""/>
+                android:textOn=""
+                android:checked="true"
+                android:id="@+id/setting_background_sound"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -102,7 +104,9 @@
                 android:thumb="@drawable/switch_thumb"
                 android:track="@drawable/switch_track"
                 android:textOff=""
-                android:textOn=""/>
+                android:textOn=""
+                android:checked="true"
+                android:id="@+id/setting_effect_sound"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

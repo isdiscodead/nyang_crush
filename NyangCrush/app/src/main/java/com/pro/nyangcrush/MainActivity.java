@@ -6,6 +6,7 @@ import androidx.databinding.DataBindingUtil;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -27,6 +28,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.pro.nyangcrush.databinding.ActivityMainBinding;
@@ -52,7 +54,8 @@ public class MainActivity extends Activity {
 
     //효과음
     SoundPool soundPool;
-    private boolean effectSound;
+    private boolean effectSound = true;
+    private boolean backgroundSound = true;
     private int btnClick1;
 
     // 방울 배열
@@ -89,6 +92,7 @@ public class MainActivity extends Activity {
         binding.btnHelp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(effectSound)
                 soundPool.play(btnClick1, 1,1, 1,0,1);
                 dialog = new Dialog( MainActivity.this );
 
@@ -162,7 +166,9 @@ public class MainActivity extends Activity {
         binding.btnSet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(effectSound)
                 soundPool.play(btnClick1, 1,1, 1,0,1);
+
                 dialog = new Dialog( MainActivity.this );
 
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -176,7 +182,46 @@ public class MainActivity extends Activity {
                 btn_close.setOnClickListener( dialClick );
                 btn_logout.setOnClickListener( dialClick );
 
+                final Switch effectSoundSwitch = dialog.findViewById(R.id.setting_effect_sound);
+                final Switch backgroundSoundSwitch = dialog.findViewById(R.id.setting_background_sound);
+
+                effectSoundSwitch.setChecked(effectSound);
+                backgroundSoundSwitch.setChecked(backgroundSound);
+
+                effectSoundSwitch.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        effectSound = !effectSound;
+
+                        if(effectSound)
+                            soundPool.play(btnClick1, 1,1, 1,0,1);
+                    }
+                });
+
+                backgroundSoundSwitch.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(backgroundSound) {
+                            mediaPlayer1.pause();
+                        } else {
+                            mediaPlayer1.start();
+                        }
+                        backgroundSound = !backgroundSound;
+
+                        if(effectSound)
+                            soundPool.play(btnClick1, 1,1, 1,0,1);
+
+                    }
+                });
+
                 dialog.show();
+
+                dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialogInterface) {
+
+                    }
+                });
             }
         });
 
@@ -184,6 +229,7 @@ public class MainActivity extends Activity {
         binding.btnRanking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(effectSound)
                 soundPool.play(btnClick1, 1,1, 1,0,1);
                 dialog = new Dialog( MainActivity.this );
 
@@ -203,9 +249,9 @@ public class MainActivity extends Activity {
         binding.btnGameStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(effectSound)
                 soundPool.play(btnClick1, 1,1, 1,0,1);
 
-                pref = getSharedPreferences("SHARE", MODE_PRIVATE);
                 user_bell = pref.getInt("bell", 5);
 
                 // 남은 방울이 없다면 return
@@ -218,15 +264,15 @@ public class MainActivity extends Activity {
                 startActivity(i);
 
                 //mediaPlayer2.start();
-                mediaPlayer.stop();
+                mediaPlayer1.stop();
 
 
             }
         });
 
-        mediaPlayer = MediaPlayer.create(this, R.raw.backgroundmusic1);
+        mediaPlayer1 = MediaPlayer.create(this, R.raw.backgroundmusic1);
         mediaPlayer2 = MediaPlayer.create(this, R.raw.backgroundmusic2);
-        mediaPlayer.setLooping(true);
+        mediaPlayer1.setLooping(true);
         mediaPlayer2.setLooping(true);
 
         /* 벨 핸들러 */
@@ -289,9 +335,9 @@ public class MainActivity extends Activity {
     protected void onStart() {
         super.onStart();
 
-        mediaPlayer = MediaPlayer.create(this, R.raw.backgroundmusic1);
-        mediaPlayer.setLooping(true);
-        mediaPlayer.start();
+        mediaPlayer1 = MediaPlayer.create(this, R.raw.backgroundmusic1);
+        mediaPlayer1.setLooping(true);
+        mediaPlayer1.start();
 
 
     }
@@ -319,8 +365,6 @@ public class MainActivity extends Activity {
         edit.putLong("time", System.currentTimeMillis() - ( 1800 - wait_time) * 1000 ); // 종료 시간 기록
         edit.commit();
         bellHandler.removeMessages(0);
-        Log.i("bell", "onStop");
-        Log.i("bell", "onStop: " + user_bell);
     }
 
     @SuppressLint("HandlerLeak")
@@ -368,11 +412,23 @@ public class MainActivity extends Activity {
         public void onClick(View view) {
             switch ( view.getId() ){
                 case R.id.btn_close :
+                    if(effectSound)
                     soundPool.play(btnClick1, 1,1, 1,0,1);
+
+//                    boolean effect = sf.getBoolean("effectSound", effectSound);
+//                    boolean background = sf.getBoolean("background", backgroundSound);
+
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.putBoolean("effect", effectSound);
+                   editor.putBoolean("background",backgroundSound);
+                    editor.commit();
+
                     dialog.dismiss();
                     break;
                 case R.id.btn_logout :
                     Toast.makeText(MainActivity.this, "로그아웃", Toast.LENGTH_SHORT).show();
+
+                    if(effectSound)
                     soundPool.play(btnClick1, 1,1, 1,0,1);
                     break;
 
