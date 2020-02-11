@@ -152,7 +152,6 @@ public class GameActivity extends Activity {
                 //게임 중지
                 if (gameStatus == GAME_PLAYING && touchStatus) {
                     pauseGame();
-
                 }
 
 
@@ -959,6 +958,7 @@ public class GameActivity extends Activity {
         }
 
         // 벨 하나 감소
+        pref = getSharedPreferences("SHARE", MODE_PRIVATE);
         user_bell = pref.getInt("bell", 5);
         user_bell --;
         SharedPreferences.Editor edit = pref.edit();

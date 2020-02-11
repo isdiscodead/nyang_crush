@@ -373,7 +373,7 @@ public class MainActivity extends Activity {
         super.onResume();
 
         // 저장된 방울 개수 가져옴 ( 기본값 5 )
-        user_bell = pref.getInt("bell",  0);
+        user_bell = pref.getInt("bell",  5);
 
         // 저장된 종료 시간 가져오고, 시작 시간도 구한다.
         stop_time = pref.getLong("time", System.currentTimeMillis() );
