@@ -148,6 +148,7 @@
 
             <!-- 점수 확인 -->
             <TextView
+                android:id="@+id/my_score"
                 android:background="@drawable/btn_pink"
                 android:layout_height="80dp"
                 android:layout_width="250dp"
@@ -171,6 +172,16 @@
                 android:fontFamily="@font/black_han_sans"
                 android:text="랭크 확인"
                 android:gravity="center"/>
+
+            <EditText android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/nick_name"
+                android:hint="닉네임"/>
+
+            <Button android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/button_nick_name"
+                android:text="닉네임 저장"/>
 
         </LinearLayout>
 

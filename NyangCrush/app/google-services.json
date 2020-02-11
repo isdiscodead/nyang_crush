@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1070751263250",
+    "firebase_url": "https://nyang-crush-7cfc8.firebaseio.com",
+    "project_id": "nyang-crush-7cfc8",
+    "storage_bucket": "nyang-crush-7cfc8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1070751263250:android:9df9b1f53e4b5555c406cb",
+        "android_client_info": {
+          "package_name": "com.pro.nyangcrush"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1070751263250-lude1ib393hfq2eklha3ge0q80hpbkem.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.pro.nyangcrush",
+            "certificate_hash": "e438ba3f6eb77fd29c1b54a6a6ef7c457e630571"
+          }
+        },
+        {
+          "client_id": "1070751263250-ms0om20jchvd1brmht0ca6h2qnehgjrv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8HnmYPtrA1X_-whRSBFlysXRN5VTAO4M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1070751263250-ms0om20jchvd1brmht0ca6h2qnehgjrv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
