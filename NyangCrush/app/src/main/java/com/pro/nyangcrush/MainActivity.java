@@ -35,6 +35,9 @@ import com.pro.nyangcrush.databinding.ActivityMainBinding;
 
 import java.util.Objects;
 
+import hotchemi.android.rate.AppRate;
+import hotchemi.android.rate.OnClickButtonListener;
+
 public class MainActivity extends Activity {
 
      SharedPreferences pref;
@@ -69,10 +72,33 @@ public class MainActivity extends Activity {
     // 도움말 다이얼로그 애니메이션
     private Animation helpAnim;
 
+    // five_star_library 관련 tag
+    private static final String TAG = MainActivity.class.getSimpleName();
+
     @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+
+        // rate_star
+        AppRate.with(this)
+                .setInstallDays(0) // default 10, 0 means install day.
+                .setLaunchTimes(2) // 앱 나갔다가 다시 들어오는 수. /default=10
+                .setRemindInterval(2) // default 1
+                .setShowLaterButton(true) // default true
+                .setDebug(false) // default false
+                .setOnClickButtonListener(new OnClickButtonListener() { // callback listener.
+                    @Override
+                    public void onClickButton(int which) {
+                        Log.d(MainActivity.class.getName(), Integer.toString(which));
+                    }
+                })
+                .monitor();
+
+        // Show a dialog if meets conditions
+        AppRate.showRateDialogIfMeetsConditions(this);
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         binding.setActivity(this);
 
@@ -310,7 +336,7 @@ public class MainActivity extends Activity {
             }
         };
 
-    }//onCreate()
+    } // onCreate()
 
     // 방울 채우기 메서드
     public void fill_bells() {
@@ -415,12 +441,12 @@ public class MainActivity extends Activity {
                     if(effectSound)
                     soundPool.play(btnClick1, 1,1, 1,0,1);
 
-//                    boolean effect = sf.getBoolean("effectSound", effectSound);
-//                    boolean background = sf.getBoolean("background", backgroundSound);
+//                  boolean effect = sf.getBoolean("effectSound", effectSound);
+//                  boolean background = sf.getBoolean("background", backgroundSound);
 
                     SharedPreferences.Editor editor = pref.edit();
                     editor.putBoolean("effect", effectSound);
-                   editor.putBoolean("background",backgroundSound);
+                    editor.putBoolean("background",backgroundSound);
                     editor.commit();
 
                     dialog.dismiss();
@@ -435,4 +461,5 @@ public class MainActivity extends Activity {
             }
         }
     };
+
 }
