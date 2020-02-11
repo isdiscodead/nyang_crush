@@ -19,8 +19,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="1">
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="350dp"
@@ -33,6 +32,13 @@
         </LinearLayout>
 
     <!-- 여기에 구글로 로그인 버튼 들어와야 함 -->
+        <com.google.android.gms.common.SignInButton
+            android:layout_height="wrap_content"
+            android:layout_width="200dp"
+            android:id="@+id/btn_googleSignIn"
+            android:layout_marginTop="80dp"
+            android:layout_gravity="center">
+        </com.google.android.gms.common.SignInButton>
 
     </LinearLayout>
 </layout>
