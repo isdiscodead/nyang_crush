@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class RankAdapter extends ArrayAdapter {
 
@@ -32,7 +33,8 @@ public class RankAdapter extends ArrayAdapter {
                 = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         convertView = linf.inflate(resource, null);
 
-        User user = arr.get(position);  // i번째 유저의 정보
+        Collections.reverse(arr);   // 내림차순으로 출력하기 위함
+        User user = arr.get( position );  // i번째 유저의 정보
 
         // xml 내부의 뷰 객체들
         TextView rank = convertView.findViewById(R.id.rank);
@@ -42,7 +44,7 @@ public class RankAdapter extends ArrayAdapter {
         // 값 세팅
         rank.setText(""+( position+1 ));
         user_name.setText(user.getName());
-        score.setText(user.getScore());
+        score.setText(""+user.getScore());
 
         return convertView;
     }

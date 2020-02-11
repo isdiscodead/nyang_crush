@@ -81,7 +81,8 @@ public class MainActivity extends Activity {
     private ArrayAdapter adapter;
     ListView ranking;
     ArrayList<User> user_arr = new ArrayList<User>();
-    
+    boolean flag;
+
      // 다이얼로그 내부 버튼
     Button btn_close, btn_logout;
 
@@ -311,8 +312,8 @@ public class MainActivity extends Activity {
                 btn_close.setOnClickListener( dialClick );
 
                 // 랭크 생성을 위한 DB 접근
-                //여기 표시하는 거는 limitToLast(2) 아까도 설명한거이지만 상위 2개만보여줍니다.
-                mDatabase.orderByChild("users").limitToLast(2).addListenerForSingleValueEvent(  // 데이터 추가, 업데이트 메서드
+                // 여기 표시하는 거는 limitToLast(2) 아까도 설명한거이지만 상위 2개만 보여줍니다.
+                mDatabase.orderByChild("Score").limitToLast(50).addListenerForSingleValueEvent(  // 데이터 추가, 업데이트 메서드
                         new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -340,12 +341,20 @@ public class MainActivity extends Activity {
                                     user_arr.add(user);
                                 }
 
-                                adapter = new RankAdapter(MainActivity.this, R.layout.diag_rank, user_arr);
+                                adapter = new RankAdapter(MainActivity.this, R.layout.rank, user_arr);
 
                                 Log.i("rank", "어댑터 초기화");
 
                                 ranking = dialog.findViewById(R.id.ranking);
+
                                 ranking.setAdapter(adapter);
+
+                                dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                    @Override
+                                    public void onDismiss(DialogInterface dialogInterface) {
+                                        adapter.clear();    // 데이터 중복 표시를 방지하기 위해 클리어
+                                    }
+                                });
 
                                 Log.i("rank", "어댑터 셋팅");
                             }
