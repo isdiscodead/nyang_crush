@@ -26,24 +26,49 @@ import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.pro.nyangcrush.databinding.ActivityMainBinding;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+
+import hotchemi.android.rate.AppRate;
+import hotchemi.android.rate.OnClickButtonListener;
 
 public class MainActivity extends Activity {
 
      SharedPreferences pref;
      Handler bellHandler;
-
      ActivityMainBinding binding;
      Dialog dialog;
+
      //배경음
      private MediaPlayer mediaPlayer1, mediaPlayer2;
+
+     // 파이어베이스 데이터베이스
+    private DatabaseReference mDatabase;
+    private FirebaseDatabase sDatabase;
+    private ArrayAdapter<String> adapter;
+    ArrayList<String> Array = new ArrayList<String>();
+    ListView ranking;
+    private ChildEventListener mChild;
+    TextView myscore, rank_score;
 
      // 다이얼로그 내부 버튼
     Button btn_close, btn_logout;
@@ -72,12 +97,88 @@ public class MainActivity extends Activity {
     @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+
+        // 앱 평점
+        AppRate.with(this)
+                .setInstallDays(0) // default 10, 0 means install day.
+                .setLaunchTimes(2) // 앱 나갔다가 다시 들어오는 수. /default=10
+                .setRemindInterval(2) // default 1
+                .setShowLaterButton(true) // default true
+                .setDebug(false) // default false
+                .setOnClickButtonListener(new OnClickButtonListener() { // callback listener.
+                    @Override
+                    public void onClickButton(int which) {
+                        Log.d(MainActivity.class.getName(), Integer.toString(which));
+                    }
+                })
+                .monitor();
+
+        // Show a dialog if meets conditions
+        AppRate.showRateDialogIfMeetsConditions(this);
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         binding.setActivity(this);
 
         // SharedPreference 초기화
         pref = getSharedPreferences("SHARE", MODE_PRIVATE );
+
+        // 데이터베이스 초기화
+        /*sDatabase = FirebaseDatabase.getInstance(); // 데이터베이스 레퍼런스 객체
+        mDatabase = sDatabase.getReference("users"); // 파이어베이스 DB 객체
+
+
+        mDatabase.orderByChild("users").limitToLast(2).addListenerForSingleValueEvent(
+                new ValueEventListener () {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Intent intent = getIntent();
+
+                String userid = intent.getExtras().getString("userid");
+
+                String user_s = dataSnapshot.child(userid).child("Score").getValue().toString();
+                binding.myScore.setText(user_s);    // 현재 유저 본인 최고 점수
+
+                    int score = 0;
+
+                    try {
+                        score = Integer.parseInt(intent.getExtras().getString("Bestscore"));
+                        int num2 = Integer.parseInt(user_s);
+
+                        if(score > num2){
+                            binding.myScore.setText(score);
+                            Map<String, Object> taskMap = new HashMap<String, Object>();
+                            taskMap.put("Score", score);
+                            mDatabase.child("users").child(userid).updateChildren(taskMap);
+                        }
+
+                    } catch (Exception e){
+
+                    }
+
+                //adapter.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+
+                    String msg2 = snapshot.child("Score").getValue().toString();//점수
+                    String msg3 = snapshot.child("name").getValue().toString();//이름
+
+                    Array.add(msg2);
+
+                }
+
+                //adapter = new MyAdapter(MainActivity.this, R.layout.diag_rank, Array, ranking);
+                //adapter.notifyDataSetChanged();
+                //adapter.notifyDataSetChanged();
+                //ranking.setSelection(adapter.getCount() - 1);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("MainActivity", "실패 : ");
+            }
+        });*/
 
         // 효과음 사운드풀 초기화
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
@@ -293,7 +394,7 @@ public class MainActivity extends Activity {
                     user_bell ++;
                     SharedPreferences.Editor edit = pref.edit();
                     edit.putInt("bell", user_bell);
-                    edit.commit();
+                    edit.apply();
                     fill_bells();
                     wait_time = 1800;
                 } else if ( wait_time == 0 && user_bell == 4 ) {
@@ -302,7 +403,7 @@ public class MainActivity extends Activity {
                     user_bell ++;
                     SharedPreferences.Editor edit = pref.edit();
                     edit.putInt("bell", user_bell);
-                    edit.commit();
+                    edit.apply();
                     fill_bells();
                 }
 
@@ -310,7 +411,7 @@ public class MainActivity extends Activity {
             }
         };
 
-    }//onCreate()
+    } // onCreate()
 
     // 방울 채우기 메서드
     public void fill_bells() {
@@ -338,9 +439,8 @@ public class MainActivity extends Activity {
         mediaPlayer1 = MediaPlayer.create(this, R.raw.backgroundmusic1);
         mediaPlayer1.setLooping(true);
         mediaPlayer1.start();
-
-
     }
+
     @SuppressLint("HandlerLeak")
     @Override
     protected void onPause() {
@@ -351,7 +451,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        // mDatabase.removeEventListener(mChild);
         mediaPlayer1.stop();
         mediaPlayer2.stop();
     }
@@ -415,12 +515,12 @@ public class MainActivity extends Activity {
                     if(effectSound)
                     soundPool.play(btnClick1, 1,1, 1,0,1);
 
-//                    boolean effect = sf.getBoolean("effectSound", effectSound);
-//                    boolean background = sf.getBoolean("background", backgroundSound);
+//                  boolean effect = sf.getBoolean("effectSound", effectSound);
+//                  boolean background = sf.getBoolean("background", backgroundSound);
 
                     SharedPreferences.Editor editor = pref.edit();
                     editor.putBoolean("effect", effectSound);
-                   editor.putBoolean("background",backgroundSound);
+                    editor.putBoolean("background",backgroundSound);
                     editor.commit();
 
                     dialog.dismiss();
@@ -435,4 +535,5 @@ public class MainActivity extends Activity {
             }
         }
     };
+
 }

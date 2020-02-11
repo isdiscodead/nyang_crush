@@ -31,9 +31,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+<<<<<<< HEAD
+=======
+import com.google.gson.Gson;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+>>>>>>> 5a9d3ae333217953b050647be4475b1186b4b174
 import com.pro.nyangcrush.databinding.ActivityGameBinding;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import static android.os.Build.*;
@@ -44,6 +55,9 @@ public class GameActivity extends Activity {
     ActivityGameBinding binding;
     Dialog dialog;
 
+    //DB연결
+    private DatabaseReference mDatabase;
+    private FirebaseDatabase sDatabase;
     // 일시정지 다이얼로그 내부의 버튼들
     Button btn_replay, btn_stop, btn_back, btn_close ;
 
