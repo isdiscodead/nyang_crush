@@ -127,7 +127,6 @@ public class LoginActivity extends FragmentActivity {
                             intent.putExtra("name",name);
                             intent.putExtra("email",email);
 
-
                             Map<String, Object> taskMap = new HashMap<String, Object>();
                             taskMap.put("name", name);
                             taskMap.put("email", email);

@@ -327,7 +327,7 @@ public class MainActivity extends Activity {
                                 // adapter.clear();
                                 for ( DataSnapshot snapshot : dataSnapshot.getChildren() ) {
 
-                                    int score = (int)snapshot.child("Score").getValue(); //점수
+                                    int score = Integer.parseInt(snapshot.child("Score").getValue().toString()); //점수
                                     String name = snapshot.child("name").getValue().toString(); //이름
 
                                     User user = new User();

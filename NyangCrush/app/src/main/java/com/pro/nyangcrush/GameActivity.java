@@ -31,15 +31,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-<<<<<<< HEAD
-=======
 import com.google.gson.Gson;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
->>>>>>> 5a9d3ae333217953b050647be4475b1186b4b174
+
 import com.pro.nyangcrush.databinding.ActivityGameBinding;
 
 import java.util.ArrayList;
