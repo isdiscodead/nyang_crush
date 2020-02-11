@@ -164,10 +164,10 @@ public class MainActivity extends Activity {
                 // 다이얼로그 커스텀 애니메이션 적용
                 dialog.getWindow().getAttributes().windowAnimations = R.style.CustomDialogAnimation;
 
-                dialog.setContentView(R.layout.diag_howtp);
+                dialog.setContentView( R.layout.diag_howtp );
 
                 btn_close = dialog.findViewById(R.id.btn_close);
-                btn_close.setOnClickListener(dialClick);
+                btn_close.setOnClickListener( dialClick );
 
                 dialog.show();
 
@@ -237,18 +237,18 @@ public class MainActivity extends Activity {
                 if (effectSound)
                     soundPool.play(btnClick1, 1, 1, 1, 0, 1);
 
-                dialog = new Dialog(MainActivity.this);
+                dialog = new Dialog( MainActivity.this );
 
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dialog.getWindow().getAttributes().windowAnimations = R.style.CustomDialogAnimation;
 
-                dialog.setContentView(R.layout.diag_setting);
+                dialog.setContentView( R.layout.diag_setting );
 
                 btn_close = dialog.findViewById(R.id.btn_close);
-                btn_logout = dialog.findViewById(R.id.btn_logout);
-                btn_close.setOnClickListener(dialClick);
-                btn_logout.setOnClickListener(dialClick);
+                btn_logout = dialog.findViewById( R.id.btn_logout );
+                btn_close.setOnClickListener( dialClick );
+                btn_logout.setOnClickListener( dialClick );
 
                 final Switch effectSoundSwitch = dialog.findViewById(R.id.setting_effect_sound);
                 final Switch backgroundSoundSwitch = dialog.findViewById(R.id.setting_background_sound);
@@ -299,16 +299,16 @@ public class MainActivity extends Activity {
             public void onClick(View view) {
                 if (effectSound)
                     soundPool.play(btnClick1, 1, 1, 1, 0, 1);
-                dialog = new Dialog(MainActivity.this);
+                dialog = new Dialog( MainActivity.this );
 
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dialog.getWindow().getAttributes().windowAnimations = R.style.CustomDialogAnimation;
 
-                dialog.setContentView(R.layout.diag_rank);
+                dialog.setContentView( R.layout.diag_rank );
 
                 btn_close = dialog.findViewById(R.id.btn_close);
-                btn_close.setOnClickListener(dialClick);
+                btn_close.setOnClickListener( dialClick );
 
                 // 랭크 생성을 위한 DB 접근
                 mDatabase.orderByChild("users").limitToLast(2).addListenerForSingleValueEvent(  // 데이터 추가, 업데이트 메서드
@@ -404,13 +404,13 @@ public class MainActivity extends Activity {
 
                 if (wait_time == 0 && user_bell < 4) {
                     // 아직 더 채워야 하는 경우
-                    user_bell++;
+                    user_bell ++;
                     SharedPreferences.Editor edit = pref.edit();
                     edit.putInt("bell", user_bell);
                     edit.apply();
                     fill_bells();
                     wait_time = 1800;
-                } else if (wait_time == 0 && user_bell == 4) {
+                } else if ( wait_time == 0 && user_bell == 4 ) {
                     // 이제 다 찬 경우 ( 더이상 충전 x )
                     bellHandler.removeMessages(0);  // 핸들러 삭제
                     user_bell++;
@@ -450,6 +450,7 @@ public class MainActivity extends Activity {
 
         mediaPlayer1 = MediaPlayer.create(this, R.raw.backgroundmusic1);
         mediaPlayer1.setLooping(true);
+        if(backgroundSound)
         mediaPlayer1.start();
     }
 
@@ -463,7 +464,6 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // mDatabase.removeEventListener(mChild);
         mediaPlayer1.stop();
         mediaPlayer2.stop();
     }
@@ -522,7 +522,7 @@ public class MainActivity extends Activity {
     final View.OnClickListener dialClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            switch (view.getId()) {
+            switch ( view.getId() ){
                 case R.id.btn_close:
                     if (effectSound)
                         soundPool.play(btnClick1, 1, 1, 1, 0, 1);

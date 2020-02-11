@@ -78,7 +78,9 @@
             android:layout_marginStart="10dp"
             android:max="5"
             android:thumb="@drawable/seek_thumb"
-            android:progressDrawable="@drawable/seekbar"/>
+            android:progressDrawable="@drawable/seekbar"
+            android:id="@+id/backgroundVolume"
+            />
 
         <!-- 효과음 조절 -->
         <LinearLayout
@@ -125,7 +127,9 @@
             android:layout_marginStart="10dp"
             android:thumb="@drawable/seek_thumb"
             android:max="5"
-            android:progressDrawable="@drawable/seekbar"/>
+            android:progressDrawable="@drawable/seekbar"
+            android:id="@+id/effectVolume"
+            />
 
         <Button
             android:id="@+id/btn_logout"
