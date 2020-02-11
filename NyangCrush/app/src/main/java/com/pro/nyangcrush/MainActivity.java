@@ -106,16 +106,13 @@ public class MainActivity extends Activity {
     // 도움말 다이얼로그 애니메이션
     private Animation helpAnim;
 
-    // five_star_library 관련 tag
-    private static final String TAG = MainActivity.class.getSimpleName();
-
     @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
 
-        // rate_star
+        // 앱 평점
         AppRate.with(this)
                 .setInstallDays(0) // default 10, 0 means install day.
                 .setLaunchTimes(2) // 앱 나갔다가 다시 들어오는 수. /default=10
