@@ -15,6 +15,7 @@
             android:background="@drawable/rank_box">
 
             <TextView
+                android:id="@+id/rank"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -26,6 +27,7 @@
                 android:textColor="@color/brown"/>
 
             <TextView
+                android:id="@+id/user_name"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
@@ -37,6 +39,7 @@
                 android:textSize="20dp" />
 
             <TextView
+                android:id="@+id/score"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="2"

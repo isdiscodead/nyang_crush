@@ -1,5 +1,6 @@
 package com.pro.nyangcrush;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
@@ -35,6 +36,13 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -61,14 +69,18 @@ public class MainActivity extends Activity {
      //배경음
      private MediaPlayer mediaPlayer1, mediaPlayer2;
 
+     // 구글 로그인 클라이언트
+    private GoogleSignInClient mGoogleSignInClient;
+
      // 파이어베이스 데이터베이스
+    private FirebaseAuth mAuth; // 파이어베이스 인증
     private DatabaseReference mDatabase;
     private FirebaseDatabase sDatabase;
-    private ArrayAdapter<String> adapter;
-    ArrayList<String> Array = new ArrayList<String>();
+
+    // 어댑터, 랭킹 리스트뷰 관련
+    private ArrayAdapter adapter;
     ListView ranking;
-    private ChildEventListener mChild;
-    TextView myscore, rank_score;
+    ArrayList<User> user_arr = new ArrayList<User>();
 
      // 다이얼로그 내부 버튼
     Button btn_close, btn_logout;
@@ -125,68 +137,16 @@ public class MainActivity extends Activity {
         binding.setActivity(this);
 
         // SharedPreference 초기화
-        pref = getSharedPreferences("SHARE", MODE_PRIVATE );
+        pref = getSharedPreferences("SHARE", MODE_PRIVATE);
 
         // 데이터베이스 초기화
-        /*sDatabase = FirebaseDatabase.getInstance(); // 데이터베이스 레퍼런스 객체
+        sDatabase = FirebaseDatabase.getInstance(); // 데이터베이스 레퍼런스 객체
         mDatabase = sDatabase.getReference("users"); // 파이어베이스 DB 객체
 
-
-        mDatabase.orderByChild("users").limitToLast(2).addListenerForSingleValueEvent(
-                new ValueEventListener () {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                Intent intent = getIntent();
-
-                String userid = intent.getExtras().getString("userid");
-
-                String user_s = dataSnapshot.child(userid).child("Score").getValue().toString();
-                binding.myScore.setText(user_s);    // 현재 유저 본인 최고 점수
-
-                    int score = 0;
-
-                    try {
-                        score = Integer.parseInt(intent.getExtras().getString("Bestscore"));
-                        int num2 = Integer.parseInt(user_s);
-
-                        if(score > num2){
-                            binding.myScore.setText(score);
-                            Map<String, Object> taskMap = new HashMap<String, Object>();
-                            taskMap.put("Score", score);
-                            mDatabase.child("users").child(userid).updateChildren(taskMap);
-                        }
-
-                    } catch (Exception e){
-
-                    }
-
-                //adapter.clear();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-
-                    String msg2 = snapshot.child("Score").getValue().toString();//점수
-                    String msg3 = snapshot.child("name").getValue().toString();//이름
-
-                    Array.add(msg2);
-
-                }
-
-                //adapter = new MyAdapter(MainActivity.this, R.layout.diag_rank, Array, ranking);
-                //adapter.notifyDataSetChanged();
-                //adapter.notifyDataSetChanged();
-                //ranking.setSelection(adapter.getCount() - 1);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d("MainActivity", "실패 : ");
-            }
-        });*/
-
         // 효과음 사운드풀 초기화
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             soundPool = new SoundPool.Builder().setMaxStreams(2).build();
-        }else{
+        } else {
             soundPool = new SoundPool(2, AudioManager.STREAM_MUSIC, 1);
         }
 
@@ -196,9 +156,9 @@ public class MainActivity extends Activity {
         binding.btnHelp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(effectSound)
-                soundPool.play(btnClick1, 1,1, 1,0,1);
-                dialog = new Dialog( MainActivity.this );
+                if (effectSound)
+                    soundPool.play(btnClick1, 1, 1, 1, 0, 1);
+                dialog = new Dialog(MainActivity.this);
 
                 // 다이얼로그 타이틀 삭제
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -207,10 +167,10 @@ public class MainActivity extends Activity {
                 // 다이얼로그 커스텀 애니메이션 적용
                 dialog.getWindow().getAttributes().windowAnimations = R.style.CustomDialogAnimation;
 
-                dialog.setContentView( R.layout.diag_howtp );
+                dialog.setContentView(R.layout.diag_howtp);
 
                 btn_close = dialog.findViewById(R.id.btn_close);
-                btn_close.setOnClickListener( dialClick );
+                btn_close.setOnClickListener(dialClick);
 
                 dialog.show();
 
@@ -227,7 +187,7 @@ public class MainActivity extends Activity {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        while( dialog.isShowing() ) {
+                        while (dialog.isShowing()) {
                             try {
                                 handler.post(new Runnable() {
                                     @Override
@@ -266,25 +226,32 @@ public class MainActivity extends Activity {
             }
         });
 
+        // 구글 로그인 정보 ( 로그아웃 기능을 위해 필요함 )
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
         /* 설정 버튼 눌렀을 때 다이얼로그 생성 */
         binding.btnSet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(effectSound)
-                soundPool.play(btnClick1, 1,1, 1,0,1);
+                if (effectSound)
+                    soundPool.play(btnClick1, 1, 1, 1, 0, 1);
 
-                dialog = new Dialog( MainActivity.this );
+                dialog = new Dialog(MainActivity.this);
 
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dialog.getWindow().getAttributes().windowAnimations = R.style.CustomDialogAnimation;
 
-                dialog.setContentView( R.layout.diag_setting );
+                dialog.setContentView(R.layout.diag_setting);
 
                 btn_close = dialog.findViewById(R.id.btn_close);
-                btn_logout = dialog.findViewById( R.id.btn_logout );
-                btn_close.setOnClickListener( dialClick );
-                btn_logout.setOnClickListener( dialClick );
+                btn_logout = dialog.findViewById(R.id.btn_logout);
+                btn_close.setOnClickListener(dialClick);
+                btn_logout.setOnClickListener(dialClick);
 
                 final Switch effectSoundSwitch = dialog.findViewById(R.id.setting_effect_sound);
                 final Switch backgroundSoundSwitch = dialog.findViewById(R.id.setting_background_sound);
@@ -297,23 +264,23 @@ public class MainActivity extends Activity {
                     public void onClick(View view) {
                         effectSound = !effectSound;
 
-                        if(effectSound)
-                            soundPool.play(btnClick1, 1,1, 1,0,1);
+                        if (effectSound)
+                            soundPool.play(btnClick1, 1, 1, 1, 0, 1);
                     }
                 });
 
                 backgroundSoundSwitch.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if(backgroundSound) {
+                        if (backgroundSound) {
                             mediaPlayer1.pause();
                         } else {
                             mediaPlayer1.start();
                         }
                         backgroundSound = !backgroundSound;
 
-                        if(effectSound)
-                            soundPool.play(btnClick1, 1,1, 1,0,1);
+                        if (effectSound)
+                            soundPool.play(btnClick1, 1, 1, 1, 0, 1);
 
                     }
                 });
@@ -333,33 +300,79 @@ public class MainActivity extends Activity {
         binding.btnRanking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(effectSound)
-                soundPool.play(btnClick1, 1,1, 1,0,1);
-                dialog = new Dialog( MainActivity.this );
+                if (effectSound)
+                    soundPool.play(btnClick1, 1, 1, 1, 0, 1);
+                dialog = new Dialog(MainActivity.this);
 
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dialog.getWindow().getAttributes().windowAnimations = R.style.CustomDialogAnimation;
 
-                dialog.setContentView( R.layout.diag_rank );
+                dialog.setContentView(R.layout.diag_rank);
 
                 btn_close = dialog.findViewById(R.id.btn_close);
-                btn_close.setOnClickListener( dialClick );
+                btn_close.setOnClickListener(dialClick);
+
+                // 랭크 생성을 위한 DB 접근
+                mDatabase.orderByChild("users").limitToLast(2).addListenerForSingleValueEvent(  // 데이터 추가, 업데이트 메서드
+                        new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                Intent intent = getIntent();
+
+                                String userid = intent.getExtras().getString("userid");
+                                String user_s = dataSnapshot.child(userid).child("Score").getValue().toString();
+                                binding.myScore.setText(user_s);    // 현재 유저 본인 최고 점수 ( DB 등록된 점수 )
+
+                                Log.i("rank", "string : " + userid +"/"+ user_s);
+
+                                // adapter.clear();
+                                for ( DataSnapshot snapshot : dataSnapshot.getChildren() ) {
+
+                                    int score = (int)snapshot.child("Score").getValue(); //점수
+                                    String name = snapshot.child("name").getValue().toString(); //이름
+
+                                    User user = new User();
+                                    user.setName(name);
+                                    user.setScore(score);
+
+                                    Log.i("rank", "스냅챗 for문");
+
+                                    user_arr.add(user);
+                                }
+
+                                adapter = new RankAdapter(MainActivity.this, R.layout.diag_rank, user_arr);
+
+                                Log.i("rank", "어댑터 초기화");
+
+                                ranking = dialog.findViewById(R.id.ranking);
+                                ranking.setAdapter(adapter);
+
+                                Log.i("rank", "어댑터 셋팅");
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                Log.i("rank", "실패 : ");
+                            }
+                        });
 
                 dialog.show();
+
             }
         });
 
         binding.btnGameStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(effectSound)
-                soundPool.play(btnClick1, 1,1, 1,0,1);
+                if (effectSound)
+                    soundPool.play(btnClick1, 1, 1, 1, 0, 1);
 
                 user_bell = pref.getInt("bell", 5);
 
                 // 남은 방울이 없다면 return
-                if ( user_bell == 0 ) {
+                if (user_bell == 0) {
                     Toast.makeText(MainActivity.this, "남은 방울이 없다냥 !", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -384,26 +397,26 @@ public class MainActivity extends Activity {
             @Override
             public void handleMessage(Message msg) {
                 bellHandler.sendEmptyMessageDelayed(0, 1000);
-                wait_time --;
+                wait_time--;
 
                 // 분, 초로 분할
-                int minute = wait_time / 60 ;
-                int sec = wait_time % 60 ;
+                int minute = wait_time / 60;
+                int sec = wait_time % 60;
 
                 binding.bellTime.setText(String.format("%02d:%02d", minute, sec));
 
-                if ( wait_time == 0 && user_bell < 4 ) {
+                if (wait_time == 0 && user_bell < 4) {
                     // 아직 더 채워야 하는 경우
-                    user_bell ++;
+                    user_bell++;
                     SharedPreferences.Editor edit = pref.edit();
                     edit.putInt("bell", user_bell);
                     edit.apply();
                     fill_bells();
                     wait_time = 1800;
-                } else if ( wait_time == 0 && user_bell == 4 ) {
+                } else if (wait_time == 0 && user_bell == 4) {
                     // 이제 다 찬 경우 ( 더이상 충전 x )
                     bellHandler.removeMessages(0);  // 핸들러 삭제
-                    user_bell ++;
+                    user_bell++;
                     SharedPreferences.Editor edit = pref.edit();
                     edit.putInt("bell", user_bell);
                     edit.apply();
@@ -413,8 +426,7 @@ public class MainActivity extends Activity {
 
             }
         };
-
-    } // onCreate()
+    }// onCreate()
 
     // 방울 채우기 메서드
     public void fill_bells() {
@@ -510,29 +522,40 @@ public class MainActivity extends Activity {
 
 
     // 다이어그램 온클릭 리스너
-    View.OnClickListener dialClick = new View.OnClickListener() {
+    final View.OnClickListener dialClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            switch ( view.getId() ){
-                case R.id.btn_close :
-                    if(effectSound)
-                    soundPool.play(btnClick1, 1,1, 1,0,1);
+            switch (view.getId()) {
+                case R.id.btn_close:
+                    if (effectSound)
+                        soundPool.play(btnClick1, 1, 1, 1, 0, 1);
 
 //                  boolean effect = sf.getBoolean("effectSound", effectSound);
 //                  boolean background = sf.getBoolean("background", backgroundSound);
 
                     SharedPreferences.Editor editor = pref.edit();
                     editor.putBoolean("effect", effectSound);
-                    editor.putBoolean("background",backgroundSound);
-                    editor.commit();
+                    editor.putBoolean("background", backgroundSound);
+                    editor.apply();
 
                     dialog.dismiss();
                     break;
-                case R.id.btn_logout :
-                    Toast.makeText(MainActivity.this, "로그아웃", Toast.LENGTH_SHORT).show();
 
-                    if(effectSound)
-                    soundPool.play(btnClick1, 1,1, 1,0,1);
+                case R.id.btn_logout:
+
+                    // Firebase sign out
+                    FirebaseAuth.getInstance().signOut();
+
+                    // Google sign out
+                    mGoogleSignInClient.signOut();
+
+                    // 로그인 화면으로 전환
+                    Intent i = new Intent( MainActivity.this, LoginActivity.class );
+                    startActivity(i);
+                    finish();
+
+                    if (effectSound)
+                        soundPool.play(btnClick1, 1, 1, 1, 0, 1);
                     break;
 
             }
