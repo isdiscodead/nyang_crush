@@ -125,7 +125,7 @@ public class MainActivity extends Activity {
         pref = getSharedPreferences("SHARE", MODE_PRIVATE );
 
         // 데이터베이스 초기화
-        sDatabase = FirebaseDatabase.getInstance(); // 데이터베이스 레퍼런스 객체
+        /*sDatabase = FirebaseDatabase.getInstance(); // 데이터베이스 레퍼런스 객체
         mDatabase = sDatabase.getReference("users"); // 파이어베이스 DB 객체
 
 
@@ -178,8 +178,7 @@ public class MainActivity extends Activity {
             public void onCancelled(DatabaseError databaseError) {
                 Log.d("MainActivity", "실패 : ");
             }
-        });
-
+        });*/
 
         // 효과음 사운드풀 초기화
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
@@ -395,7 +394,7 @@ public class MainActivity extends Activity {
                     user_bell ++;
                     SharedPreferences.Editor edit = pref.edit();
                     edit.putInt("bell", user_bell);
-                    edit.commit();
+                    edit.apply();
                     fill_bells();
                     wait_time = 1800;
                 } else if ( wait_time == 0 && user_bell == 4 ) {
@@ -404,7 +403,7 @@ public class MainActivity extends Activity {
                     user_bell ++;
                     SharedPreferences.Editor edit = pref.edit();
                     edit.putInt("bell", user_bell);
-                    edit.commit();
+                    edit.apply();
                     fill_bells();
                 }
 
@@ -452,7 +451,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mDatabase.removeEventListener(mChild);
+        // mDatabase.removeEventListener(mChild);
         mediaPlayer1.stop();
         mediaPlayer2.stop();
     }
