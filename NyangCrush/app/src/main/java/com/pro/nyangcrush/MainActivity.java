@@ -102,7 +102,7 @@ public class MainActivity extends Activity {
         pref = getSharedPreferences("SHARE", MODE_PRIVATE );
 
         // 데이터베이스 초기화
-        sDatabase = FirebaseDatabase.getInstance(); // 데이터베이스 레퍼런스 객체
+        /*sDatabase = FirebaseDatabase.getInstance(); // 데이터베이스 레퍼런스 객체
         mDatabase = sDatabase.getReference("users"); // 파이어베이스 DB 객체
 
 
@@ -155,7 +155,7 @@ public class MainActivity extends Activity {
             public void onCancelled(DatabaseError databaseError) {
                 Log.d("MainActivity", "실패 : ");
             }
-        });
+        });*/
 
 
         // 효과음 사운드풀 초기화
@@ -429,7 +429,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mDatabase.removeEventListener(mChild);
+        // mDatabase.removeEventListener(mChild);
         mediaPlayer1.stop();
         mediaPlayer2.stop();
     }

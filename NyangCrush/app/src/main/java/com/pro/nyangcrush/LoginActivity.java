@@ -54,8 +54,8 @@ public class LoginActivity extends FragmentActivity {
 
         // 파이어베이스 인증 객체 선언
         firebaseAuth = FirebaseAuth.getInstance();
-        // sDatabase = FirebaseDatabase.getInstance(); // 데이터베이스 레퍼런스 객체
-        // mDatabase = sDatabase.getReference(); // 파이어베이스 DB 객체
+        sDatabase = FirebaseDatabase.getInstance(); // 데이터베이스 레퍼런스 객체
+        mDatabase = sDatabase.getReference(); // 파이어베이스 DB 객체
 
         //로그인 시도할 액티비티에서 유저데이터 요청
         GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -69,7 +69,6 @@ public class LoginActivity extends FragmentActivity {
         binding.btnGoogleSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("log", "onClick");
                 // 이벤트 발생했을때, 구글 로그인 버튼에 대한 (구글정보를 인텐트로 넘기는 값)
                 Intent signInIntent = googleSignInClient.getSignInIntent();
                 startActivityForResult(signInIntent, RC_SIGN_IN);
@@ -91,20 +90,20 @@ public class LoginActivity extends FragmentActivity {
             if (result.isSuccess()) {
                 GoogleSignInAccount account = result.getSignInAccount();
 
-                Log.d(TAG, "이름 =" + account.getDisplayName());
-                Log.d(TAG, "이메일=" + account.getEmail());
-                Log.d(TAG, "getId()=" + account.getId());
-                Log.d(TAG, "getAccount()=" + account.getAccount());
-                Log.d(TAG, "getIdToken()=" + account.getIdToken());
+                Log.i("log", "이름 =" + account.getDisplayName());
+                Log.i("log", "이메일=" + account.getEmail());
+                Log.i("log", "getId()=" + account.getId());
+                Log.i("log", "getAccount()=" + account.getAccount());
+                Log.i("log", "getIdToken()=" + account.getIdToken());
 
-                //구글 이용자 확인된 사람정보 파이어베이스로 넘기기
+                //구글 이용자 확인된 사람 정보 파이어베이스로 넘기기
                 firebaseAuthWithGoogle(account);
                 onStart( account );
             } else {
-                Log.d(TAG, "실패했음1");
+                Log.i("log", "실패했음1");
             }
         }else {
-            Log.d(TAG, "실패했음2");
+            Log.i("log", "실패했음2");
         }
     }
 
@@ -167,6 +166,11 @@ public class LoginActivity extends FragmentActivity {
             intent.putExtra("name",name);
             intent.putExtra("email",email);
 
+            Log.i("log", "start in----");
+
+            Log.i("log", ""+userid);
+            Log.i("log", ""+email);
+            Log.i("log", ""+name);
             startActivity(intent);
             finish();
         }
