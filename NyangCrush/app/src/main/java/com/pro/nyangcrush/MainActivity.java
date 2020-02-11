@@ -81,8 +81,7 @@ public class MainActivity extends Activity {
     private ArrayAdapter adapter;
     ListView ranking;
     ArrayList<User> user_arr = new ArrayList<User>();
-    TextView myscore; //메인 화면에 본인 최고 점수보여주기 위해서
-
+    
      // 다이얼로그 내부 버튼
     Button btn_close, btn_logout;
 
@@ -463,7 +462,7 @@ public class MainActivity extends Activity {
                         Intent intent = getIntent();
                         String userid = intent.getExtras().getString("userid");
                         String user_s = dataSnapshot.child(userid).child("Score").getValue().toString();
-                        myscore.setText(user_s);//현재 유저 본인점수
+                        binding.myScore.setText(user_s);//현재 유저 본인점수
                     }
 
                     @Override
