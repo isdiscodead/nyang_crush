@@ -81,6 +81,7 @@ public class MainActivity extends Activity {
     private ArrayAdapter adapter;
     ListView ranking;
     ArrayList<User> user_arr = new ArrayList<User>();
+    TextView myscore; //메인 화면에 본인 최고 점수보여주기 위해서
 
      // 다이얼로그 내부 버튼
     Button btn_close, btn_logout;
@@ -113,7 +114,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         // 앱 평점
-        AppRate.with(this)
+/*        AppRate.with(this)
                 .setInstallDays(0) // default 10, 0 means install day.
                 .setLaunchTimes(2) // 앱 나갔다가 다시 들어오는 수. /default=10
                 .setRemindInterval(2) // default 1
@@ -125,10 +126,10 @@ public class MainActivity extends Activity {
                         Log.d(MainActivity.class.getName(), Integer.toString(which));
                     }
                 })
-                .monitor();
+                .monitor();*/
 
         // Show a dialog if meets conditions
-        AppRate.showRateDialogIfMeetsConditions(this);
+        // AppRate.showRateDialogIfMeetsConditions(this);
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         binding.setActivity(this);
@@ -311,6 +312,7 @@ public class MainActivity extends Activity {
                 btn_close.setOnClickListener( dialClick );
 
                 // 랭크 생성을 위한 DB 접근
+                //여기 표시하는 거는 limitToLast(2) 아까도 설명한거이지만 상위 2개만보여줍니다.
                 mDatabase.orderByChild("users").limitToLast(2).addListenerForSingleValueEvent(  // 데이터 추가, 업데이트 메서드
                         new ValueEventListener() {
                             @Override
@@ -366,6 +368,12 @@ public class MainActivity extends Activity {
                 if (effectSound)
                     soundPool.play(btnClick1, 1, 1, 1, 0, 1);
 
+                //LoginActivity에서 받은 사용자 Id값을  게임 실행시  GameActivity보냄
+                Intent i = new Intent(MainActivity.this, GameActivity.class);
+                Intent intent = getIntent();
+                String userid = intent.getExtras().getString("userid");
+                i.putExtra("userid",userid);
+
                 user_bell = pref.getInt("bell", 5);
 
                 // 남은 방울이 없다면 return
@@ -374,13 +382,10 @@ public class MainActivity extends Activity {
                     return;
                 }
 
-                Intent i = new Intent(MainActivity.this, GameActivity.class);
                 startActivity(i);
 
                 //mediaPlayer2.start();
                 mediaPlayer1.stop();
-
-
             }
         });
 
@@ -447,6 +452,25 @@ public class MainActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
+        //앱 재실행시 사용자 본인 점수 표시
+        sDatabase = FirebaseDatabase.getInstance();
+        mDatabase = sDatabase.getReference("users");
+
+        mDatabase.orderByChild("users").addListenerForSingleValueEvent(
+                new ValueEventListener () {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Intent intent = getIntent();
+                        String userid = intent.getExtras().getString("userid");
+                        String user_s = dataSnapshot.child(userid).child("Score").getValue().toString();
+                        myscore.setText(user_s);//현재 유저 본인점수
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.d("MainActivity", "실패 : ");
+                    }
+                });
 
         mediaPlayer1 = MediaPlayer.create(this, R.raw.backgroundmusic1);
         mediaPlayer1.setLooping(true);

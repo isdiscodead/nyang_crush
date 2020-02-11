@@ -4,6 +4,7 @@ import androidx.databinding.DataBindingUtil;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
@@ -53,6 +54,7 @@ public class GameActivity extends Activity {
 
     ActivityGameBinding binding;
     Dialog dialog;
+    TextView highScore; //134번째 줄에 있어요! 검색하는거..
 
     //DB연결
     private DatabaseReference mDatabase;
@@ -127,6 +129,9 @@ public class GameActivity extends Activity {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_game);
         binding.setActivity(this);
+
+        //여기예요 여기! highScore이 변수는 게임시작시 위에 나타나는 본인 최고 점수
+        highScore = findViewById(R.id.highScore);
 
         handler = new Handler();
         nyangArray = new NyangImageView[9][9]; //게임 판 9X9
@@ -902,15 +907,12 @@ public class GameActivity extends Activity {
             });
 
 
-            //블록 터지는 효과음
-            /*if(effectSound)
-                soundPool.play(dustRemoveSound, effectSoundVolume, effectSoundVolume,  1,  0,  1);
-            */
+            // 블록 터지는 효과음
         }
-
-        //먼지 터지는 효과음
             if (effect)
                 mediaPlayer3.start();
+
+
 
         return flag;
     } // checklist()
@@ -1012,6 +1014,27 @@ public class GameActivity extends Activity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+        //게임시작시 위에 나타나는 highScore
+        sDatabase = FirebaseDatabase.getInstance();
+        mDatabase = sDatabase.getReference("users");
+
+        mDatabase.orderByChild("users").addListenerForSingleValueEvent(
+                new ValueEventListener () {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Intent i = getIntent();
+                        String userid = i.getExtras().getString("userid");
+                        String user_s = dataSnapshot.child(userid).child("Score").getValue().toString();
+                        highScore.setText(user_s);
+
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.d("MainActivity", "실패 : ");
+                    }
+                });
+
 
         // 벨 하나 감소
         pref = getSharedPreferences("SHARE", MODE_PRIVATE);
@@ -1178,6 +1201,35 @@ public class GameActivity extends Activity {
                 playTime.setText(String.format("%d", time / 10));
                 isBestScore.setVisibility(userScore == 100 ? View.VISIBLE : View.INVISIBLE);
                 isBestTime.setVisibility(Integer.parseInt(playTime.getText().toString()) == 999 ? View.VISIBLE : View.INVISIBLE);
+
+                //게임 종료시 DB정보 불러오기
+                sDatabase = FirebaseDatabase.getInstance();
+                mDatabase = sDatabase.getReference("users");
+
+                mDatabase.orderByChild("users").addListenerForSingleValueEvent(
+                        new ValueEventListener () {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                Intent i = getIntent();
+                                String userid = i.getExtras().getString("userid");
+
+                                String user_s = dataSnapshot.child(userid).child("Score").getValue().toString();
+                                int num1 = Integer.parseInt(user_s);
+
+                                //기존 점수보다 높을시 DB에 저장
+                                if( num1 < userScore ){
+                                    Map<String, Object> taskMap = new HashMap<String, Object>();
+
+                                    taskMap.put("Score", userScore);
+                                    mDatabase.child(userid).updateChildren(taskMap);
+                                }//if()
+                            }
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                Log.d("MainActivity", "실패 : ");
+                            }
+                        });
+
             }
         });
 

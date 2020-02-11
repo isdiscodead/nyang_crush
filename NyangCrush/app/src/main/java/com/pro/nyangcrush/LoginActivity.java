@@ -100,10 +100,10 @@ public class LoginActivity extends FragmentActivity {
                 firebaseAuthWithGoogle(account);
                 onStart( account );
             } else {
-                Log.i("log", "실패했음1");
+                Log.i("log", "사용자 정보 오류");
             }
         }else {
-            Log.i("log", "실패했음2");
+            Log.i("log", "로그인 확인여부 코드오류");
         }
     }
 
@@ -127,10 +127,11 @@ public class LoginActivity extends FragmentActivity {
                             intent.putExtra("name",name);
                             intent.putExtra("email",email);
 
+                            //사용자 정보 저장
                             Map<String, Object> taskMap = new HashMap<String, Object>();
                             taskMap.put("name", name);
                             taskMap.put("email", email);
-                            taskMap.put("Score", 200);
+                            taskMap.put("Score", 0); //이거 최초 로그인시 점수 0점 드림
                             taskMap.put("id",userid);
 
                             mDatabase.child("users").child(userid).updateChildren(taskMap);
