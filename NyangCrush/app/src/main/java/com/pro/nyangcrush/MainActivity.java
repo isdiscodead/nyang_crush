@@ -183,7 +183,6 @@ public class MainActivity extends Activity {
             }
         });*/
 
-
         // 효과음 사운드풀 초기화
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
             soundPool = new SoundPool.Builder().setMaxStreams(2).build();
@@ -398,7 +397,7 @@ public class MainActivity extends Activity {
                     user_bell ++;
                     SharedPreferences.Editor edit = pref.edit();
                     edit.putInt("bell", user_bell);
-                    edit.commit();
+                    edit.apply();
                     fill_bells();
                     wait_time = 1800;
                 } else if ( wait_time == 0 && user_bell == 4 ) {
@@ -407,7 +406,7 @@ public class MainActivity extends Activity {
                     user_bell ++;
                     SharedPreferences.Editor edit = pref.edit();
                     edit.putInt("bell", user_bell);
-                    edit.commit();
+                    edit.apply();
                     fill_bells();
                 }
 

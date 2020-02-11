@@ -166,11 +166,6 @@ public class LoginActivity extends FragmentActivity {
             intent.putExtra("name",name);
             intent.putExtra("email",email);
 
-            Log.i("log", "start in----");
-
-            Log.i("log", ""+userid);
-            Log.i("log", ""+email);
-            Log.i("log", ""+name);
             startActivity(intent);
             finish();
         }
