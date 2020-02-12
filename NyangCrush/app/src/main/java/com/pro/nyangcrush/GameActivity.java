@@ -4,6 +4,7 @@ import androidx.databinding.DataBindingUtil;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
@@ -28,6 +29,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,10 +54,12 @@ public class GameActivity extends Activity {
 
     ActivityGameBinding binding;
     Dialog dialog;
+    TextView highScore; //134번째 줄에 있어요! 검색하는거..
 
     //DB연결
     private DatabaseReference mDatabase;
     private FirebaseDatabase sDatabase;
+
     // 일시정지 다이얼로그 내부의 버튼들
     Button btn_replay, btn_stop, btn_back, btn_close ;
 
@@ -76,6 +80,7 @@ public class GameActivity extends Activity {
     SharedPreferences pref;
     int user_bell;
 
+    private Gson gson;
     private int plateSize;
     private int division9; // plate를 9로 나눈 값
     private int gameStatus;
@@ -88,6 +93,7 @@ public class GameActivity extends Activity {
     private int combo; //콤보 점수
     private int cnt; //첫터치 반응 확인
     private float combotime; //콤보 유지시간
+    String user_s;  // 현재 최고 점수
 
     //타이머부분
     private float timer; //게임 플레이 타임
@@ -115,11 +121,19 @@ public class GameActivity extends Activity {
     //게임말 채우기 감지 콜백
     FillCompletedListener fillCompletedListener;
 
+    //음소거 조절
+    boolean effect = true, background = true;
+
+    //볼륨 조절
+    SeekBar backgroundVolume, effectVolume;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_game);
         binding.setActivity(this);
+
+        //여기예요 여기! highScore이 변수는 게임시작시 위에 나타나는 본인 최고 점수
+        highScore = findViewById(R.id.highScore);
 
         handler = new Handler();
         nyangArray = new NyangImageView[9][9]; //게임 판 9X9
@@ -127,12 +141,15 @@ public class GameActivity extends Activity {
 
         // SharedPreference 초기화
         pref = getSharedPreferences("SHARE", MODE_PRIVATE);
+        effect = pref.getBoolean("effect", effect);
+        background = pref.getBoolean("background", background);
 
         /* pause 버튼 눌렀을 때 다이얼로그 생성 */
         binding.btnPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                soundPool.play(btnClick1, 1,1, 1,0,1);
+                if (effect)
+                    soundPool.play(btnClick1, 1,1, 1,0,1);
                 dialog = new Dialog(GameActivity.this);
 
                 dialog.setCancelable(false);
@@ -173,17 +190,19 @@ public class GameActivity extends Activity {
         mGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                //plate에 아이템을 9x9로 배치하기 위해 정확히 9로 나눠지는 수치를 계산
+
+                // plate 에 블록을 9x9로 배치하기 위해 정확히 9로 나눠지는 수치를 계산
                 plateSize = ( binding.gamePlate.getWidth() / 9) * 9;
-                //plate 넓이, 높이 설정
-                //ViewGroup : View의 부모 , view는 textview, editview, button, imageview등
-                //자식객체밖에 못건듬
+
+                // plate 넓이, 높이 설정
+                // ViewGroup : View 의 부모 , 여기서 view 는 textView, editView, button, imageView 등
+                // 자식 객체 밖에 못 건듦
                 ViewGroup.LayoutParams plateLayoutParams =  binding.gamePlate.getLayoutParams(); //game_plate
                 plateLayoutParams.width = plateSize; //레이아웃 wid어th값 속성 지정
                 plateLayoutParams.height = plateSize; //레이아웃 height값 속성 지정
                 binding.gamePlate.setLayoutParams(plateLayoutParams); //레이아웃속성 변경 / 원래는 리니어
 
-                //hideBar넓이, 높이 설정                      //레이아웃 속성객체 얻어옴
+                // hideBar 넓이, 높이 설정               ->  레이아웃 속성 객체 얻어옴
                 ViewGroup.LayoutParams hideBarLayoutParams = binding.gameHideNyangBar.getLayoutParams(); //game_hide_Nyang_bar
                 hideBarLayoutParams.width = plateSize;
                 hideBarLayoutParams.height = plateSize / 9;
@@ -194,7 +213,7 @@ public class GameActivity extends Activity {
                     @Override
                     public void run() {
                         do {
-                            //겹치는게 없을 때까지 판을 셋팅
+                            // 겹치는게 없을 때까지 블록을 셋팅
                             setNyangArray();
                         } while (checkNyangArray());
                         basicSetting();
@@ -205,12 +224,12 @@ public class GameActivity extends Activity {
                 //리스너 지우기
                 removeOnGlobalLayoutListener( binding.gamePlate.getViewTreeObserver(), mGlobalLayoutListener);
             }
-        };//mGlobalLayoutListener
+        }; // mGlobalLayoutListener()
 
-        //plate 넓이 구하기 위한 리스너 등록
+        // plate 넓이 구하기 위한 리스너 등록
         binding.gamePlate.getViewTreeObserver().addOnGlobalLayoutListener(mGlobalLayoutListener);
 
-        //터치 및 스와이프 인식 리스너
+        // 터치 및 스와이프 인식 리스너
         detector = new GestureDetector(this, new GestureDetector.OnGestureListener() {
             @Override
             public boolean onDown(MotionEvent motionEvent) {
@@ -233,8 +252,9 @@ public class GameActivity extends Activity {
 
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float v1, float v2) {
-                //게임말를 이동시키기 위해 스와이프를 한 경우 onFling이벤트가 발생
-                //터치가 불가능한 상태일 경우 return false
+
+                // 블록을 이동시키기 위해 스와이프를 한 경우 onFling이벤트가 발생
+                // 터치가 불가능한 상태일 경우 return false
                 if(!touchStatus) {
 //                    Log.i("dd", "touchStatus false");
                     return false;
@@ -249,7 +269,7 @@ public class GameActivity extends Activity {
 
                     if(e1 == null || e2 == null) return false;  //nullpointer exception 방지
 
-                    //e1 및 e2 이벤트 위치가 plate 바깥쪽일 경우 return false
+                    // e1 및 e2 이벤트 위치가 plate 바깥쪽일 경우 return false
                     if(e1.getX() >= plateX
                             && e1.getX() <= plateX + plateSize
                             && e1.getY() >= plateY
@@ -259,74 +279,78 @@ public class GameActivity extends Activity {
                             && e2.getY() >= plateY
                             && e2.getY() <= plateY + plateSize) {
 
-                        //처음 터치한 게임블록의 좌표
+                        // 처음 터치한 블록의 좌표
                         e1X = ((int)e1.getX() - plateX) / division9;  // 58 / 115 = 0
                         e1Y = ((int)e1.getY() - plateY) / division9; //993 / 115 = 8.xxx
 
-                        //좌표값 첫 터치 로그 확인
-//                        Log.i("dd"," e1.getX"+((int)e1.getX() - plateX));
-//                        Log.i("dd"," e1.getY"+((int)e1.getY() - plateY));
+                        // 좌표값 첫 터치 로그 확인
+//                      Log.i("dd"," e1.getX"+((int)e1.getX() - plateX));
+//                      Log.i("dd"," e1.getY"+((int)e1.getY() - plateY));
 
-                        //터치를 뗀 위치의 좌표
+                        // 터치를 뗀 위치의 좌표
                         e2X = ((int)e2.getX() - plateX) / division9;
                         e2Y = ((int)e2.getY() - plateY) / division9;
 
-//                        Log.i("dd","e1x : "+e1X + " / e1Y : "+e1Y +"/ e2X : "+e2X +"/ e2Y : "+e2Y);
+//                      Log.i("dd","e1x : "+e1X + " / e1Y : "+e1Y +"/ e2X : "+e2X +"/ e2Y : "+e2Y);
 
-                        //스왑할 게임블록의 좌표 조정
-                        //두칸 이상의 범위를 드래그한 경우 좌표값을 한칸으로 조정해줌
-                        e2X = Math.abs(e1X - e2X) >= 2 ? //Math.abs절대값
+                        // 스왑할 블록의 좌표 조정
+                        // 두칸 이상의 범위를 드래그한 경우 좌표값을 한칸으로 조정해줌
+                        e2X = Math.abs(e1X - e2X) >= 2 ? // Math.abs - 데이터의 절대값을 반환
                                 e1X > e2X ?
                                         e1X - 1 :
                                         e1X + 1
                                 : e2X;
-                        //x첫터치 좌표 2일때, 후 x좌표 3일경우
-                        // 후 좌표값 e2X
-                        //x첫터치 좌표 3일때, 후 x좌표 1일경우
-                        //Math.abs(e1X - e2X) >= 2 | -> e1X - 1 = 2좌표 출
 
-                        //x좌표식과 동일
+                        // x첫터치 좌표 2일때, 후 x좌표 3일경우
+                        // 후 좌표값 e2X
+                        // x첫터치 좌표 3일때, 후 x좌표 1일경우
+                        // Math.abs(e1X - e2X) >= 2 | -> e1X - 1 = 2좌표 출력
+
+                        // x좌표식과 동일
                         e2Y = Math.abs(e1Y - e2Y) >= 2 ?
                                 e1Y > e2Y ?
                                         e1Y - 1 :
                                         e1Y + 1
                                 : e2Y;
 
-                        //좌표 1 -> 2 && 1 -> 2 대각선드래그 // 1 == 1 & 2 == 2 제자리드래그
+                        // 좌표 1 -> 2 && 1 -> 2 대각선드래그 // 1 == 1 & 2 == 2 제자리드래그
                         if((e1X != e2X && e1Y != e2Y) || (e1X == e2X && e1Y == e2Y)) {
-//                            Log.i("잘못된 드래그 ->", e1Y+" -> "+e2Y+" || "+e1X+" -> "+e2X);
-                            //잘못된 드래그 방지
-                            //1. 대각선 드래그
-                            //2. 제자리 드래그
+//                          Log.i("잘못된 드래그 ->", e1Y+" -> "+e2Y+" || "+e1X+" -> "+e2X);
+                            // 잘못된 드래그 방지
+                            // 1. 대각선 드래그
+                            // 2. 제자리 드래그
                             touchStatus = true;
                             return false;
                         }
 
-                        //스왑 효과음 재생
-//                        if(effectSound)
-//                            soundPool.play(swapSound, effectSoundVolume, effectSoundVolume,  1,  0,  1);
+                        // 스왑 효과음 재생
+//                      if(effectSound)
+//                      soundPool.play(swapSound, effectSoundVolume, effectSoundVolume,  1,  0,  1);
 
-                        //스왑 완료시 호출할 콜백 등록
+                        // 스왑 완료시 호출할 콜백 등록
                         swapCompletedListener = new SwapCompletedListener();
                         SwapCompletedListener.SwapCallback swapCallback = new SwapCompletedListener.SwapCallback() {
                             @Override
                             public void onSwapComplete(boolean restore) {
                                 if(restore) {
-                                    //되돌리기의 경우
+                                    // 되돌리기의 경우
                                     touchStatus = true;
                                     return;
                                 }
 
                                 if(!checkNyangArray()) {
-                                    //터트릴 블록 하나도 없을 경우 다시 스왑함으로써 원상태로 되돌림
-                                    swapNyang(e1X, e2X, e1Y, e2Y, true); //좌표 1 , 2 , 6 , 6
-                                    mediaPlayer4.start();
 
-                                    //콤보 유지시간중 블록을 잘못 건드려 터트릴게 없을 경우 콤보 초기화
+                                    // 터트릴 블록 하나도 없을 경우 다시 스왑함으로써 원상태로 되돌림
+                                    swapNyang(e1X, e2X, e1Y, e2Y, true); //좌표 1 , 2 , 6 , 6
+                                    if (effect)
+                                        mediaPlayer4.start();
+
+                                    // 콤보 유지시간중 블록을 잘못 건드려 터트릴게 없을 경우 콤보 초기화
                                     combo = 0;
                                     binding.count.setText(""+combo);
 
                                 } else {
+
                                     fillCompletedListener = new FillCompletedListener();
                                     FillCompletedListener.FillCallback fillCallback = new FillCompletedListener.FillCallback() {
                                         @Override
@@ -342,13 +366,14 @@ public class GameActivity extends Activity {
                                             }
                                         }
                                     };
-                                    //첫터치 3개이상 블록을 터트렸을때 반응
+
+                                    // 첫터치 3개이상 블록을 터트렸을때 반응
                                     cnt++; //
 
-                                    //x x
-                                    //x x
-                                    //x x
-                                    //위 같이 터치 후 2개 연속 터질경우 콤보 증가
+                                    // x x
+                                    // x x
+                                    // x x
+                                    // 위 같이 터치 후 2개 연속 터질경우 콤보 증가
                                     int sum = 0;
                                     for(int q = 0 ; q < nyangArray.length ; q++) {
                                         String row = "";
@@ -359,9 +384,9 @@ public class GameActivity extends Activity {
                                                     sum++;
                                                     combo++;
 
-                                                    //서로 매치되는부분
-                                                    //x x x
-                                                    //o o o
+                                                    // 서로 매치되는부분
+                                                    // x x x
+                                                    // o o o
                                                     if(sum >= 2){
                                                         combo--;
                                                     }
@@ -381,7 +406,7 @@ public class GameActivity extends Activity {
                         };
                         swapCompletedListener.setSwapCallback(swapCallback);
 
-                        //두 게임말 스왑
+                        // 두 블록 스왑
                         swapNyang(e1X, e2X, e1Y, e2Y, false);
                         return true;
                     } else {
@@ -405,11 +430,17 @@ public class GameActivity extends Activity {
 
         mediaPlayer3 = MediaPlayer.create(this, R.raw.toy);
         mediaPlayer4 = MediaPlayer.create(this,R.raw.kitty);
-        mediaPlayer1.setLooping(true);
+
+//      mediaPlayer1.setLooping(true);
         mediaPlayer3.setLooping(false);
         mediaPlayer4.setLooping(false);
 
-    }//onCreate
+        //소리조절 시크바
+        effectVolume = findViewById(R.id.effectVolume);
+        backgroundVolume = findViewById(R.id.backgroundVolume);
+
+
+    } // onCreate()
 
     /**
      * plate에 게임블록을 채워넣음
@@ -431,33 +462,33 @@ public class GameActivity extends Activity {
                             , division9
                             , (int)(Math.random() * 6) + 1);
 
-
+                    // 게임판 레이아웃에 만들어진 view 를 추가해준다.
                     binding.layout.addView(nyangArray[q][w]);
 
 
                 }
             }
         }
-    }//setDustArray
+    } // setNyangArray()
 
 
-    //게임말 스왑 애니메이션
+    // 블록 스왑 애니메이션
     private void swapNyang(final int x1, final int x2, final int y1, final int y2, final boolean restore) {
-        //restore가 true면 되돌리기 작업임
-        //게임말1 : 사용자가 처음 터치한 블록
-        //게임말2 : 사용자가 교환하려고 드래그한 자리에 있는 블록
+        // restore가 true면 되돌리기 작업임
+        // 블록1 : 사용자가 처음 터치한 블록
+        // 블록2 : 사용자가 교환하려고 드래그한 자리에 있는 블록
 
-        //게임말1 좌표 얻어오기
+        // 블록1 좌표 얻어오기
         final int nyang1X = (int)nyangPositions[y1][x1].getX();
         final int nyang1Y = (int)nyangPositions[y1][x1].getY();
-//        Log.i("dd", "nyang1X"+ nyang1X+"// Y " +nyang1Y );
+//      Log.i("dd", "nyang1X"+ nyang1X+"// Y " +nyang1Y );
 
 
-        //게임말2 좌표 얻어오기
+        // 블록2 좌표 얻어오기
         final int nyang2X = (int)nyangPositions[y2][x2].getX();
         final int nyang2Y = (int)nyangPositions[y2][x2].getY();
 
-        //게임말1을 게임말2 쪽으로 이동
+        // 블록1을 블록2 쪽으로 이동
         TranslateAnimation translateAnimation1 = new TranslateAnimation(
                 Animation.RELATIVE_TO_SELF , 0
                 ,Animation.RELATIVE_TO_SELF , x2 - x1
@@ -471,7 +502,7 @@ public class GameActivity extends Activity {
                 nyangArray[y2][x2].setX(nyang2X);
                 nyangArray[y2][x2].setY(nyang2Y);
 
-                //애니메이션이 끝난것을 리스너에게 알려주기위한 메소드
+                // 애니메이션이 끝난것을 리스너에게 알려주기위한 메소드
                 swapCompletedListener.swapAnimationEnd(restore);
             }
 
@@ -486,7 +517,7 @@ public class GameActivity extends Activity {
         });
         nyangArray[y1][x1].startAnimation(translateAnimation1);
 
-        //게임말2를 게임말1 쪽으로 이동
+        // 블록2를 블록1 쪽으로 이동
         TranslateAnimation translateAnimation2 = new TranslateAnimation(
                 Animation.RELATIVE_TO_SELF , 0
                 ,Animation.RELATIVE_TO_SELF , x1 - x2
@@ -500,7 +531,7 @@ public class GameActivity extends Activity {
                 nyangArray[y1][x1].setX(nyang1X);
                 nyangArray[y1][x1].setY(nyang1Y);
 
-                //애니메이션이 끝난것을 리스너에게 알려주기위한 메소드
+                // 애니메이션이 끝난것을 리스너에게 알려주기위한 메소드
                 swapCompletedListener.swapAnimationEnd(restore);
             }
 
@@ -515,11 +546,12 @@ public class GameActivity extends Activity {
         });
         nyangArray[y2][x2].startAnimation(translateAnimation2);
 
-        //게임말 스왑
+        // 블록 스왑
         NyangImageView tmpNyang = nyangArray[y2][x2];
         nyangArray[y2][x2] = nyangArray[y1][x1];
         nyangArray[y1][x1] = tmpNyang;
-    }//swapAni
+
+    } // swapAni()
 
 
     /**
@@ -535,7 +567,7 @@ public class GameActivity extends Activity {
 //                row += nyangArray[q][w] == null ? 1 : 0;
 //                row += " ";
 //            }
-////            Log.i("dustArray "+q,"row"+ row);
+//            Log.i("nyangArray "+q,"row"+ row);
 //        }
 
         for(int q = 0 ; q < nyangArray.length ; q++) {
@@ -562,7 +594,7 @@ public class GameActivity extends Activity {
                     newNyangList.add(nyangImageView);
 
                     if(w == 0) {
-                        //첫번 째 칸이 0일 경우 plate를 채움
+                        // 첫번 째 칸이 0일 경우 plate를 채움
                         fillPlate(newNyangList, q);
                     }
 
@@ -584,12 +616,12 @@ public class GameActivity extends Activity {
                         tranAnimation.setAnimationListener(new Animation.AnimationListener() {
                             @Override
                             public void onAnimationEnd(Animation animation) {
-                                //실행 순서가 보장 되지 않음
+                                // 실행 순서가 보장 되지 않음
                                 nyangArray[newY][x].setX(nyangPositions[newY][x].getX());
                                 nyangArray[newY][x].setY(nyangPositions[newY][x].getY());
 
                                 if(y == 0) {
-                                    //블록들을 아래로 옮기고 난 후 공백을 채워넣음
+                                    // 블록들을 아래로 옮기고 난 후 공백을 채워넣음
                                     fillPlate(newNyangList, x);
                                 }
                             }
@@ -611,7 +643,8 @@ public class GameActivity extends Activity {
         }
 
         fillCompletedListener.setTotalNullCount(totalNullCount);
-    }//fillblank
+
+    } // fillblank()
 
 
     private void fillPlate(final ArrayList<NyangImageView> newNyangList, final int x) {
@@ -651,8 +684,8 @@ public class GameActivity extends Activity {
             });
             newNyangList.get(q).startAnimation(tranAnimation);
         }
-    }//fliiplate
 
+    } // fliiplate()
 
     /**
      * 현재 plate에 동일한 모양의 블록이 일렬로 3개 이상 나열된 곳이 있는지 체크 후
@@ -662,10 +695,13 @@ public class GameActivity extends Activity {
      */
     private boolean checkNyangArray() {
         final ArrayList<String> removeList = new ArrayList<>();
-        boolean flag = false; //리턴할 변수
+        boolean flag = false; // 리턴할 변수
         String s ="";
         String s1 ="";
         int type = 0;
+
+        int ver = 0;
+        int hor = 0;
 
         for (int q = 0; q < nyangArray.length; q++) {
             for (int w = 0; w < nyangArray[q].length; w++) {
@@ -701,38 +737,83 @@ public class GameActivity extends Activity {
                         flag = true;
 
                         removeList.add(q + "," + w);
+                        ver++;
 
-                        for (int r = q + 1; r <= verticalMax; r++) {
-                            if (nyangArray[q][w].getNyangType() == nyangArray[r][w].getNyangType()) {
-                                if (binding.layout.getViewWidget(nyangArray[r][w]) != null) {
-                                    //리무브 애니메이션
-                                    Animation anim = AnimationUtils.loadAnimation(this, R.anim.remove_nyang);
-                                    nyangArray[r][w].startAnimation(anim);
+                        if(ver == 5){
+
+                            for (int r = q + 1; r <= verticalMax; r++) {
+                                if (nyangArray[q][w].getNyangType() == nyangArray[r][w].getNyangType()) {
+                                    if (binding.layout.getViewWidget(nyangArray[r][w]) != null) {
+                                        //리무브 애니메이션
+                                        Animation anim = AnimationUtils.loadAnimation(this, R.anim.remove_nyang);
+
+                                        for(int i=0; i<=8; i++){
+                                            nyangArray[i][w].startAnimation(anim);
+                                            binding.layout.removeView(nyangArray[i][w]);
+                                            removeList.add(i + "," + w);
+                                        }
+
+                                    }
+
+
+                                } else {
+                                    break;
                                 }
-
-                                binding.layout.removeView(nyangArray[r][w]);
-                                removeList.add(r + "," + w);
-
-                            } else {
-                                break;
                             }
-                        }
 
-                        for (int r = q - 1; r >= verticalMin; r--) {
-                            if (nyangArray[q][w].getNyangType() == nyangArray[r][w].getNyangType()) {
-                                if (binding.layout.getViewWidget(nyangArray[r][w]) != null) {
-                                    //리무브 애니메이션
-                                    Animation anim = AnimationUtils.loadAnimation(this, R.anim.remove_nyang);
-                                    nyangArray[r][w].startAnimation(anim);
+                            for (int r = q - 1; r >= verticalMin; r--) {
+                                if (nyangArray[q][w].getNyangType() == nyangArray[r][w].getNyangType()) {
+                                    if (binding.layout.getViewWidget(nyangArray[r][w]) != null) {
+                                        //리무브 애니메이션
+                                        Animation anim = AnimationUtils.loadAnimation(this, R.anim.remove_nyang);
+                                        for(int i=0; i<=8; i++){
+                                            nyangArray[i][w].startAnimation(anim);
+                                            binding.layout.removeView(nyangArray[i][w]);
+                                            removeList.add(i + "," + w);
+                                        }
+                                    }
+
+                                } else {
+                                    break;
                                 }
-
-                                binding.layout.removeView(nyangArray[r][w]);
-                                removeList.add(r + "," + w);
-                            } else {
-                                break;
                             }
+                            break;
+
+                        }else{
+
+                            for (int r = q + 1; r <= verticalMax; r++) {
+                                if (nyangArray[q][w].getNyangType() == nyangArray[r][w].getNyangType()) {
+                                    if (binding.layout.getViewWidget(nyangArray[r][w]) != null) {
+                                        //리무브 애니메이션
+                                        Animation anim = AnimationUtils.loadAnimation(this, R.anim.remove_nyang);
+                                        nyangArray[r][w].startAnimation(anim);
+                                    }
+
+                                    binding.layout.removeView(nyangArray[r][w]);
+                                    removeList.add(r + "," + w);
+
+                                } else {
+                                    break;
+                                }
+                            }
+
+                            for (int r = q - 1; r >= verticalMin; r--) {
+                                if (nyangArray[q][w].getNyangType() == nyangArray[r][w].getNyangType()) {
+                                    if (binding.layout.getViewWidget(nyangArray[r][w]) != null) {
+                                        //리무브 애니메이션
+                                        Animation anim = AnimationUtils.loadAnimation(this, R.anim.remove_nyang);
+                                        nyangArray[r][w].startAnimation(anim);
+                                    }
+
+                                    binding.layout.removeView(nyangArray[r][w]);
+                                    removeList.add(r + "," + w);
+                                } else {
+                                    break;
+                                }
+                            }
+                            break;
+
                         }
-                        break;
                     }
                 }
 
@@ -750,36 +831,83 @@ public class GameActivity extends Activity {
                         flag = true;
 
                         removeList.add(q + "," + w);
-                        for (int r = w + 1; r <= horizontalMax; r++) {
-                            if (nyangArray[q][w].getNyangType() == nyangArray[q][r].getNyangType()) {
-                                if (binding.layout.getViewWidget(nyangArray[q][r]) != null) {
-                                    //리무브 애니메이션
-                                    Animation anim = AnimationUtils.loadAnimation(this, R.anim.remove_nyang);
-                                    nyangArray[q][r].startAnimation(anim);
-                                }
+                        hor++;
 
-                                binding.layout.removeView(nyangArray[q][r]);
-                                removeList.add(q + "," + r);
-                            } else {
-                                break;
+                        if(hor == 5){
+
+                            for (int r = w + 1; r <= horizontalMax; r++) {
+                                if (nyangArray[q][w].getNyangType() == nyangArray[q][r].getNyangType()) {
+                                    if (binding.layout.getViewWidget(nyangArray[q][r]) != null) {
+                                        //리무브 애니메이션
+                                        Animation anim = AnimationUtils.loadAnimation(this, R.anim.remove_nyang);
+                                        for(int i=0; i<=8; i++){
+                                            nyangArray[q][i].startAnimation(anim);
+                                            binding.layout.removeView(nyangArray[q][i]);
+                                            removeList.add(q + "," + i);
+
+                                        }
+                                    }
+
+                                } else {
+                                    break;
+                                }
                             }
+
+                            for (int r = w - 1; r >= horizontalMin; r--) {
+                                if (nyangArray[q][w].getNyangType() == nyangArray[q][r].getNyangType()) {
+                                    if (binding.layout.getViewWidget(nyangArray[q][r]) != null) {
+                                        //리무브 애니메이션
+                                        Animation anim = AnimationUtils.loadAnimation(this, R.anim.remove_nyang);
+                                        for(int i=0; i<=8; i++){
+
+                                            nyangArray[q][i].startAnimation(anim);
+                                            binding.layout.removeView(nyangArray[q][i]);
+                                            removeList.add(q + "," + i);
+                                        }
+                                    }
+
+                                } else {
+                                    break;
+                                }
+                            }
+                            break;
+
+                        }else{
+
+                            for (int r = w + 1; r <= horizontalMax; r++) {
+                                if (nyangArray[q][w].getNyangType() == nyangArray[q][r].getNyangType()) {
+                                    if (binding.layout.getViewWidget(nyangArray[q][r]) != null) {
+                                        //리무브 애니메이션
+                                        Animation anim = AnimationUtils.loadAnimation(this, R.anim.remove_nyang);
+                                        nyangArray[q][r].startAnimation(anim);
+                                    }
+
+                                    binding.layout.removeView(nyangArray[q][r]);
+                                    removeList.add(q + "," + r);
+                                } else {
+                                    break;
+                                }
+                            }
+
+                            for (int r = w - 1; r >= horizontalMin; r--) {
+                                if (nyangArray[q][w].getNyangType() == nyangArray[q][r].getNyangType()) {
+                                    if (binding.layout.getViewWidget(nyangArray[q][r]) != null) {
+                                        //리무브 애니메이션
+                                        Animation anim = AnimationUtils.loadAnimation(this, R.anim.remove_nyang);
+                                        nyangArray[q][r].startAnimation(anim);
+                                    }
+
+                                    binding.layout.removeView(nyangArray[q][r]);
+                                    removeList.add(q + "," + r);
+                                } else {
+                                    break;
+                                }
+                            }
+                            break;
+
                         }
 
-                        for (int r = w - 1; r >= horizontalMin; r--) {
-                            if (nyangArray[q][w].getNyangType() == nyangArray[q][r].getNyangType()) {
-                                if (binding.layout.getViewWidget(nyangArray[q][r]) != null) {
-                                    //리무브 애니메이션
-                                    Animation anim = AnimationUtils.loadAnimation(this, R.anim.remove_nyang);
-                                    nyangArray[q][r].startAnimation(anim);
-                                }
 
-                                binding.layout.removeView(nyangArray[q][r]);
-                                removeList.add(q + "," + r);
-                            } else {
-                                break;
-                            }
-                        }
-                        break;
                     }
                 }
 
@@ -792,7 +920,7 @@ public class GameActivity extends Activity {
         }
 
         //같은블록5개 맞을시 같은블록 전부 삭제 (아이템개념)
-        if(s !="" && s1 !="" && s.equalsIgnoreCase(s1) | s.length() == 5 | s1.length() == 5) {
+        if(s !="" && s1 !="" && s.equalsIgnoreCase(s1) | s.length() >= 5 | s1.length() >= 5) {
             Log.i("qq", "s1: " + s1 + " / s : " + s);
 
             String a = "";
@@ -813,7 +941,7 @@ public class GameActivity extends Activity {
         }
 
         for (int q = 0; q < removeList.size(); q++) {
-            //실제 nyangArray에서 블록 삭제
+            // 실제 nyangArray에서 블록 삭제
             int i = Integer.parseInt(removeList.get(q).split(",")[0]);
             int j = Integer.parseInt(removeList.get(q).split(",")[1]);
             nyangArray[i][j] = null;
@@ -822,11 +950,11 @@ public class GameActivity extends Activity {
 
         if (flag && gameStatus == GAME_PLAYING) {
 
-            //점수 갱신
+            // 점수 갱신
             userScore += (removeList.size() * 10); //기본블록 점수 90
-            timer += 0.7f;
+            timer += 0.5f;
 
-            //콤보유지시간 5초
+            // 콤보유지시간 5초
             combotime = 5;
 
             if(combo >= 1){
@@ -876,28 +1004,25 @@ public class GameActivity extends Activity {
             });
 
 
-            //블록 터지는 효과음
-            /*if(effectSound)
-                soundPool.play(dustRemoveSound, effectSoundVolume, effectSoundVolume,  1,  0,  1);
-            */
+            // 블록 터지는 효과음
         }
+        if (effect)
+            mediaPlayer3.start();
 
-        //먼지 터지는 효과음
-        mediaPlayer3.start();
+
 
         return flag;
-    }//checklist
+    } // checklist()
 
 
 
 
-    //리스너 삭제 메소드
+    // 리스너 삭제 메소드
     private void removeOnGlobalLayoutListener(ViewTreeObserver observer, ViewTreeObserver.OnGlobalLayoutListener listener) {
         if(observer == null) return ;
 
         observer.removeOnGlobalLayoutListener(listener);
-    }//removeOnGlobalLayoutListener
-
+    } // removeOnGlobalLayoutListener()
 
     /**
      * 터치 이벤트 등록
@@ -948,17 +1073,23 @@ public class GameActivity extends Activity {
         public void onClick(View view) {
             switch ( view.getId() ){
                 case R.id.btn_replay :
-                    soundPool.play(btnClick1, 1,1, 1,0,1);
+                    if (effect)
+                        soundPool.play(btnClick1, 1,1, 1,0,1);
+
                     gameReplay();
                     dialog.dismiss();
                     break;
+
                 case R.id.btn_stop :
-                    soundPool.play(btnClick1, 1,1, 1,0,1);
+                    if (effect)
+                        soundPool.play(btnClick1, 1,1, 1,0,1);
+
                     endGame();
                     dialog.dismiss();
                     break;
                 default:
-                    soundPool.play(btnClick1, 1,1, 1,0,1);
+                    if (effect)
+                        soundPool.play(btnClick1, 1,1, 1,0,1);
                     dialog.dismiss();
                     continueGame();
                     break;
@@ -967,9 +1098,11 @@ public class GameActivity extends Activity {
         }
     };
 
-    ////////////////////////////////////////////////////
-    //      게임 진행 ( 시작 - 종료 - 리플레이 )      //
-    ////////////////////////////////////////////////////
+    /** //////////////////////////////////////////////////
+     *  게임 진행
+     *  시작 -> 타이머 시작 -> 종료
+     *  -> 다시하기 -> 중지 -> 이어하기
+     ///////////////////////////////////////////////// **/
 
     //게임 시작
     private void startGame() {
@@ -979,7 +1112,29 @@ public class GameActivity extends Activity {
             e.printStackTrace();
         }
 
+        //게임시작시 위에 나타나는 highScore
+        sDatabase = FirebaseDatabase.getInstance();
+        mDatabase = sDatabase.getReference("users");
+
+        mDatabase.orderByChild("users").addListenerForSingleValueEvent(
+                new ValueEventListener () {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Intent i = getIntent();
+                        String userid = i.getExtras().getString("userid");
+                        user_s = dataSnapshot.child(userid).child("Score").getValue().toString();
+                        highScore.setText(user_s);
+
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.d("MainActivity", "실패 : ");
+                    }
+                });
+
+
         // 벨 하나 감소
+        pref = getSharedPreferences("SHARE", MODE_PRIVATE);
         user_bell = pref.getInt("bell", 5);
         user_bell --;
         SharedPreferences.Editor edit = pref.edit();
@@ -987,10 +1142,8 @@ public class GameActivity extends Activity {
         edit.commit();
         Log.i("bell", ""+user_bell);
 
-        //사운드 재생
-        /*if(backgroundSound)
-            mediaPlayer.start();*/
-        mediaPlayer2.start();
+        if (background)
+            mediaPlayer2.start();
 
         //효과음 재생
         /*if(effectSound)
@@ -999,8 +1152,8 @@ public class GameActivity extends Activity {
 
         binding.time.setText(""+timer);
 
-        //관련 변수 초기화
-        timerThreadContoller = true; //타이머 쓰레드 컨트롤 변수
+        // 관련 변수 초기화
+        timerThreadContoller = true; // 타이머 쓰레드 컨트롤 변수
         gameStatus = GAME_PLAYING;
 
         // Game Start 메시지 보이게 함
@@ -1037,25 +1190,26 @@ public class GameActivity extends Activity {
                 touchStatus = true; // 터치 가능
             }
         }, 1500);
-    }
 
-    //게임 타이머 시작
+    } // startGame()
+
+    // 게임 타이머 시작
     private void startGameTimer() {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                //타이머 루프
+                // 타이머 루프
                 while(timerThreadContoller) {
                     try {
                         Thread.sleep(100);
-                        timer -= 0.1f; //순수 게임시간
+                        timer -= 0.1f; // 순수 게임시간
                         time++;
                         combotime -= 0.1f;
 
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
-                                // 1초 마다 타이머 바 갱신
+                                // 1초 마다 타이머 갱신
                                 binding.time.setText(String.format("%.1f",timer));
 
                                 if(combotime <= 0){
@@ -1086,7 +1240,8 @@ public class GameActivity extends Activity {
                 }
             }
         }).start();
-    }
+
+    } // startGameTimer()
 
     //게임 종료
     private void endGame() {
@@ -1096,6 +1251,9 @@ public class GameActivity extends Activity {
         // mediaPlayer.stop();
         touchStatus = false;
         gameStatus = GAME_TERMINATED;
+
+        if (background)
+            mediaPlayer2.stop();
 
         handler.post(new Runnable() {
             @Override
@@ -1128,23 +1286,52 @@ public class GameActivity extends Activity {
                 stop_btn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        soundPool.play(btnClick1, 1,1, 1,0,1);
+                        if (effect)
+                            soundPool.play(btnClick1, 1,1, 1,0,1);
                         dialog.dismiss();
                         finish();
 
                     }
                 });
 
-                Toast.makeText(getApplicationContext(), "유저점수:"+userScore,Toast.LENGTH_SHORT).show();
                 score.setText(String.format("%,d", userScore));
                 playTime.setText(String.format("%d", time / 10));
-                isBestScore.setVisibility(userScore == 100 ? View.VISIBLE : View.INVISIBLE);
-                isBestTime.setVisibility(Integer.parseInt(playTime.getText().toString()) == 999 ? View.VISIBLE : View.INVISIBLE);
+                isBestScore.setVisibility(userScore >= Integer.parseInt(user_s) ? View.VISIBLE : View.INVISIBLE);   // 신기록 갱신 시 표시
+
+                //게임 종료시 DB정보 불러오기
+                sDatabase = FirebaseDatabase.getInstance();
+                mDatabase = sDatabase.getReference("users");
+
+                mDatabase.orderByChild("users").addListenerForSingleValueEvent(
+                        new ValueEventListener () {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                Intent i = getIntent();
+                                String userid = i.getExtras().getString("userid");
+
+                                String user_s = dataSnapshot.child(userid).child("Score").getValue().toString();
+                                int num1 = Integer.parseInt(user_s);
+
+                                //기존 점수보다 높을시 DB에 저장
+                                if( num1 < userScore ){
+                                    Map<String, Object> taskMap = new HashMap<String, Object>();
+
+                                    taskMap.put("Score", userScore);
+                                    mDatabase.child(userid).updateChildren(taskMap);
+                                }//if()
+                            }
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                Log.d("MainActivity", "실패 : ");
+                            }
+                        });
+
             }
         });
-    }
 
-    //게임 다시하기
+    } // endGame()
+
+    // 게임 다시하기
     private void gameReplay() {
 
         pref = getSharedPreferences("SHARE", MODE_PRIVATE);
@@ -1171,46 +1358,52 @@ public class GameActivity extends Activity {
             }
         }
         do {
-            //겹치는게 없을 때까지 plate 셋팅
+            // 겹치는게 없을 때까지 plate 셋팅
             setNyangArray();
         } while (checkNyangArray());
-        soundPool.play(btnClick1, 1,1, 1,0,1);
+        if(effect)
+            soundPool.play(btnClick1, 1,1, 1,0,1);
+        if (background)
+            mediaPlayer2.stop();
         basicSetting();
         startGame();
-    }
 
+    } //gameReplay()
 
-
-    //게임 중지
+    // 게임 중지
     private void pauseGame() {
         if(gameStatus == GAME_TERMINATED) return;
         timerThreadContoller = false;
         gameStatus = GAME_PAUSED; //GAME_PAUSED = 1
         touchStatus = false;
         mediaPlayer2.pause();
-    }
 
-    //게임 이어하기
+    } // pauseGame()
+
+    // 게임 이어하기
     private void continueGame() {
         if(gameStatus == GAME_TERMINATED) return;
         timerThreadContoller = true;
         startGameTimer();
         gameStatus = GAME_PLAYING;
         touchStatus = true;
-        mediaPlayer2.start();
-    }
+        if (background)
+            mediaPlayer2.start();
+
+    } // continueGame()
 
     ////////////////////////////////////////
-    // 생명 주기                          //
+    //              생명 주기             //
     ////////////////////////////////////////
     @Override
     public void onBackPressed() {
-        binding.btnPause.performClick();
-        //게임속 음악 끄고 타이틀화면 음악 재생
-        mediaPlayer2.pause();
-        //mediaPlayer1.start();
 
-    }
+        binding.btnPause.performClick();
+        // 게임속 음악 끄고 타이틀화면 음악 재생
+        mediaPlayer2.pause();
+        // mediaPlayer1.start();
+
+    } // onBackPressed()
 
     @Override
     protected void onPause() {
@@ -1235,5 +1428,5 @@ public class GameActivity extends Activity {
         //쓰레드 중지
         gameStatus = GAME_TERMINATED;
         timerThreadContoller = false;
-    }
+    } // onDestroy()
 }

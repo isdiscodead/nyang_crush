@@ -79,6 +79,7 @@ public class MainActivity extends Activity {
     private ArrayAdapter adapter;
     ListView ranking;
     ArrayList<User> user_arr = new ArrayList<User>();
+    boolean flag;
 
     // 다이얼로그 내부 버튼
     Button btn_close, btn_logout;
@@ -200,10 +201,10 @@ public class MainActivity extends Activity {
                 // 다이얼로그 커스텀 애니메이션 적용
                 dialog.getWindow().getAttributes().windowAnimations = R.style.CustomDialogAnimation;
 
-                dialog.setContentView(R.layout.diag_howtp);
+                dialog.setContentView( R.layout.diag_howtp );
 
                 btn_close = dialog.findViewById(R.id.btn_close);
-                btn_close.setOnClickListener(dialClick);
+                btn_close.setOnClickListener( dialClick );
 
                 dialog.show();
 
@@ -273,18 +274,18 @@ public class MainActivity extends Activity {
                 if (effectSound)
                     soundPool.play(btnClick1, 1, 1, 1, 0, 1);
 
-                dialog = new Dialog(MainActivity.this);
+                dialog = new Dialog( MainActivity.this );
 
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dialog.getWindow().getAttributes().windowAnimations = R.style.CustomDialogAnimation;
 
-                dialog.setContentView(R.layout.diag_setting);
+                dialog.setContentView( R.layout.diag_setting );
 
                 btn_close = dialog.findViewById(R.id.btn_close);
-                btn_logout = dialog.findViewById(R.id.btn_logout);
-                btn_close.setOnClickListener(dialClick);
-                btn_logout.setOnClickListener(dialClick);
+                btn_logout = dialog.findViewById( R.id.btn_logout );
+                btn_close.setOnClickListener( dialClick );
+                btn_logout.setOnClickListener( dialClick );
 
                 final Switch effectSoundSwitch = dialog.findViewById(R.id.setting_effect_sound);
                 final Switch backgroundSoundSwitch = dialog.findViewById(R.id.setting_background_sound);
@@ -363,54 +364,55 @@ public class MainActivity extends Activity {
             public void onClick(View view) {
                 if (effectSound)
                     soundPool.play(btnClick1, 1, 1, 1, 0, 1);
-                dialog = new Dialog(MainActivity.this);
+                dialog = new Dialog( MainActivity.this );
 
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dialog.getWindow().getAttributes().windowAnimations = R.style.CustomDialogAnimation;
 
-                dialog.setContentView(R.layout.diag_rank);
+                dialog.setContentView( R.layout.diag_rank );
 
                 btn_close = dialog.findViewById(R.id.btn_close);
-                btn_close.setOnClickListener(dialClick);
+                btn_close.setOnClickListener( dialClick );
 
                 // 랭크 생성을 위한 DB 접근
-                mDatabase.orderByChild("users").limitToLast(2).addListenerForSingleValueEvent(  // 데이터 추가, 업데이트 메서드
+                // 여기 표시하는 거는 limitToLast(2) 아까도 설명한거이지만 상위 2개만 보여줍니다.
+                mDatabase.orderByChild("Score").limitToLast(50).addListenerForSingleValueEvent(  // 데이터 추가, 업데이트 메서드
                         new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                                Intent intent = getIntent();
-
+                                Intent intent = getIntent();    // 로그인 하면서 넘어온 본인 정보 가져옴
                                 String userid = intent.getExtras().getString("userid");
                                 String user_s = dataSnapshot.child(userid).child("Score").getValue().toString();
                                 binding.myScore.setText(user_s);    // 현재 유저 본인 최고 점수 ( DB 등록된 점수 )
 
-                                Log.i("rank", "string : " + userid +"/"+ user_s);
-
                                 // adapter.clear();
                                 for ( DataSnapshot snapshot : dataSnapshot.getChildren() ) {
 
+                                    userid = snapshot.child("id").getValue().toString();
                                     int score = Integer.parseInt(snapshot.child("Score").getValue().toString()); //점수
                                     String name = snapshot.child("name").getValue().toString(); //이름
 
                                     User user = new User();
+                                    user.setUserId(userid);
                                     user.setName(name);
                                     user.setScore(score);
-
-                                    Log.i("rank", "스냅챗 for문");
 
                                     user_arr.add(user);
                                 }
 
-                                adapter = new RankAdapter(MainActivity.this, R.layout.diag_rank, user_arr);
-
-                                Log.i("rank", "어댑터 초기화");
-
+                                userid = intent.getExtras().getString("userid");
+                                adapter = new RankAdapter(MainActivity.this, R.layout.rank, user_arr, userid );
                                 ranking = dialog.findViewById(R.id.ranking);
                                 ranking.setAdapter(adapter);
 
-                                Log.i("rank", "어댑터 셋팅");
+                                dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                    @Override
+                                    public void onDismiss(DialogInterface dialogInterface) {
+                                        adapter.clear();    // 데이터 중복 표시를 방지하기 위해 클리어
+                                    }
+                                });
                             }
 
                             @Override
@@ -430,6 +432,12 @@ public class MainActivity extends Activity {
                 if (effectSound)
                     soundPool.play(btnClick1, 1, 1, 1, 0, 1);
 
+                //LoginActivity에서 받은 사용자 Id값을  게임 실행시  GameActivity보냄
+                Intent i = new Intent(MainActivity.this, GameActivity.class);
+                Intent intent = getIntent();
+                String userid = intent.getExtras().getString("userid");
+                i.putExtra("userid",userid);
+
                 user_bell = pref.getInt("bell", 5);
 
                 // 남은 방울이 없다면 return
@@ -438,13 +446,10 @@ public class MainActivity extends Activity {
                     return;
                 }
 
-                Intent i = new Intent(MainActivity.this, GameActivity.class);
                 startActivity(i);
 
                 //mediaPlayer2.start();
                 mediaPlayer1.stop();
-
-
             }
         });
 
@@ -468,13 +473,13 @@ public class MainActivity extends Activity {
 
                 if (wait_time == 0 && user_bell < 4) {
                     // 아직 더 채워야 하는 경우
-                    user_bell++;
+                    user_bell ++;
                     SharedPreferences.Editor edit = pref.edit();
                     edit.putInt("bell", user_bell);
                     edit.apply();
                     fill_bells();
                     wait_time = 1800;
-                } else if (wait_time == 0 && user_bell == 4) {
+                } else if ( wait_time == 0 && user_bell == 4 ) {
                     // 이제 다 찬 경우 ( 더이상 충전 x )
                     bellHandler.removeMessages(0);  // 핸들러 삭제
                     user_bell++;
@@ -511,9 +516,29 @@ public class MainActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
+        //앱 재실행시 사용자 본인 점수 표시
+        sDatabase = FirebaseDatabase.getInstance();
+        mDatabase = sDatabase.getReference("users");
+
+        mDatabase.orderByChild("users").addListenerForSingleValueEvent(
+                new ValueEventListener () {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Intent intent = getIntent();
+                        String userid = intent.getExtras().getString("userid");
+                        String user_s = dataSnapshot.child(userid).child("Score").getValue().toString();
+                        binding.myScore.setText(user_s);//현재 유저 본인점수
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.d("MainActivity", "실패 : ");
+                    }
+                });
 
         mediaPlayer1 = MediaPlayer.create(this, R.raw.backgroundmusic1);
         mediaPlayer1.setLooping(true);
+        if(backgroundSound)
         mediaPlayer1.start();
     }
 
@@ -527,7 +552,6 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // mDatabase.removeEventListener(mChild);
         mediaPlayer1.stop();
         mediaPlayer2.stop();
     }
@@ -586,7 +610,7 @@ public class MainActivity extends Activity {
     final View.OnClickListener dialClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            switch (view.getId()) {
+            switch ( view.getId() ){
                 case R.id.btn_close:
                     if (effectSound)
                         soundPool.play(btnClick1, 1, 1, 1, 0, 1);

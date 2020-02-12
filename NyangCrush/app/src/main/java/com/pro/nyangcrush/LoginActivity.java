@@ -11,6 +11,9 @@ import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.pro.nyangcrush.databinding.ActivityLoginBinding;
 import com.pro.nyangcrush.databinding.ActivityMainBinding;
 import com.google.android.gms.auth.api.Auth;
@@ -45,6 +48,10 @@ public class LoginActivity extends FragmentActivity {
     private FirebaseAuth firebaseAuth;
     private DatabaseReference mDatabase;
     private FirebaseDatabase sDatabase;
+
+    // user 정보
+    String name, userid, email;
+    int score = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,10 +107,10 @@ public class LoginActivity extends FragmentActivity {
                 firebaseAuthWithGoogle(account);
                 onStart( account );
             } else {
-                Log.i("log", "실패했음1");
+                Log.i("log", "사용자 정보 오류");
             }
         }else {
-            Log.i("log", "실패했음2");
+            Log.i("log", "로그인 확인여부 코드오류");
         }
     }
 
@@ -117,26 +124,44 @@ public class LoginActivity extends FragmentActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            // 이미 점수 기록이 있을 경우 기존의 값을 가져옴
+                            mDatabase.orderByChild("users").addListenerForSingleValueEvent(
+                                    new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            name = acct.getDisplayName();
+                                            userid = acct.getId();
+                                            email = acct.getEmail();
 
-                            String name = acct.getDisplayName();
-                            String userid = acct.getId();
-                            String email = acct.getEmail();
+                                            if ( dataSnapshot.child("users").child(userid).child("Score").getValue() != null  ) {
+                                                score = Integer.parseInt(dataSnapshot.child("users").child(userid).child("Score").getValue().toString());
+                                            }
 
-                            intent.putExtra("userid",userid);
-                            intent.putExtra("name",name);
-                            intent.putExtra("email",email);
+                                            //사용자 정보 저장
+                                            Map<String, Object> taskMap = new HashMap<String, Object>();
+                                            taskMap.put("name", name);
+                                            taskMap.put("email", email);
+                                            taskMap.put("Score", score);
+                                            taskMap.put("id",userid);
 
-                            Map<String, Object> taskMap = new HashMap<String, Object>();
-                            taskMap.put("name", name);
-                            taskMap.put("email", email);
-                            taskMap.put("Score", 200);
-                            taskMap.put("id",userid);
+                                            mDatabase.child("users").child(userid).updateChildren(taskMap);
 
-                            mDatabase.child("users").child(userid).updateChildren(taskMap);
+                                            // 인텐트에 값을 담아 다음으로 넘긴다.
+                                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
 
-                            startActivity(intent);
-                            finish();
+                                            intent.putExtra("userid",userid);
+                                            intent.putExtra("name",name);
+                                            intent.putExtra("email",email);
+
+                                            startActivity(intent);
+                                            finish();
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+                                            Log.d("log", "실패 : ");
+                                        }
+                                    });
 
                             Toast.makeText(LoginActivity.this, "로그인 성공", Toast.LENGTH_SHORT).show();
                         } else
@@ -157,9 +182,9 @@ public class LoginActivity extends FragmentActivity {
         if(currentUser!=null) {// 만약 로그인이 되어있으면 다음 액티비티 실행
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
 
-            String name = acct.getDisplayName();
-            String userid = acct.getId();
-            String email = acct.getEmail();
+            name = acct.getDisplayName();
+            userid = acct.getId();
+            email = acct.getEmail();
 
             intent.putExtra("userid",userid);
             intent.putExtra("name",name);
