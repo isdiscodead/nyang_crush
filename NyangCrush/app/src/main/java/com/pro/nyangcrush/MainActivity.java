@@ -336,6 +336,8 @@ public class MainActivity extends Activity {
                             seek_back_volume.setProgress(0);
                         } else {
                             mediaPlayer1.start();
+                            // seek_back_volume.setProgress(pref.getInt("seek_back_volume", 5));
+                            // audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, pref.getInt("seek_back_volume", 5),0);
                         }
 
                         backgroundSound = !backgroundSound;

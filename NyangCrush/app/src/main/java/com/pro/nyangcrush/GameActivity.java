@@ -436,9 +436,7 @@ public class GameActivity extends Activity {
         mediaPlayer4.setLooping(false);
 
         //소리조절 시크바
-        effectVolume = findViewById(R.id.effectVolume);
-        backgroundVolume = findViewById(R.id.backgroundVolume);
-
+        backgroundVolume = findViewById(R.id.seek_back_volume);
 
     } // onCreate()
 
