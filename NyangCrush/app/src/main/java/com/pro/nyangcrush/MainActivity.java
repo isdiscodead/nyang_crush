@@ -32,6 +32,7 @@ import android.widget.Button;
 
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -61,18 +62,15 @@ import hotchemi.android.rate.OnClickButtonListener;
 
 public class MainActivity extends Activity {
 
-     SharedPreferences pref;
-     Handler bellHandler;
-     ActivityMainBinding binding;
-     Dialog dialog;
+    SharedPreferences pref;
+    Handler bellHandler;
+    ActivityMainBinding binding;
+    Dialog dialog;
 
-     //배경음
-     private MediaPlayer mediaPlayer1, mediaPlayer2;
-
-     // 구글 로그인 클라이언트
+    // 구글 로그인 클라이언트
     private GoogleSignInClient mGoogleSignInClient;
 
-     // 파이어베이스 데이터베이스
+    // 파이어베이스 데이터베이스
     private FirebaseAuth mAuth; // 파이어베이스 인증
     private DatabaseReference mDatabase;
     private FirebaseDatabase sDatabase;
@@ -82,18 +80,43 @@ public class MainActivity extends Activity {
     ListView ranking;
     ArrayList<User> user_arr = new ArrayList<User>();
 
-     // 다이얼로그 내부 버튼
+    // 다이얼로그 내부 버튼
     Button btn_close, btn_logout;
 
     // 유저 방울 개수
     int user_bell;
     final static int MAX_BELL = 5;
 
+    //배경음
+    private MediaPlayer mediaPlayer1, mediaPlayer2;
+
     // 효과음
     SoundPool soundPool;
     private boolean effectSound = true;
     private boolean backgroundSound = true;
     private int btnClick1;
+
+    // 배경음이랑 효과음 조절 바
+    SeekBar seek_back_volume;
+    AudioManager audioManager;
+
+    // 배경음
+    int bMax;
+    int bCurrentVolume;
+
+    private void loadState(){
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,pref.getInt("seek_back_volume",bMax),0);
+    }
+
+    private  void saveState(){
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putInt("seek_back_volume", seek_back_volume.getProgress());
+        editor.commit();
+    }
+
+    private void initPref(){
+        pref=getSharedPreferences("SHARE",MODE_PRIVATE);
+    }
 
     // 방울 배열
     ImageView[] bells = new ImageView[MAX_BELL];
@@ -106,11 +129,24 @@ public class MainActivity extends Activity {
     // 도움말 다이얼로그 애니메이션
     private Animation helpAnim;
 
+    /**
+     *  <<<< onCreate() 여기서 시작 >>>>
+     * @param savedInstanceState
+     */
     @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
+        // 오디오 매니저 관련 변수 초기화
+        audioManager = (AudioManager)getSystemService(AUDIO_SERVICE);
+        bMax = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);  // 최고 음량
+        bCurrentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);   // 기본
+
+        // 기본 seekbar
+        initPref();
+        loadState();
 
         // 앱 평점
         AppRate.with(this)
@@ -253,16 +289,41 @@ public class MainActivity extends Activity {
                 final Switch effectSoundSwitch = dialog.findViewById(R.id.setting_effect_sound);
                 final Switch backgroundSoundSwitch = dialog.findViewById(R.id.setting_background_sound);
 
+                // 음향조절 바
+                seek_back_volume=dialog.findViewById(R.id.seek_back_volume);
+
+                seek_back_volume.setMax(bMax);
+                seek_back_volume.setProgress(pref.getInt("seek_back_volume", bMax));
+
                 effectSoundSwitch.setChecked(effectSound);
                 backgroundSoundSwitch.setChecked(backgroundSound);
 
                 effectSoundSwitch.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        effectSound = !effectSound;
+                    effectSound = !effectSound;
 
-                        if (effectSound)
-                            soundPool.play(btnClick1, 1, 1, 1, 0, 1);
+                    if (effectSound) {
+                        soundPool.play(btnClick1, 1, 1, 1, 0, 1);
+                    }
+                    }
+                });
+
+                seek_back_volume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress,0);
+                        saveState();
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+
                     }
                 });
 
@@ -271,13 +332,16 @@ public class MainActivity extends Activity {
                     public void onClick(View view) {
                         if (backgroundSound) {
                             mediaPlayer1.pause();
+                            seek_back_volume.setProgress(0);
                         } else {
                             mediaPlayer1.start();
                         }
+
                         backgroundSound = !backgroundSound;
 
-                        if (effectSound)
+                       if (effectSound)
                             soundPool.play(btnClick1, 1, 1, 1, 0, 1);
+
 
                     }
                 });
@@ -558,5 +622,6 @@ public class MainActivity extends Activity {
             }
         }
     };
+
 
 }

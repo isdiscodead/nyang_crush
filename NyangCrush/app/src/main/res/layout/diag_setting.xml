@@ -76,9 +76,11 @@
             android:layout_height="20dp"
             android:layout_marginTop="10dp"
             android:layout_marginStart="10dp"
-            android:max="5"
+            android:max="10"
+            android:progress="10"
             android:thumb="@drawable/seek_thumb"
-            android:progressDrawable="@drawable/seekbar"/>
+            android:progressDrawable="@drawable/seekbar"
+            android:id="@+id/seek_back_volume"/>
 
         <!-- 효과음 조절 -->
         <LinearLayout
@@ -117,15 +119,6 @@
                 android:layout_marginStart="5dp"/>
 
         </LinearLayout>
-
-        <SeekBar
-            android:layout_width="200dp"
-            android:layout_height="20dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="10dp"
-            android:thumb="@drawable/seek_thumb"
-            android:max="5"
-            android:progressDrawable="@drawable/seekbar"/>
 
         <Button
             android:id="@+id/btn_logout"
