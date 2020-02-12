@@ -149,7 +149,7 @@ public class GameActivity extends Activity {
             @Override
             public void onClick(View view) {
                 if (effect)
-                soundPool.play(btnClick1, 1,1, 1,0,1);
+                    soundPool.play(btnClick1, 1,1, 1,0,1);
                 dialog = new Dialog(GameActivity.this);
 
                 dialog.setCancelable(false);
@@ -700,6 +700,9 @@ public class GameActivity extends Activity {
         String s1 ="";
         int type = 0;
 
+        int ver = 0;
+        int hor = 0;
+
         for (int q = 0; q < nyangArray.length; q++) {
             for (int w = 0; w < nyangArray[q].length; w++) {
                 int verticalMin = q - 2 < 0 ? 0 : q - 2;
@@ -734,38 +737,83 @@ public class GameActivity extends Activity {
                         flag = true;
 
                         removeList.add(q + "," + w);
+                        ver++;
 
-                        for (int r = q + 1; r <= verticalMax; r++) {
-                            if (nyangArray[q][w].getNyangType() == nyangArray[r][w].getNyangType()) {
-                                if (binding.layout.getViewWidget(nyangArray[r][w]) != null) {
-                                    //리무브 애니메이션
-                                    Animation anim = AnimationUtils.loadAnimation(this, R.anim.remove_nyang);
-                                    nyangArray[r][w].startAnimation(anim);
+                        if(ver == 5){
+
+                            for (int r = q + 1; r <= verticalMax; r++) {
+                                if (nyangArray[q][w].getNyangType() == nyangArray[r][w].getNyangType()) {
+                                    if (binding.layout.getViewWidget(nyangArray[r][w]) != null) {
+                                        //리무브 애니메이션
+                                        Animation anim = AnimationUtils.loadAnimation(this, R.anim.remove_nyang);
+
+                                        for(int i=0; i<=8; i++){
+                                            nyangArray[i][w].startAnimation(anim);
+                                            binding.layout.removeView(nyangArray[i][w]);
+                                            removeList.add(i + "," + w);
+                                        }
+
+                                    }
+
+
+                                } else {
+                                    break;
                                 }
-
-                                binding.layout.removeView(nyangArray[r][w]);
-                                removeList.add(r + "," + w);
-
-                            } else {
-                                break;
                             }
-                        }
 
-                        for (int r = q - 1; r >= verticalMin; r--) {
-                            if (nyangArray[q][w].getNyangType() == nyangArray[r][w].getNyangType()) {
-                                if (binding.layout.getViewWidget(nyangArray[r][w]) != null) {
-                                    //리무브 애니메이션
-                                    Animation anim = AnimationUtils.loadAnimation(this, R.anim.remove_nyang);
-                                    nyangArray[r][w].startAnimation(anim);
+                            for (int r = q - 1; r >= verticalMin; r--) {
+                                if (nyangArray[q][w].getNyangType() == nyangArray[r][w].getNyangType()) {
+                                    if (binding.layout.getViewWidget(nyangArray[r][w]) != null) {
+                                        //리무브 애니메이션
+                                        Animation anim = AnimationUtils.loadAnimation(this, R.anim.remove_nyang);
+                                        for(int i=0; i<=8; i++){
+                                            nyangArray[i][w].startAnimation(anim);
+                                            binding.layout.removeView(nyangArray[i][w]);
+                                            removeList.add(i + "," + w);
+                                        }
+                                    }
+
+                                } else {
+                                    break;
                                 }
-
-                                binding.layout.removeView(nyangArray[r][w]);
-                                removeList.add(r + "," + w);
-                            } else {
-                                break;
                             }
+                            break;
+
+                        }else{
+
+                            for (int r = q + 1; r <= verticalMax; r++) {
+                                if (nyangArray[q][w].getNyangType() == nyangArray[r][w].getNyangType()) {
+                                    if (binding.layout.getViewWidget(nyangArray[r][w]) != null) {
+                                        //리무브 애니메이션
+                                        Animation anim = AnimationUtils.loadAnimation(this, R.anim.remove_nyang);
+                                        nyangArray[r][w].startAnimation(anim);
+                                    }
+
+                                    binding.layout.removeView(nyangArray[r][w]);
+                                    removeList.add(r + "," + w);
+
+                                } else {
+                                    break;
+                                }
+                            }
+
+                            for (int r = q - 1; r >= verticalMin; r--) {
+                                if (nyangArray[q][w].getNyangType() == nyangArray[r][w].getNyangType()) {
+                                    if (binding.layout.getViewWidget(nyangArray[r][w]) != null) {
+                                        //리무브 애니메이션
+                                        Animation anim = AnimationUtils.loadAnimation(this, R.anim.remove_nyang);
+                                        nyangArray[r][w].startAnimation(anim);
+                                    }
+
+                                    binding.layout.removeView(nyangArray[r][w]);
+                                    removeList.add(r + "," + w);
+                                } else {
+                                    break;
+                                }
+                            }
+                            break;
+
                         }
-                        break;
                     }
                 }
 
@@ -783,36 +831,83 @@ public class GameActivity extends Activity {
                         flag = true;
 
                         removeList.add(q + "," + w);
-                        for (int r = w + 1; r <= horizontalMax; r++) {
-                            if (nyangArray[q][w].getNyangType() == nyangArray[q][r].getNyangType()) {
-                                if (binding.layout.getViewWidget(nyangArray[q][r]) != null) {
-                                    //리무브 애니메이션
-                                    Animation anim = AnimationUtils.loadAnimation(this, R.anim.remove_nyang);
-                                    nyangArray[q][r].startAnimation(anim);
-                                }
+                        hor++;
 
-                                binding.layout.removeView(nyangArray[q][r]);
-                                removeList.add(q + "," + r);
-                            } else {
-                                break;
+                        if(hor == 5){
+
+                            for (int r = w + 1; r <= horizontalMax; r++) {
+                                if (nyangArray[q][w].getNyangType() == nyangArray[q][r].getNyangType()) {
+                                    if (binding.layout.getViewWidget(nyangArray[q][r]) != null) {
+                                        //리무브 애니메이션
+                                        Animation anim = AnimationUtils.loadAnimation(this, R.anim.remove_nyang);
+                                        for(int i=0; i<=8; i++){
+                                            nyangArray[q][i].startAnimation(anim);
+                                            binding.layout.removeView(nyangArray[q][i]);
+                                            removeList.add(q + "," + i);
+
+                                        }
+                                    }
+
+                                } else {
+                                    break;
+                                }
                             }
+
+                            for (int r = w - 1; r >= horizontalMin; r--) {
+                                if (nyangArray[q][w].getNyangType() == nyangArray[q][r].getNyangType()) {
+                                    if (binding.layout.getViewWidget(nyangArray[q][r]) != null) {
+                                        //리무브 애니메이션
+                                        Animation anim = AnimationUtils.loadAnimation(this, R.anim.remove_nyang);
+                                        for(int i=0; i<=8; i++){
+
+                                            nyangArray[q][i].startAnimation(anim);
+                                            binding.layout.removeView(nyangArray[q][i]);
+                                            removeList.add(q + "," + i);
+                                        }
+                                    }
+
+                                } else {
+                                    break;
+                                }
+                            }
+                            break;
+
+                        }else{
+
+                            for (int r = w + 1; r <= horizontalMax; r++) {
+                                if (nyangArray[q][w].getNyangType() == nyangArray[q][r].getNyangType()) {
+                                    if (binding.layout.getViewWidget(nyangArray[q][r]) != null) {
+                                        //리무브 애니메이션
+                                        Animation anim = AnimationUtils.loadAnimation(this, R.anim.remove_nyang);
+                                        nyangArray[q][r].startAnimation(anim);
+                                    }
+
+                                    binding.layout.removeView(nyangArray[q][r]);
+                                    removeList.add(q + "," + r);
+                                } else {
+                                    break;
+                                }
+                            }
+
+                            for (int r = w - 1; r >= horizontalMin; r--) {
+                                if (nyangArray[q][w].getNyangType() == nyangArray[q][r].getNyangType()) {
+                                    if (binding.layout.getViewWidget(nyangArray[q][r]) != null) {
+                                        //리무브 애니메이션
+                                        Animation anim = AnimationUtils.loadAnimation(this, R.anim.remove_nyang);
+                                        nyangArray[q][r].startAnimation(anim);
+                                    }
+
+                                    binding.layout.removeView(nyangArray[q][r]);
+                                    removeList.add(q + "," + r);
+                                } else {
+                                    break;
+                                }
+                            }
+                            break;
+
                         }
 
-                        for (int r = w - 1; r >= horizontalMin; r--) {
-                            if (nyangArray[q][w].getNyangType() == nyangArray[q][r].getNyangType()) {
-                                if (binding.layout.getViewWidget(nyangArray[q][r]) != null) {
-                                    //리무브 애니메이션
-                                    Animation anim = AnimationUtils.loadAnimation(this, R.anim.remove_nyang);
-                                    nyangArray[q][r].startAnimation(anim);
-                                }
 
-                                binding.layout.removeView(nyangArray[q][r]);
-                                removeList.add(q + "," + r);
-                            } else {
-                                break;
-                            }
-                        }
-                        break;
                     }
                 }
 
@@ -825,7 +920,7 @@ public class GameActivity extends Activity {
         }
 
         //같은블록5개 맞을시 같은블록 전부 삭제 (아이템개념)
-        if(s !="" && s1 !="" && s.equalsIgnoreCase(s1) | s.length() == 5 | s1.length() == 5) {
+        if(s !="" && s1 !="" && s.equalsIgnoreCase(s1) | s.length() >= 5 | s1.length() >= 5) {
             Log.i("qq", "s1: " + s1 + " / s : " + s);
 
             String a = "";
@@ -911,8 +1006,8 @@ public class GameActivity extends Activity {
 
             // 블록 터지는 효과음
         }
-            if (effect)
-                mediaPlayer3.start();
+        if (effect)
+            mediaPlayer3.start();
 
 
 
@@ -979,7 +1074,7 @@ public class GameActivity extends Activity {
             switch ( view.getId() ){
                 case R.id.btn_replay :
                     if (effect)
-                    soundPool.play(btnClick1, 1,1, 1,0,1);
+                        soundPool.play(btnClick1, 1,1, 1,0,1);
 
                     gameReplay();
                     dialog.dismiss();
@@ -987,14 +1082,14 @@ public class GameActivity extends Activity {
 
                 case R.id.btn_stop :
                     if (effect)
-                    soundPool.play(btnClick1, 1,1, 1,0,1);
+                        soundPool.play(btnClick1, 1,1, 1,0,1);
 
                     endGame();
                     dialog.dismiss();
                     break;
                 default:
                     if (effect)
-                    soundPool.play(btnClick1, 1,1, 1,0,1);
+                        soundPool.play(btnClick1, 1,1, 1,0,1);
                     dialog.dismiss();
                     continueGame();
                     break;
@@ -1192,7 +1287,7 @@ public class GameActivity extends Activity {
                     @Override
                     public void onClick(View view) {
                         if (effect)
-                        soundPool.play(btnClick1, 1,1, 1,0,1);
+                            soundPool.play(btnClick1, 1,1, 1,0,1);
                         dialog.dismiss();
                         finish();
 
@@ -1267,7 +1362,7 @@ public class GameActivity extends Activity {
             setNyangArray();
         } while (checkNyangArray());
         if(effect)
-        soundPool.play(btnClick1, 1,1, 1,0,1);
+            soundPool.play(btnClick1, 1,1, 1,0,1);
         if (background)
             mediaPlayer2.stop();
         basicSetting();
