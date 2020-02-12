@@ -40,7 +40,12 @@
             android:layout_height="wrap_content"
             android:paddingBottom="20dp"
             android:paddingLeft="20dp"
-            android:paddingRight="20dp"/>
+            android:paddingRight="20dp"
+            android:dividerHeight="0dp"
+            android:divider="@color/transparent"
+            android:background="@color/transparent"
+            android:clickable="false"
+            android:foreground="@color/transparent"/>
 
     </LinearLayout>
 

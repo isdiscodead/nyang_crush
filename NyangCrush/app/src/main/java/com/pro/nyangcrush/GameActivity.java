@@ -59,6 +59,7 @@ public class GameActivity extends Activity {
     //DB연결
     private DatabaseReference mDatabase;
     private FirebaseDatabase sDatabase;
+
     // 일시정지 다이얼로그 내부의 버튼들
     Button btn_replay, btn_stop, btn_back, btn_close ;
 
@@ -92,6 +93,7 @@ public class GameActivity extends Activity {
     private int combo; //콤보 점수
     private int cnt; //첫터치 반응 확인
     private float combotime; //콤보 유지시간
+    String user_s;  // 현재 최고 점수
 
     //타이머부분
     private float timer; //게임 플레이 타임
@@ -1025,7 +1027,7 @@ public class GameActivity extends Activity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Intent i = getIntent();
                         String userid = i.getExtras().getString("userid");
-                        String user_s = dataSnapshot.child(userid).child("Score").getValue().toString();
+                        user_s = dataSnapshot.child(userid).child("Score").getValue().toString();
                         highScore.setText(user_s);
 
                     }
@@ -1157,6 +1159,7 @@ public class GameActivity extends Activity {
 
         if (background)
             mediaPlayer2.stop();
+
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -1196,11 +1199,9 @@ public class GameActivity extends Activity {
                     }
                 });
 
-                Toast.makeText(getApplicationContext(), "유저점수:"+userScore,Toast.LENGTH_SHORT).show();
                 score.setText(String.format("%,d", userScore));
                 playTime.setText(String.format("%d", time / 10));
-                isBestScore.setVisibility(userScore == 100 ? View.VISIBLE : View.INVISIBLE);
-                isBestTime.setVisibility(Integer.parseInt(playTime.getText().toString()) == 999 ? View.VISIBLE : View.INVISIBLE);
+                isBestScore.setVisibility(userScore >= Integer.parseInt(user_s) ? View.VISIBLE : View.INVISIBLE);   // 신기록 갱신 시 표시
 
                 //게임 종료시 DB정보 불러오기
                 sDatabase = FirebaseDatabase.getInstance();

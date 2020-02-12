@@ -114,7 +114,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         // 앱 평점
-/*        AppRate.with(this)
+        AppRate.with(this)
                 .setInstallDays(0) // default 10, 0 means install day.
                 .setLaunchTimes(2) // 앱 나갔다가 다시 들어오는 수. /default=10
                 .setRemindInterval(2) // default 1
@@ -126,10 +126,10 @@ public class MainActivity extends Activity {
                         Log.d(MainActivity.class.getName(), Integer.toString(which));
                     }
                 })
-                .monitor();*/
+                .monitor();
 
         // Show a dialog if meets conditions
-        // AppRate.showRateDialogIfMeetsConditions(this);
+        AppRate.showRateDialogIfMeetsConditions(this);
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         binding.setActivity(this);
@@ -318,35 +318,29 @@ public class MainActivity extends Activity {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                                Intent intent = getIntent();
-
+                                Intent intent = getIntent();    // 로그인 하면서 넘어온 본인 정보 가져옴
                                 String userid = intent.getExtras().getString("userid");
                                 String user_s = dataSnapshot.child(userid).child("Score").getValue().toString();
                                 binding.myScore.setText(user_s);    // 현재 유저 본인 최고 점수 ( DB 등록된 점수 )
 
-                                Log.i("rank", "string : " + userid +"/"+ user_s);
-
                                 // adapter.clear();
                                 for ( DataSnapshot snapshot : dataSnapshot.getChildren() ) {
 
+                                    userid = snapshot.child("id").getValue().toString();
                                     int score = Integer.parseInt(snapshot.child("Score").getValue().toString()); //점수
                                     String name = snapshot.child("name").getValue().toString(); //이름
 
                                     User user = new User();
+                                    user.setUserId(userid);
                                     user.setName(name);
                                     user.setScore(score);
-
-                                    Log.i("rank", "스냅챗 for문");
 
                                     user_arr.add(user);
                                 }
 
-                                adapter = new RankAdapter(MainActivity.this, R.layout.rank, user_arr);
-
-                                Log.i("rank", "어댑터 초기화");
-
+                                userid = intent.getExtras().getString("userid");
+                                adapter = new RankAdapter(MainActivity.this, R.layout.rank, user_arr, userid );
                                 ranking = dialog.findViewById(R.id.ranking);
-
                                 ranking.setAdapter(adapter);
 
                                 dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -355,8 +349,6 @@ public class MainActivity extends Activity {
                                         adapter.clear();    // 데이터 중복 표시를 방지하기 위해 클리어
                                     }
                                 });
-
-                                Log.i("rank", "어댑터 셋팅");
                             }
 
                             @Override

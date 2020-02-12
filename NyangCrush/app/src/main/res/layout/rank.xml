@@ -3,7 +3,9 @@
 <layout>
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical" android:layout_width="match_parent"
-        android:layout_height="match_parent" android:paddingHorizontal="10dp">
+        android:layout_height="match_parent"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp">
 
         <!-- 맨 위에 본인 순위 올라오고 순위 안에 없다면 '-'로 표시 -->
         <!-- 본인 순위는 백그라운드 색상 다르게 ! ( 연노랑 ? ) -->
@@ -14,8 +16,7 @@
             android:orientation="horizontal"
             android:paddingTop="3dp"
             android:paddingBottom="3dp"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
+            android:paddingLeft="10dp"
             android:background="@drawable/rank_box">
 
             <TextView
@@ -50,8 +51,8 @@
                 android:layout_marginLeft="10dp"
                 android:text="000000000000"
                 android:paddingTop="5dp"
-                android:paddingLeft="10dp"
-                android:gravity="left"
+                android:paddingRight="10dp"
+                android:gravity="right"
                 android:fontFamily="@font/black_han_sans"
                 android:textSize="15sp"
                 android:textColor="@color/brown"/>
