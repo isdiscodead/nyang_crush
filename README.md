@@ -9,6 +9,5 @@ Android Project : NyangCrush
 
 [![Repository Card](https://widget.realdeveloper.pro/api/card?user=isdiscodead&repo=nyang_crush)](https://github.com/isdiscodead/nyang_crush/)
 
-
 ---
-[!노션 포트폴리오 링크](https://isdiscodead.notion.site/Nyang-Crush-0f84d9ca862c46b1aff69c1cf416af08)
+[노션 포트폴리오 링크](https://isdiscodead.notion.site/Nyang-Crush-0f84d9ca862c46b1aff69c1cf416af08)
